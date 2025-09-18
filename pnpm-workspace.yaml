@@ -1,0 +1,6 @@
+onlyBuiltDependencies:
+  - '@scarf/scarf'
+  - '@tailwindcss/oxide'
+  - protobufjs
+  - sharp
+  - unrs-resolver
