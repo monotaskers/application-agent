@@ -1,0 +1,16 @@
+{
+    "mcpServers": {
+      "copilotkit": {
+        "type": "sse",
+        "url": "https://mcp.copilotkit.ai/sse"
+      },
+      "shadcn": {
+        "command": "npx",
+        "args": [
+          "shadcn@latest",
+          "mcp"
+        ]
+      }
+    }
+  }
+  

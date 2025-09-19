@@ -1,6 +1,7 @@
 onlyBuiltDependencies:
   - '@scarf/scarf'
   - '@tailwindcss/oxide'
+  - msw
   - protobufjs
   - sharp
   - unrs-resolver
