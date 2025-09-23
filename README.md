@@ -4,7 +4,7 @@ This is a starter template for building AI agents using [PydanticAI](https://ai.
 
 ## Prerequisites
 
-- Node.js 18+ 
+- Node.js 18+
 - Python 3.8+
 - OpenAI API Key (for the PydanticAI agent)
 - Any of the following package managers:
@@ -14,6 +14,19 @@ This is a starter template for building AI agents using [PydanticAI](https://ai.
   - bun
 
 > **Note:** This repository ignores lock files (package-lock.json, yarn.lock, pnpm-lock.yaml, bun.lockb) to avoid conflicts between different package managers. Each developer should generate their own lock file using their preferred package manager. After that, make sure to delete it from the .gitignore.
+
+## Quick Start
+
+For first-time setup, run the automated setup script:
+```bash
+./scripts/setup-dev.sh
+```
+
+This will:
+- Check prerequisites (Python, Node.js)
+- Create `.env` files from templates
+- Install dependencies
+- Guide you through adding API keys
 
 ## Getting Started
 
@@ -55,9 +68,24 @@ bun run install:agent
 > ```
 
 
-3. Set up your OpenAI API key:
+3. Set up your environment variables:
+
+Create a `.env` file in the project root with your OpenAI API key:
 ```bash
-export OPENAI_API_KEY="your-openai-api-key-here"
+# Copy from template
+cp .env.example .env
+
+# Edit .env and add your OpenAI API key
+# OPENAI_API_KEY=sk-proj-your-key-here
+```
+
+Optionally, set up CopilotKit Cloud (if using):
+```bash
+# Copy from template
+cp .env.local.example .env.local
+
+# Edit .env.local and add your CopilotKit Cloud key
+# COPILOT_CLOUD_PUBLIC_API_KEY=ck_pub_your-key-here
 ```
 
 4. Start the development server:
@@ -110,13 +138,37 @@ Feel free to submit issues and enhancement requests! This starter is designed to
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
+## Environment Variables
+
+This project uses environment variables to manage API keys securely:
+
+### Required Variables
+- **`.env`** - Backend/Python agent variables
+  - `OPENAI_API_KEY` - Your OpenAI API key (required)
+  - `LOG_LEVEL` - Logging level: debug, info, warning, error (optional)
+
+### Optional Variables
+- **`.env.local`** - Frontend/Next.js variables
+  - `COPILOT_CLOUD_PUBLIC_API_KEY` - CopilotKit Cloud API key (optional)
+  - `NEXT_PUBLIC_AGENT_URL` - Custom agent URL (defaults to http://localhost:8000)
+
+> **Security Note:** Never commit `.env` or `.env.local` files to version control. They are already in `.gitignore`.
+
 ## Troubleshooting
 
 ### Agent Connection Issues
 If you see "I'm having trouble connecting to my tools", make sure:
 1. The PydanticAI agent is running on port 8000
-2. Your OpenAI API key is set correctly
+2. Your OpenAI API key is correctly set in `.env` file
 3. Both servers started successfully
+4. Check the agent logs for any startup errors
+
+### Environment Variable Issues
+If the agent fails to start with "OPENAI_API_KEY not found":
+1. Ensure `.env` file exists in the project root
+2. Verify the API key is correctly formatted: `OPENAI_API_KEY=sk-proj-...`
+3. Try running `source .env` manually before starting the agent
+4. Check that the key is valid and has not been revoked
 
 ### Python Dependencies
 If you encounter Python import errors:
