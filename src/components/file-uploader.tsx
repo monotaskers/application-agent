@@ -3,6 +3,7 @@
 import { IconX, IconUpload } from '@tabler/icons-react';
 import Image from 'next/image';
 import * as React from 'react';
+import { ReactElement } from 'react';
 import Dropzone, {
   type DropzoneProps,
   type FileRejection
@@ -93,7 +94,7 @@ export interface FileUploaderProps
   disabled?: boolean;
 }
 
-export function FileUploader(props: FileUploaderProps) {
+export function FileUploader(props: FileUploaderProps): ReactElement {
   const {
     value: valueProp,
     onValueChange,
@@ -108,9 +109,9 @@ export function FileUploader(props: FileUploaderProps) {
     ...dropzoneProps
   } = props;
 
-  const [files, setFiles] = useControllableState({
+  const [files, setFiles] = useControllableState<File[]>({
     prop: valueProp,
-    onChange: onValueChange
+    ...(onValueChange ? { onChange: (files: File[]): void => { onValueChange(files); } } : {})
   });
 
   const onDrop = React.useCallback(
@@ -163,7 +164,7 @@ export function FileUploader(props: FileUploaderProps) {
     [files, maxFiles, multiple, onUpload, setFiles]
   );
 
-  function onRemove(index: number) {
+  function onRemove(index: number): void {
     if (!files) return;
     const newFiles = files.filter((_, i) => i !== index);
     setFiles(newFiles);
@@ -253,7 +254,7 @@ export function FileUploader(props: FileUploaderProps) {
                 key={index}
                 file={file}
                 onRemove={() => onRemove(index)}
-                progress={progresses?.[file.name]}
+                {...(progresses?.[file.name] !== undefined && { progress: progresses[file.name] })}
               />
             ))}
           </div>
@@ -269,7 +270,7 @@ interface FileCardProps {
   progress?: number;
 }
 
-function FileCard({ file, progress, onRemove }: FileCardProps) {
+function FileCard({ file, progress, onRemove }: FileCardProps): ReactElement {
   return (
     <div className='relative flex items-center space-x-4'>
       <div className='flex flex-1 space-x-4'>

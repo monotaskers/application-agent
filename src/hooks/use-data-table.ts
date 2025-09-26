@@ -64,7 +64,12 @@ interface UseDataTableProps<TData>
   startTransition?: React.TransitionStartFunction;
 }
 
-export function useDataTable<TData>(props: UseDataTableProps<TData>) {
+export function useDataTable<TData>(props: UseDataTableProps<TData>): {
+  table: ReturnType<typeof useReactTable<TData>>;
+  shallow: boolean;
+  debounceMs: number;
+  throttleMs: number;
+} {
   const {
     columns,
     pageCount = -1,
@@ -90,7 +95,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
       throttleMs,
       debounceMs,
       clearOnDefault,
-      startTransition
+      ...(startTransition ? { startTransition } : {})
     }),
     [
       history,
@@ -261,7 +266,7 @@ export function useDataTable<TData>(props: UseDataTableProps<TData>) {
   const table = useReactTable({
     ...tableProps,
     columns,
-    initialState,
+    ...(initialState ? { initialState } : {}),
     pageCount,
     state: {
       pagination,

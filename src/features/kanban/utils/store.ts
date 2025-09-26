@@ -62,7 +62,12 @@ export const useTaskStore = create<State & Actions>()(
         set((state) => ({
           tasks: [
             ...state.tasks,
-            { id: uuid(), title, description, status: 'TODO' }
+            {
+              id: uuid(),
+              title,
+              ...(description ? { description } : {}),
+              status: 'TODO' as Status
+            }
           ]
         })),
       updateCol: (id: UniqueIdentifier, newName: string) =>

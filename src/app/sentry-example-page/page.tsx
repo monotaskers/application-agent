@@ -2,7 +2,7 @@
 
 import Head from "next/head";
 import * as Sentry from "@sentry/nextjs";
-import { useState, useEffect } from "react";
+import { useState, useEffect, ReactElement } from "react";
 
 class SentryExampleFrontendError extends Error {
   constructor(message: string | undefined) {
@@ -11,7 +11,7 @@ class SentryExampleFrontendError extends Error {
   }
 }
 
-export default function Page() {
+export default function Page(): ReactElement {
   const [hasSentError, setHasSentError] = useState(false);
   const [isConnected, setIsConnected] = useState(true);
 

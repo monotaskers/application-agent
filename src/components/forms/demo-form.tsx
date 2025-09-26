@@ -2,7 +2,7 @@
 
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import { z } from 'zod';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
@@ -24,7 +24,7 @@ import { FormFileUpload, type FileUploadConfig } from './form-file-upload';
 const demoFormSchema = z.object({
   // Basic inputs
   name: z.string().min(2, 'Name must be at least 2 characters'),
-  email: z.email('Invalid email address'),
+  email: z.string().email('Invalid email address'),
   age: z.number().min(18, 'Must be at least 18 years old'),
   password: z.string().min(8, 'Password must be at least 8 characters'),
 
@@ -53,7 +53,17 @@ const demoFormSchema = z.object({
   terms: z.boolean().refine((val) => val === true, 'You must accept the terms'),
 
   // File upload
-  avatar: z.array(z.any()).optional()
+  avatar: z
+    .array(
+      z.object({
+        name: z.string(),
+        size: z.number(),
+        type: z.string(),
+        lastModified: z.number(),
+        webkitRelativePath: z.string().optional()
+      })
+    )
+    .optional()
 });
 
 type DemoFormData = z.infer<typeof demoFormSchema>;
@@ -91,7 +101,7 @@ const fileUploadConfig: FileUploadConfig = {
   maxFiles: 1
 };
 
-export default function DemoForm() {
+export default function DemoForm(): React.ReactElement {
   const form = useForm<DemoFormData>({
     resolver: zodResolver(demoFormSchema),
     defaultValues: {

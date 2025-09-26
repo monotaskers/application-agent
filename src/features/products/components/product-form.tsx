@@ -11,7 +11,8 @@ import { Product } from '@/constants/mock-api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
-import * as z from 'zod';
+import { z } from 'zod';
+import { ReactElement } from 'react';
 
 const MAX_FILE_SIZE = 5000000;
 const ACCEPTED_IMAGE_TYPES = [
@@ -23,16 +24,17 @@ const ACCEPTED_IMAGE_TYPES = [
 
 const formSchema = z.object({
   image: z
-    .any()
-    .refine((files) => files?.length == 1, 'Image is required.')
+    .custom<FileList>()
+    .refine((files) => files?.length === 1, 'Image is required.')
     .refine(
-      (files) => files?.[0]?.size <= MAX_FILE_SIZE,
+      (files) => !files || files.length === 0 || (files[0] != null && files[0].size <= MAX_FILE_SIZE),
       `Max file size is 5MB.`
     )
     .refine(
-      (files) => ACCEPTED_IMAGE_TYPES.includes(files?.[0]?.type),
+      (files) => files != null && files[0] != null && ACCEPTED_IMAGE_TYPES.includes(files[0].type),
       '.jpg, .jpeg, .png and .webp files are accepted.'
-    ),
+    )
+    .optional(),
   name: z.string().min(2, {
     message: 'Product name must be at least 2 characters.'
   }),
@@ -43,28 +45,32 @@ const formSchema = z.object({
   })
 });
 
+type FormData = z.infer<typeof formSchema>;
+
+interface ProductFormProps {
+  initialData: Product | null;
+  pageTitle: string;
+}
+
 export default function ProductForm({
   initialData,
   pageTitle
-}: {
-  initialData: Product | null;
-  pageTitle: string;
-}) {
+}: ProductFormProps): ReactElement {
   const defaultValues = {
     name: initialData?.name || '',
     category: initialData?.category || '',
-    price: initialData?.price || undefined,
+    price: initialData?.price || 0,
     description: initialData?.description || ''
   };
 
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: defaultValues
   });
 
   const router = useRouter();
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  function onSubmit(values: FormData): void {
     // Form submission logic would be implemented here
     console.log(values);
     router.push('/dashboard/product');
@@ -80,7 +86,7 @@ export default function ProductForm({
       <CardContent>
         <Form
           form={form}
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={onSubmit}
           className='space-y-8'
         >
           <FormFileUpload

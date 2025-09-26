@@ -2,6 +2,7 @@
 
 import { Check, ChevronsUpDown, GalleryVerticalEnd } from 'lucide-react';
 import * as React from 'react';
+import { ReactElement } from 'react';
 
 import {
   DropdownMenu,
@@ -28,12 +29,12 @@ export function OrgSwitcher({
   tenants: Tenant[];
   defaultTenant: Tenant;
   onTenantSwitch?: (tenantId: string) => void;
-}) {
+}): ReactElement | null {
   const [selectedTenant, setSelectedTenant] = React.useState<
     Tenant | undefined
   >(defaultTenant || (tenants.length > 0 ? tenants[0] : undefined));
 
-  const handleTenantSwitch = (tenant: Tenant) => {
+  const handleTenantSwitch = (tenant: Tenant): void => {
     setSelectedTenant(tenant);
     if (onTenantSwitch) {
       onTenantSwitch(tenant.id);

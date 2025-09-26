@@ -1,6 +1,7 @@
 'use client';
 
 import { IconChevronRight } from '@tabler/icons-react';
+import { ReactElement } from 'react';
 
 import {
   Collapsible,
@@ -33,7 +34,7 @@ export function NavMain({
       url: string;
     }[];
   }[];
-}) {
+}): ReactElement {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -43,7 +44,7 @@ export function NavMain({
             <Collapsible
               key={item.title}
               asChild
-              defaultOpen={item.isActive}
+              defaultOpen={item.isActive ?? false}
               className='group/collapsible'
             >
               <SidebarMenuItem>

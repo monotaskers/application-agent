@@ -9,9 +9,9 @@ import {
 } from '@/components/ui/breadcrumb';
 import { useBreadcrumbs } from '@/hooks/use-breadcrumbs';
 import { IconSlash } from '@tabler/icons-react';
-import { Fragment } from 'react';
+import { Fragment, ReactElement } from 'react';
 
-export function Breadcrumbs() {
+export function Breadcrumbs(): ReactElement | null {
   const items = useBreadcrumbs();
   if (items.length === 0) return null;
 

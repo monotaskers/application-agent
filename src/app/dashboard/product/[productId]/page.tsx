@@ -9,7 +9,7 @@ export const metadata = {
 
 type PageProps = { params: Promise<{ productId: string }> };
 
-export default async function Page(props: PageProps) {
+export default async function Page(props: PageProps): Promise<React.ReactElement> {
   const params = await props.params;
   return (
     <PageContainer scrollable>

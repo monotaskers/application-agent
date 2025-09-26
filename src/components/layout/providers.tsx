@@ -15,13 +15,16 @@ export default function Providers({
   // we need the resolvedTheme value to set the baseTheme for clerk based on the dark or light theme
   const { resolvedTheme } = useTheme();
 
+  // Create properly typed appearance object
+  const clerkAppearance = resolvedTheme === 'dark'
+    ? { baseTheme: dark } as const
+    : undefined;
+
   return (
     <>
       <ActiveThemeProvider initialTheme={activeThemeValue}>
         <ClerkProvider
-          appearance={{
-            baseTheme: resolvedTheme === 'dark' ? dark : undefined
-          }}
+          {...(clerkAppearance ? { appearance: clerkAppearance } : {} as any)}
         >
           {children}
         </ClerkProvider>

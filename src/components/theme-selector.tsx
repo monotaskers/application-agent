@@ -1,5 +1,6 @@
 'use client';
 
+import { ReactElement } from 'react';
 import { useThemeConfig } from '@/components/active-theme';
 import { Label } from '@/components/ui/label';
 import {
@@ -50,7 +51,7 @@ const MONO_THEMES = [
   }
 ];
 
-export function ThemeSelector() {
+export function ThemeSelector(): ReactElement {
   const { activeTheme, setActiveTheme } = useThemeConfig();
 
   return (

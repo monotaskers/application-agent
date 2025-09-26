@@ -8,17 +8,17 @@ import {
   KBarSearch
 } from 'kbar';
 import { useRouter } from 'next/navigation';
-import { useMemo } from 'react';
+import { useMemo, ReactElement } from 'react';
 import RenderResults from './render-result';
 import useThemeSwitching from './use-theme-switching';
 
-export default function KBar({ children }: { children: React.ReactNode }) {
+export default function KBar({ children }: { children: React.ReactNode }): ReactElement {
   const router = useRouter();
 
   // These action are for the navigation
   const actions = useMemo(() => {
     // Define navigateTo inside the useMemo callback to avoid dependency array issues
-    const navigateTo = (url: string) => {
+    const navigateTo = (url: string): void => {
       router.push(url);
     };
 
@@ -29,7 +29,7 @@ export default function KBar({ children }: { children: React.ReactNode }) {
           ? {
               id: `${navItem.title.toLowerCase()}Action`,
               name: navItem.title,
-              shortcut: navItem.shortcut,
+              ...(navItem.shortcut ? { shortcut: navItem.shortcut } : {}),
               keywords: navItem.title.toLowerCase(),
               section: 'Navigation',
               subtitle: `Go to ${navItem.title}`,
@@ -42,7 +42,7 @@ export default function KBar({ children }: { children: React.ReactNode }) {
         navItem.items?.map((childItem) => ({
           id: `${childItem.title.toLowerCase()}Action`,
           name: childItem.title,
-          shortcut: childItem.shortcut,
+          ...(childItem.shortcut ? { shortcut: childItem.shortcut } : {}),
           keywords: childItem.title.toLowerCase(),
           section: navItem.title,
           subtitle: `Go to ${childItem.title}`,
@@ -60,7 +60,7 @@ export default function KBar({ children }: { children: React.ReactNode }) {
     </KBarProvider>
   );
 }
-const KBarComponent = ({ children }: { children: React.ReactNode }) => {
+const KBarComponent = ({ children }: { children: React.ReactNode }): ReactElement => {
   useThemeSwitching();
 
   return (

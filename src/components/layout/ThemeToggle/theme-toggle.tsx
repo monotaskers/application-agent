@@ -3,10 +3,11 @@
 import { IconBrightness } from '@tabler/icons-react';
 import { useTheme } from 'next-themes';
 import * as React from 'react';
+import { ReactElement } from 'react';
 
 import { Button } from '@/components/ui/button';
 
-export function ModeToggle() {
+export function ModeToggle(): ReactElement {
   const { setTheme, resolvedTheme } = useTheme();
 
   const handleThemeToggle = React.useCallback(

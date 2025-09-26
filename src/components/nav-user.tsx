@@ -8,6 +8,7 @@ import {
   IconLogout,
   IconSparkles
 } from '@tabler/icons-react';
+import { ReactElement } from 'react';
 
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
@@ -34,7 +35,7 @@ export function NavUser({
     email: string;
     avatar: string;
   };
-}) {
+}): ReactElement {
   const { isMobile } = useSidebar();
 
   return (

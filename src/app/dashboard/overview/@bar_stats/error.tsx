@@ -5,14 +5,14 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { IconAlertCircle } from '@tabler/icons-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useTransition } from 'react';
+import { useEffect, useTransition, ReactElement } from 'react';
 import * as Sentry from '@sentry/nextjs';
 
 interface StatsErrorProps {
   error: Error;
   reset: () => void; // Add reset function from error boundary
 }
-export default function StatsError({ error, reset }: StatsErrorProps) {
+export default function StatsError({ error, reset }: StatsErrorProps): ReactElement {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 

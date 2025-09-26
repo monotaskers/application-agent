@@ -56,7 +56,7 @@ function FormSelect<
           <Select
             onValueChange={field.onChange}
             defaultValue={field.value}
-            disabled={disabled}
+            disabled={disabled === true}
           >
             <FormControl>
               <SelectTrigger>
@@ -68,7 +68,7 @@ function FormSelect<
                 <SelectItem
                   key={option.value}
                   value={option.value}
-                  disabled={option.disabled}
+                  disabled={option.disabled === true}
                 >
                   {option.label}
                 </SelectItem>

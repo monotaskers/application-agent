@@ -1,10 +1,11 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { ReactElement } from 'react';
 
 import { Button } from '@/components/ui/button';
 
-export default function NotFound() {
+export default function NotFound(): ReactElement {
   const router = useRouter();
 
   return (

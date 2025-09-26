@@ -38,7 +38,7 @@ export function getCommonPinningStyles<TData>({
   };
 }
 
-export function getFilterOperators(filterVariant: FilterVariant) {
+export function getFilterOperators(filterVariant: FilterVariant): { label: string; value: FilterOperator }[] {
   const operatorMap: Record<
     FilterVariant,
     { label: string; value: FilterOperator }[]
@@ -56,7 +56,7 @@ export function getFilterOperators(filterVariant: FilterVariant) {
   return operatorMap[filterVariant] ?? dataTableConfig.textOperators;
 }
 
-export function getDefaultFilterOperator(filterVariant: FilterVariant) {
+export function getDefaultFilterOperator(filterVariant: FilterVariant): FilterOperator {
   const operators = getFilterOperators(filterVariant);
 
   return operators[0]?.value ?? (filterVariant === 'text' ? 'iLike' : 'eq');

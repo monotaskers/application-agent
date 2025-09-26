@@ -56,7 +56,7 @@ function FormSlider<
                 step={step}
                 value={[field.value || min]}
                 onValueChange={(value) => field.onChange(value[0])}
-                disabled={disabled}
+                disabled={disabled === true}
               />
               {showValue && (
                 <div className='text-muted-foreground mt-1 flex justify-between text-sm'>

@@ -1,4 +1,5 @@
 import { Metadata } from 'next';
+import { ReactElement } from 'react';
 import SignUpViewPage from '@/features/auth/components/sign-up-view';
 
 export const metadata: Metadata = {
@@ -6,7 +7,7 @@ export const metadata: Metadata = {
   description: 'Sign Up page for authentication.'
 };
 
-export default async function Page() {
+export default async function Page(): Promise<ReactElement> {
   let stars = 3000; // Default value
 
   try {

@@ -53,7 +53,12 @@ export const company = {
   plan: 'Enterprise'
 };
 
-const tenants = [
+type Tenant = {
+  id: string;
+  name: string;
+};
+
+const tenants: Tenant[] = [
   { id: '1', name: 'Acme Inc' },
   { id: '2', name: 'Beta Corp' },
   { id: '3', name: 'Gamma Ltd' }
@@ -68,7 +73,7 @@ export default function AppSidebar() {
     // Tenant switching functionality would be implemented here
   };
 
-  const activeTenant = tenants[0];
+  const activeTenant: Tenant = tenants[0] ?? { id: '1', name: 'Default Tenant' };
 
   React.useEffect(() => {
     // Side effects based on sidebar state changes
@@ -93,7 +98,7 @@ export default function AppSidebar() {
                 <Collapsible
                   key={item.title}
                   asChild
-                  defaultOpen={item.isActive}
+                  defaultOpen={item.isActive ?? false}
                   className='group/collapsible'
                 >
                   <SidebarMenuItem>

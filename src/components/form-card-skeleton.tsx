@@ -1,8 +1,8 @@
-import React from 'react';
+import React, { ReactElement } from 'react';
 import { Card, CardContent, CardHeader } from './ui/card';
 import { Skeleton } from './ui/skeleton';
 
-export default function FormCardSkeleton() {
+export default function FormCardSkeleton(): ReactElement {
   return (
     <Card className='mx-auto w-full'>
       <CardHeader>

@@ -6,6 +6,7 @@ import {
   IconDots,
   IconTrash
 } from '@tabler/icons-react';
+import { ReactElement } from 'react';
 
 import {
   DropdownMenu,
@@ -33,7 +34,7 @@ export function NavProjects({
     url: string;
     icon: Icon;
   }[];
-}) {
+}): ReactElement {
   const { isMobile } = useSidebar();
 
   return (

@@ -21,7 +21,7 @@ export default function OverViewLayout({
   pie_stats: React.ReactNode;
   bar_stats: React.ReactNode;
   area_stats: React.ReactNode;
-}) {
+}): React.ReactElement {
   return (
     <PageContainer>
       <div className='flex flex-1 flex-col space-y-2'>

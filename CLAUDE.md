@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-This file provides comprehensive guidance to Claude Code when working with Next.js 15 applications with React 19 and TypeScript.
+This file provides comprehensive guidance to Claude Code when working with this application.
 
 ## Core Development Philosophy
 
@@ -35,6 +35,7 @@ Avoid building functionality on speculation. Implement features only when they a
 - Overwriting existing tests
 - Modifying core frameworks without explicit instruction
 - Adding dependencies without checking existing alternatives
+- Using deprecated or legacy documentation
 
 ### Workflow Patterns
 

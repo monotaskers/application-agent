@@ -1,7 +1,7 @@
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
-export default async function Page() {
+export default async function Page(): Promise<never> {
   const { userId } = await auth();
 
   if (!userId) {

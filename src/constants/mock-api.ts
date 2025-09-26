@@ -104,7 +104,7 @@ export const fakeProducts = {
     const categoriesArray = categories ? categories.split('.') : [];
     const allProducts = await this.getAll({
       categories: categoriesArray,
-      search
+      ...(search !== undefined ? { search } : {})
     });
     const totalProducts = allProducts.length;
 

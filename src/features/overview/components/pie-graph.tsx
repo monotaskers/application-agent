@@ -1,6 +1,7 @@
 'use client';
 
 import * as React from 'react';
+import { ReactElement } from 'react';
 import { IconTrendingUp } from '@tabler/icons-react';
 import { Label, Pie, PieChart } from 'recharts';
 
@@ -53,7 +54,7 @@ const chartConfig = {
   }
 } satisfies ChartConfig;
 
-export function PieGraph() {
+export function PieGraph(): ReactElement {
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0);
   }, []);
@@ -142,6 +143,7 @@ export function PieGraph() {
                       </text>
                     );
                   }
+                  return null;
                 }}
               />
             </Pie>
@@ -151,7 +153,7 @@ export function PieGraph() {
       <CardFooter className='flex-col gap-2 text-sm'>
         <div className='flex items-center gap-2 leading-none font-medium'>
           Chrome leads with{' '}
-          {((chartData[0].visitors / totalVisitors) * 100).toFixed(1)}%{' '}
+          {chartData[0] ? ((chartData[0].visitors / totalVisitors) * 100).toFixed(1) : 0}%{' '}
           <IconTrendingUp className='h-4 w-4' />
         </div>
         <div className='text-muted-foreground leading-none'>

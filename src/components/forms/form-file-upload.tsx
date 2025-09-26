@@ -10,7 +10,7 @@ import {
   FormMessage
 } from '@/components/ui/form';
 import { BaseFormFieldProps, FileUploadConfig } from '@/types/base-form';
-import { FileUploader, FileUploaderProps } from '@/components/file-uploader';
+import { FileUploader } from '@/components/file-uploader';
 
 interface FormFileUploadProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -59,16 +59,16 @@ function FormFileUpload<
             <FileUploader
               value={field.value}
               onValueChange={field.onChange}
-              onUpload={onUpload}
-              progresses={progresses}
+              {...(onUpload ? { onUpload } : {})}
+              {...(progresses ? { progresses } : {})}
               accept={acceptedTypes?.reduce(
                 (acc, type) => ({ ...acc, [type]: [] }),
                 {}
               )}
-              maxSize={maxSize}
-              maxFiles={maxFiles}
-              multiple={multiple}
-              disabled={disabled}
+              {...(maxSize !== undefined ? { maxSize } : {})}
+              {...(maxFiles !== undefined ? { maxFiles } : {})}
+              {...(multiple !== undefined ? { multiple } : {})}
+              {...(disabled !== undefined ? { disabled } : {})}
               {...restConfig}
             />
           </FormControl>

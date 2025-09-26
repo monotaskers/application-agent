@@ -1,19 +1,20 @@
 import type { ActionId, ActionImpl } from 'kbar';
 import * as React from 'react';
+import { ReactElement } from 'react';
 
-const ResultItem = React.forwardRef(
+const ResultItem = React.forwardRef<HTMLDivElement, {
+  action: ActionImpl;
+  active: boolean;
+  currentRootActionId: ActionId;
+}>(
   (
     {
       action,
       active,
       currentRootActionId
-    }: {
-      action: ActionImpl;
-      active: boolean;
-      currentRootActionId: ActionId;
     },
-    ref: React.Ref<HTMLDivElement>
-  ) => {
+    ref
+  ): ReactElement => {
     const ancestors = React.useMemo(() => {
       if (!currentRootActionId) return action.ancestors;
       const index = action.ancestors.findIndex(
