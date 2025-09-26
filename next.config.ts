@@ -12,7 +12,13 @@ const baseConfig: NextConfig = {
       }
     ]
   },
-  transpilePackages: ['geist']
+  transpilePackages: ['geist'],
+  // Move serverComponentsExternalPackages to top level as serverExternalPackages
+  serverExternalPackages: [
+    '@opentelemetry/instrumentation',
+    'import-in-the-middle',
+    'require-in-the-middle'
+  ]
 };
 
 let configWithPlugins = baseConfig;
