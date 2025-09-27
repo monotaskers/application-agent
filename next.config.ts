@@ -13,12 +13,9 @@ const baseConfig: NextConfig = {
     ]
   },
   transpilePackages: ['geist'],
-  // Move serverComponentsExternalPackages to top level as serverExternalPackages
-  serverExternalPackages: [
-    '@opentelemetry/instrumentation',
-    'import-in-the-middle',
-    'require-in-the-middle'
-  ]
+  // These packages are used by Sentry internally and need special handling
+  // Remove from serverExternalPackages since they're not direct dependencies
+  // serverExternalPackages: []
 };
 
 let configWithPlugins = baseConfig;

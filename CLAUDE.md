@@ -44,6 +44,34 @@ Avoid building functionality on speculation. Implement features only when they a
 - Break complex tasks into smaller, testable units
 - Validate understanding before implementation
 
+### Package Manager Requirements
+
+**CRITICAL**: Always use `pnpm` instead of `npm` or `yarn` for package management:
+
+```bash
+# ❌ NEVER use npm
+npm install package-name
+npm run dev
+
+# ❌ NEVER use yarn
+yarn add package-name
+yarn dev
+
+# ✅ ALWAYS use pnpm
+pnpm install package-name
+pnpm run dev
+pnpm add package-name
+pnpm remove package-name
+```
+
+**Enforcement Rules:**
+- **MUST use `pnpm`** for ALL package operations
+- **MUST use `pnpm install`** instead of `npm install`
+- **MUST use `pnpm run <script>`** instead of `npm run <script>`
+- **MUST use `pnpm add`** instead of `npm install <package>`
+- **MUST use `pnpm remove`** instead of `npm uninstall <package>`
+- If `pnpm-lock.yaml` exists, NEVER use `npm` or create `package-lock.json`
+
 ### Search Command Requirements
 
 **CRITICAL**: Always use `rg` (ripgrep) instead of traditional `grep` and `find` commands:
@@ -229,16 +257,16 @@ src/
 
 ```bash
 # UI and Styling
-npm install @radix-ui/react-* class-variance-authority clsx tailwind-merge
+pnpm add @radix-ui/react-* class-variance-authority clsx tailwind-merge
 
 # Form Handling and Validation
-npm install react-hook-form @hookform/resolvers zod
+pnpm add react-hook-form @hookform/resolvers zod
 
 # State Management (when needed)
-npm install @tanstack/react-query zustand
+pnpm add @tanstack/react-query zustand
 
 # Development Tools
-npm install -D @testing-library/react @testing-library/jest-dom vitest jsdom
+pnpm add -D @testing-library/react @testing-library/jest-dom vitest jsdom
 ```
 
 ## 🛡️ Data Validation with Zod (MANDATORY FOR ALL EXTERNAL DATA)
@@ -685,10 +713,12 @@ export default eslintConfig;
     "type-check": "tsc --noEmit",
     "format": "prettier --write \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
     "format:check": "prettier --check \"src/**/*.{ts,tsx,js,jsx,json,css,md}\"",
-    "validate": "npm run type-check && npm run lint && npm run test:coverage"
+    "validate": "pnpm run type-check && pnpm run lint && pnpm run test:coverage"
   }
 }
 ```
+
+**IMPORTANT**: Always use `pnpm run <command>` instead of `npm run <command>`
 
 ## ⚠️ CRITICAL GUIDELINES (MUST FOLLOW ALL)
 
@@ -706,10 +736,10 @@ export default eslintConfig;
 
 ## 📋 Pre-commit Checklist (MUST COMPLETE ALL)
 
-- [ ] TypeScript compiles with ZERO errors (`npm run type-check`)
-- [ ] Tests written and passing with 80%+ coverage (`npm run test:coverage`)
-- [ ] ESLint passes with ZERO warnings (`npm run lint`)
-- [ ] Prettier formatting applied (`npm run format`)
+- [ ] TypeScript compiles with ZERO errors (`pnpm run type-check`)
+- [ ] Tests written and passing with 80%+ coverage (`pnpm run test:coverage`)
+- [ ] ESLint passes with ZERO warnings (`pnpm run lint`)
+- [ ] Prettier formatting applied (`pnpm run format`)
 - [ ] All components have complete JSDoc documentation
 - [ ] Zod schemas validate ALL external data
 - [ ] ALL states handled (loading, error, empty, success)
