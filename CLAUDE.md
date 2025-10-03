@@ -730,9 +730,10 @@ export default eslintConfig;
 6. **MAXIMUM 200 lines per component** - Refactor if larger
 7. **MUST handle ALL states** - Loading, error, empty, and success
 8. **MUST use semantic commits** - feat:, fix:, docs:, refactor:, test:
-9. **MUST write complete JSDoc** - ALL exports must be documented
-10. **NEVER use `any` type** - Use proper typing or `unknown`
-11. **MUST pass ALL automated checks** - Before ANY merge
+9. **NEVER add co-author statements** - No "Co-Authored-By:" or "Generated with Claude Code" in commit messages
+10. **MUST write complete JSDoc** - ALL exports must be documented
+11. **NEVER use `any` type** - Use proper typing or `unknown`
+12. **MUST pass ALL automated checks** - Before ANY merge
 
 ## 📋 Pre-commit Checklist (MUST COMPLETE ALL)
 
