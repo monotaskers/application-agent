@@ -58,6 +58,3 @@ agent/.venv/
 # clerk configuration (can include secrets)
 /.clerk/
 
-ref/
-# Sentry Config File
-.env.sentry-build-plugin
