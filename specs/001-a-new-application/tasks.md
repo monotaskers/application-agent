@@ -39,11 +39,11 @@ Next.js 15 App Router structure:
 
 ## Phase 3.1: Setup & Foundation
 
-- [ ] **T001** Create feature directory structure at `src/features/clients-projects/` with subdirectories: `components/`, `hooks/`, `schemas/`, `types/`, `actions/`, `__tests__/`
+- [x] **T001** Create feature directory structure at `src/features/clients-projects/` with subdirectories: `components/`, `hooks/`, `schemas/`, `types/`, `actions/`, `__tests__/`
 
-- [ ] **T002** Create components subdirectories at `src/features/clients-projects/components/` with: `clients/`, `projects/`, `shared/`
+- [x] **T002** Create components subdirectories at `src/features/clients-projects/components/` with: `clients/`, `projects/`, `shared/`
 
-- [ ] **T003** [P] Create test subdirectories at `src/features/clients-projects/__tests__/` with: `components/`, `hooks/`, `schemas/`, `actions/`, `integration/`
+- [x] **T003** [P] Create test subdirectories at `src/features/clients-projects/__tests__/` with: `components/`, `hooks/`, `schemas/`, `actions/`, `integration/`
 
 ---
 
@@ -51,32 +51,32 @@ Next.js 15 App Router structure:
 
 **CRITICAL: Complete before any Server Actions or components**
 
-- [ ] **T004** [P] Create Client branded types in `src/features/clients-projects/types/client.types.ts`:
+- [x] **T004** [P] Create Client branded types in `src/features/clients-projects/types/client.types.ts`:
   - `ClientId` branded type with helper function
   - `Client` interface with all fields from data-model.md
   - `CreateClientInput`, `UpdateClientInput`, `ClientFilters` types
   - Export all types
 
-- [ ] **T005** [P] Create Project branded types in `src/features/clients-projects/types/project.types.ts`:
+- [x] **T005** [P] Create Project branded types in `src/features/clients-projects/types/project.types.ts`:
   - `ProjectId` branded type with helper function
   - `ProjectStatus` enum (Planning, Active, OnHold, Completed, Cancelled)
   - `Project` interface with all fields from data-model.md
   - `CreateProjectInput`, `UpdateProjectInput`, `ProjectFilters` types
   - Export all types
 
-- [ ] **T006** [P] Create shared types in `src/features/clients-projects/types/index.ts`:
+- [x] **T006** [P] Create shared types in `src/features/clients-projects/types/index.ts`:
   - `OrganizationId` branded type
   - `Result<T, E>` type for error handling
   - Re-export client and project types
 
-- [ ] **T007** [P] Create Client Zod schema in `src/features/clients-projects/schemas/client.schema.ts`:
+- [x] **T007** [P] Create Client Zod schema in `src/features/clients-projects/schemas/client.schema.ts`:
   - `clientSchema` with all validation rules from data-model.md
   - `createClientInputSchema` (omit id, timestamps, organizationId, deletedAt)
   - `updateClientInputSchema` (partial of create schema)
   - `clientFiltersSchema`
   - Export all schemas and inferred types
 
-- [ ] **T008** [P] Create Project Zod schema in `src/features/clients-projects/schemas/project.schema.ts`:
+- [x] **T008** [P] Create Project Zod schema in `src/features/clients-projects/schemas/project.schema.ts`:
   - `projectStatusSchema` enum
   - `projectSchema` with all validation rules from data-model.md
   - Custom refinement: endDate must be >= startDate
@@ -93,14 +93,14 @@ Next.js 15 App Router structure:
 
 ### Schema Tests
 
-- [ ] **T009** [P] Test Client schema in `src/features/clients-projects/__tests__/schemas/client.schema.test.ts`:
+- [x] **T009** [P] Test Client schema in `src/features/clients-projects/__tests__/schemas/client.schema.test.ts`:
   - Valid client data passes validation
   - Invalid email fails validation
   - Missing required fields (companyName, contactPerson, email, phone) fail
   - Field length constraints enforced (companyName max 200, etc.)
   - Optional fields (address, notes) validated when provided
 
-- [ ] **T010** [P] Test Project schema in `src/features/clients-projects/__tests__/schemas/project.schema.test.ts`:
+- [x] **T010** [P] Test Project schema in `src/features/clients-projects/__tests__/schemas/project.schema.test.ts`:
   - Valid project data passes validation
   - Invalid status enum value fails
   - End date before start date fails refinement
@@ -110,7 +110,7 @@ Next.js 15 App Router structure:
 
 ### Server Action Contract Tests - Client
 
-- [ ] **T011** [P] Contract test createClient in `src/features/clients-projects/__tests__/actions/createClient.test.ts`:
+- [x] **T011** [P] Contract test createClient in `src/features/clients-projects/__tests__/actions/createClient.test.ts`:
   - Valid input → success result with Client
   - Invalid email → validation error
   - Missing required fields → validation error
@@ -120,27 +120,27 @@ Next.js 15 App Router structure:
   - Sets deletedAt to null
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T012** [P] Contract test getClients in `src/features/clients-projects/__tests__/actions/getClients.test.ts`:
+- [x] **T012** [P] Contract test getClients in `src/features/clients-projects/__tests__/actions/getClients.test.ts`:
   - No filters → returns all active clients for organization
   - includeDeleted: true → returns all clients including soft-deleted
   - search filter → filters by companyName or contactPerson (case-insensitive)
   - Organization isolation: only returns clients for current org
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T013** [P] Contract test getClientById in `src/features/clients-projects/__tests__/actions/getClientById.test.ts`:
+- [x] **T013** [P] Contract test getClientById in `src/features/clients-projects/__tests__/actions/getClientById.test.ts`:
   - Valid UUID → success with Client
   - Non-existent UUID → NotFoundError
   - Client from different org → NotFoundError (authorization)
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T014** [P] Contract test updateClient in `src/features/clients-projects/__tests__/actions/updateClient.test.ts`:
+- [x] **T014** [P] Contract test updateClient in `src/features/clients-projects/__tests__/actions/updateClient.test.ts`:
   - Valid partial update → success with updated Client
   - Invalid data → validation error
   - Non-existent id → NotFoundError
   - Updates updatedAt timestamp
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T015** [P] Contract test softDeleteClient in `src/features/clients-projects/__tests__/actions/softDeleteClient.test.ts`:
+- [x] **T015** [P] Contract test softDeleteClient in `src/features/clients-projects/__tests__/actions/softDeleteClient.test.ts`:
   - Valid id → success, sets deletedAt timestamp
   - Non-existent id → NotFoundError
   - Client with projects → succeeds, projects retain clientId
@@ -148,7 +148,7 @@ Next.js 15 App Router structure:
 
 ### Server Action Contract Tests - Project
 
-- [ ] **T016** [P] Contract test createProject in `src/features/clients-projects/__tests__/actions/createProject.test.ts`:
+- [x] **T016** [P] Contract test createProject in `src/features/clients-projects/__tests__/actions/createProject.test.ts`:
   - Valid input with client → success result with Project
   - Valid input without client (clientId: null) → success
   - Missing required fields → validation error
@@ -158,7 +158,7 @@ Next.js 15 App Router structure:
   - Sets organizationId from auth()
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T017** [P] Contract test getProjects in `src/features/clients-projects/__tests__/actions/getProjects.test.ts`:
+- [x] **T017** [P] Contract test getProjects in `src/features/clients-projects/__tests__/actions/getProjects.test.ts`:
   - No filters → returns all projects for organization
   - search filter → filters by name or description
   - clientId filter → returns projects for specific client
@@ -167,13 +167,13 @@ Next.js 15 App Router structure:
   - Organization isolation enforced
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T018** [P] Contract test getProjectById in `src/features/clients-projects/__tests__/actions/getProjectById.test.ts`:
+- [x] **T018** [P] Contract test getProjectById in `src/features/clients-projects/__tests__/actions/getProjectById.test.ts`:
   - Valid UUID → success with Project
   - Non-existent UUID → NotFoundError
   - Project from different org → NotFoundError
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T019** [P] Contract test updateProject in `src/features/clients-projects/__tests__/actions/updateProject.test.ts`:
+- [x] **T019** [P] Contract test updateProject in `src/features/clients-projects/__tests__/actions/updateProject.test.ts`:
   - Valid partial update → success with updated Project
   - Invalid data → validation error
   - End date before start date → validation error
@@ -181,13 +181,13 @@ Next.js 15 App Router structure:
   - Updates updatedAt timestamp
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T020** [P] Contract test updateProjectStatus in `src/features/clients-projects/__tests__/actions/updateProjectStatus.test.ts`:
+- [x] **T020** [P] Contract test updateProjectStatus in `src/features/clients-projects/__tests__/actions/updateProjectStatus.test.ts`:
   - Valid status change → success
   - Invalid status enum → validation error
   - Non-existent id → NotFoundError
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T021** [P] Contract test deleteProject in `src/features/clients-projects/__tests__/actions/deleteProject.test.ts`:
+- [x] **T021** [P] Contract test deleteProject in `src/features/clients-projects/__tests__/actions/deleteProject.test.ts`:
   - Valid id → success (hard delete)
   - Non-existent id → NotFoundError
   - Client relationship unaffected
@@ -195,14 +195,14 @@ Next.js 15 App Router structure:
 
 ### Integration Tests
 
-- [ ] **T022** [P] Integration test: Create client → create project → verify relationship in `src/features/clients-projects/__tests__/integration/client-project-relationship.test.ts`:
+- [x] **T022** [P] Integration test: Create client → create project → verify relationship in `src/features/clients-projects/__tests__/integration/client-project-relationship.test.ts`:
   - Create client
   - Create project linked to client
   - Verify client appears in project details
   - Verify project appears in client's projects list
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T023** [P] Integration test: Soft-delete client with projects in `src/features/clients-projects/__tests__/integration/soft-delete-client.test.ts`:
+- [x] **T023** [P] Integration test: Soft-delete client with projects in `src/features/clients-projects/__tests__/integration/soft-delete-client.test.ts`:
   - Create client and linked project
   - Soft-delete client
   - Verify client hidden from getClients()
@@ -210,7 +210,7 @@ Next.js 15 App Router structure:
   - Verify project shows client name (read-only)
   - Test MUST FAIL (no implementation yet)
 
-- [ ] **T024** [P] Integration test: Filter and search across clients and projects in `src/features/clients-projects/__tests__/integration/filtering.test.ts`:
+- [x] **T024** [P] Integration test: Filter and search across clients and projects in `src/features/clients-projects/__tests__/integration/filtering.test.ts`:
   - Create multiple clients with varied names
   - Create multiple projects with varied statuses and clients
   - Test client search by company name
@@ -227,7 +227,7 @@ Next.js 15 App Router structure:
 
 ### Storage Layer
 
-- [ ] **T025** Create localStorage storage service in `src/features/clients-projects/actions/storage.ts`:
+- [x] **T025** Create localStorage storage service in `src/features/clients-projects/actions/storage.ts`:
   - `getClients(orgId)` - retrieve all clients for organization from localStorage
   - `saveClient(orgId, client)` - save/update client in localStorage
   - `getProjects(orgId)` - retrieve all projects for organization from localStorage
@@ -238,7 +238,7 @@ Next.js 15 App Router structure:
 
 ### Client Server Actions
 
-- [ ] **T026** Implement createClient in `src/features/clients-projects/actions/client.actions.ts`:
+- [x] **T026** Implement createClient in `src/features/clients-projects/actions/client.actions.ts`:
   - Validate input with clientSchema
   - Generate UUID for id
   - Get organizationId from `auth()` (Clerk)
@@ -248,7 +248,7 @@ Next.js 15 App Router structure:
   - Return Result<Client, ValidationError>
   - Verify T011 test passes
 
-- [ ] **T027** Implement getClients in `src/features/clients-projects/actions/client.actions.ts`:
+- [x] **T027** Implement getClients in `src/features/clients-projects/actions/client.actions.ts`:
   - Get organizationId from `auth()`
   - Retrieve clients from localStorage
   - Filter by organizationId
@@ -257,7 +257,7 @@ Next.js 15 App Router structure:
   - Return Result<Client[], Error>
   - Verify T012 test passes
 
-- [ ] **T028** Implement getClientById in `src/features/clients-projects/actions/client.actions.ts`:
+- [x] **T028** Implement getClientById in `src/features/clients-projects/actions/client.actions.ts`:
   - Validate id is UUID
   - Get organizationId from `auth()`
   - Retrieve client from localStorage
@@ -265,7 +265,7 @@ Next.js 15 App Router structure:
   - Return Result<Client, NotFoundError>
   - Verify T013 test passes
 
-- [ ] **T029** Implement updateClient in `src/features/clients-projects/actions/client.actions.ts`:
+- [x] **T029** Implement updateClient in `src/features/clients-projects/actions/client.actions.ts`:
   - Validate input with updateClientInputSchema
   - Get organizationId from `auth()`
   - Retrieve existing client, verify ownership
@@ -276,7 +276,7 @@ Next.js 15 App Router structure:
   - Return Result<Client, ValidationError | NotFoundError>
   - Verify T014 test passes
 
-- [ ] **T030** Implement softDeleteClient in `src/features/clients-projects/actions/client.actions.ts`:
+- [x] **T030** Implement softDeleteClient in `src/features/clients-projects/actions/client.actions.ts`:
   - Get organizationId from `auth()`
   - Retrieve existing client, verify ownership
   - Set deletedAt to current Date
@@ -288,7 +288,7 @@ Next.js 15 App Router structure:
 
 ### Project Server Actions
 
-- [ ] **T031** Implement createProject in `src/features/clients-projects/actions/project.actions.ts`:
+- [x] **T031** Implement createProject in `src/features/clients-projects/actions/project.actions.ts`:
   - Validate input with projectSchema
   - Generate UUID for id
   - Get organizationId from `auth()`
@@ -300,7 +300,7 @@ Next.js 15 App Router structure:
   - Return Result<Project, ValidationError>
   - Verify T016 test passes
 
-- [ ] **T032** Implement getProjects in `src/features/clients-projects/actions/project.actions.ts`:
+- [x] **T032** Implement getProjects in `src/features/clients-projects/actions/project.actions.ts`:
   - Get organizationId from `auth()`
   - Retrieve projects from localStorage
   - Filter by organizationId
@@ -308,7 +308,7 @@ Next.js 15 App Router structure:
   - Return Result<Project[], Error>
   - Verify T017 test passes
 
-- [ ] **T033** Implement getProjectById in `src/features/clients-projects/actions/project.actions.ts`:
+- [x] **T033** Implement getProjectById in `src/features/clients-projects/actions/project.actions.ts`:
   - Validate id is UUID
   - Get organizationId from `auth()`
   - Retrieve project from localStorage
@@ -316,7 +316,7 @@ Next.js 15 App Router structure:
   - Return Result<Project, NotFoundError>
   - Verify T018 test passes
 
-- [ ] **T034** Implement updateProject in `src/features/clients-projects/actions/project.actions.ts`:
+- [x] **T034** Implement updateProject in `src/features/clients-projects/actions/project.actions.ts`:
   - Validate input with updateProjectInputSchema
   - Get organizationId from `auth()`
   - Retrieve existing project, verify ownership
@@ -327,12 +327,12 @@ Next.js 15 App Router structure:
   - Return Result<Project, ValidationError | NotFoundError>
   - Verify T019 test passes
 
-- [ ] **T035** Implement updateProjectStatus in `src/features/clients-projects/actions/project.actions.ts`:
+- [x] **T035** Implement updateProjectStatus in `src/features/clients-projects/actions/project.actions.ts`:
   - Validate status is valid enum value
   - Delegate to updateProject with { status }
   - Verify T020 test passes
 
-- [ ] **T036** Implement deleteProject in `src/features/clients-projects/actions/project.actions.ts`:
+- [x] **T036** Implement deleteProject in `src/features/clients-projects/actions/project.actions.ts`:
   - Get organizationId from `auth()`
   - Retrieve existing project, verify ownership
   - Remove from localStorage (hard delete)
@@ -348,14 +348,14 @@ Next.js 15 App Router structure:
 
 ### Client Hooks
 
-- [ ] **T037** [P] Create useClients hook in `src/features/clients-projects/hooks/use-clients.ts`:
+- [x] **T037** [P] Create useClients hook in `src/features/clients-projects/hooks/use-clients.ts`:
   - Wrap getClients Server Action with useQuery
   - Query key: `['clients', filters]`
   - Accept optional ClientFilters parameter
   - Return query result with clients data, loading, error states
   - Enable refetchOnWindowFocus for collaboration
 
-- [ ] **T038** [P] Create useClientMutations hook in `src/features/clients-projects/hooks/use-client-mutations.ts`:
+- [x] **T038** [P] Create useClientMutations hook in `src/features/clients-projects/hooks/use-client-mutations.ts`:
   - Wrap createClient, updateClient, softDeleteClient with useMutation
   - Invalidate `['clients']` query on success
   - Return mutation functions and states (isPending, error)
@@ -363,13 +363,13 @@ Next.js 15 App Router structure:
 
 ### Project Hooks
 
-- [ ] **T039** [P] Create useProjects hook in `src/features/clients-projects/hooks/use-projects.ts`:
+- [x] **T039** [P] Create useProjects hook in `src/features/clients-projects/hooks/use-projects.ts`:
   - Wrap getProjects Server Action with useQuery
   - Query key: `['projects', filters]`
   - Accept optional ProjectFilters parameter
   - Return query result with projects data, loading, error states
 
-- [ ] **T040** [P] Create useProjectMutations hook in `src/features/clients-projects/hooks/use-project-mutations.ts`:
+- [x] **T040** [P] Create useProjectMutations hook in `src/features/clients-projects/hooks/use-project-mutations.ts`:
   - Wrap createProject, updateProject, updateProjectStatus, deleteProject with useMutation
   - Invalidate `['projects']` query on success
   - Return mutation functions and states
