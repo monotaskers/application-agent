@@ -37,9 +37,17 @@ export function ProjectStatusBadge({
     [ProjectStatus.Cancelled]: 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200',
   };
 
+  const labels: Record<ProjectStatus, string> = {
+    [ProjectStatus.Planning]: 'Planning',
+    [ProjectStatus.Active]: 'Active',
+    [ProjectStatus.OnHold]: 'On Hold',
+    [ProjectStatus.Completed]: 'Completed',
+    [ProjectStatus.Cancelled]: 'Cancelled',
+  };
+
   return (
     <Badge variant="secondary" className={variants[status]}>
-      {status}
+      {labels[status]}
     </Badge>
   );
 }
