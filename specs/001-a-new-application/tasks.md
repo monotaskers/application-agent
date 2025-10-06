@@ -474,13 +474,13 @@ Next.js 15 App Router structure:
 
 ### Client Pages
 
-- [ ] **T049** Create clients list page at `src/app/(dashboard)/clients/page.tsx`:
+- [x] **T049** Create clients list page at `src/app/(dashboard)/clients/page.tsx`:
   - Server Component (default)
   - Import and render ClientList component
   - Add page metadata (title, description)
   - Max 50 lines (thin page wrapper)
 
-- [ ] **T050** Create client details page at `src/app/(dashboard)/clients/[id]/page.tsx`:
+- [x] **T050** Create client details page at `src/app/(dashboard)/clients/[id]/page.tsx`:
   - Server Component
   - Extract id from params
   - Fetch client using getClientById Server Action
@@ -491,13 +491,13 @@ Next.js 15 App Router structure:
 
 ### Project Pages
 
-- [ ] **T051** Create projects list page at `src/app/(dashboard)/projects/page.tsx`:
+- [x] **T051** Create projects list page at `src/app/(dashboard)/projects/page.tsx`:
   - Server Component
   - Import and render ProjectList component
   - Add page metadata
   - Max 50 lines
 
-- [ ] **T052** Create project details page at `src/app/(dashboard)/projects/[id]/page.tsx`:
+- [x] **T052** Create project details page at `src/app/(dashboard)/projects/[id]/page.tsx`:
   - Server Component
   - Extract id from params
   - Fetch project using getProjectById Server Action
