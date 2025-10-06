@@ -383,7 +383,7 @@ Next.js 15 App Router structure:
 
 ### Shared Components
 
-- [ ] **T041** [P] Create EmptyState component in `src/features/clients-projects/components/shared/EmptyState.tsx`:
+- [x] **T041** [P] Create EmptyState component in `src/features/clients-projects/components/shared/EmptyState.tsx`:
   - Props: title, description, actionLabel?, onAction?
   - Display centered empty state message
   - Optional action button
@@ -391,7 +391,7 @@ Next.js 15 App Router structure:
 
 ### Client Components
 
-- [ ] **T042** Create ClientList component in `src/features/clients-projects/components/clients/ClientList.tsx`:
+- [x] **T042** Create ClientList component in `src/features/clients-projects/components/clients/ClientList.tsx`:
   - Use useClients hook to fetch data
   - Display clients in table/card layout using Shadcn/UI components
   - Handle loading, error, and empty states
@@ -400,7 +400,7 @@ Next.js 15 App Router structure:
   - Link each client to `/clients/[id]` page
   - Max 200 lines - split if exceeds
 
-- [ ] **T043** Create ClientForm component in `src/features/clients-projects/components/clients/ClientForm.tsx`:
+- [x] **T043** Create ClientForm component in `src/features/clients-projects/components/clients/ClientForm.tsx`:
   - Use React Hook Form with zodResolver(createClientInputSchema)
   - Form fields: companyName, contactPerson, email, phone, address (optional), notes (optional)
   - Use Shadcn/UI form components (Input, Textarea, Button)
@@ -410,7 +410,7 @@ Next.js 15 App Router structure:
   - Props: mode ('create' | 'edit'), initialData? (for edit mode)
   - Max 200 lines
 
-- [ ] **T044** Create ClientDetails component in `src/features/clients-projects/components/clients/ClientDetails.tsx`:
+- [x] **T044** Create ClientDetails component in `src/features/clients-projects/components/clients/ClientDetails.tsx`:
   - Accept client prop
   - Display all client fields
   - Show associated projects (use useProjects with clientId filter)
@@ -420,7 +420,7 @@ Next.js 15 App Router structure:
 
 ### Project Components
 
-- [ ] **T045** Create ProjectStatusBadge component in `src/features/clients-projects/components/projects/ProjectStatusBadge.tsx`:
+- [x] **T045** Create ProjectStatusBadge component in `src/features/clients-projects/components/projects/ProjectStatusBadge.tsx`:
   - Props: status (ProjectStatus)
   - Display badge with color coding:
     - Planning: blue
@@ -431,7 +431,7 @@ Next.js 15 App Router structure:
   - Use Shadcn/UI Badge component
   - Max 30 lines
 
-- [ ] **T046** Create ProjectList component in `src/features/clients-projects/components/projects/ProjectList.tsx`:
+- [x] **T046** Create ProjectList component in `src/features/clients-projects/components/projects/ProjectList.tsx`:
   - Use useProjects hook to fetch data
   - Display projects in table/card layout
   - Show ProjectStatusBadge for each project
@@ -442,7 +442,7 @@ Next.js 15 App Router structure:
   - Link each project to `/projects/[id]` page
   - Max 200 lines
 
-- [ ] **T047** Create ProjectForm component in `src/features/clients-projects/components/projects/ProjectForm.tsx`:
+- [x] **T047** Create ProjectForm component in `src/features/clients-projects/components/projects/ProjectForm.tsx`:
   - Use React Hook Form with zodResolver(createProjectInputSchema)
   - Form fields: name, description (optional), clientId (select dropdown or combobox), status (select), startDate (date picker), endDate (optional date picker), budget (optional number), notes (optional)
   - Fetch clients for dropdown using useClients hook
@@ -453,7 +453,7 @@ Next.js 15 App Router structure:
   - Props: mode ('create' | 'edit'), initialData?
   - Max 200 lines
 
-- [ ] **T048** Create ProjectDetails component in `src/features/clients-projects/components/projects/ProjectDetails.tsx`:
+- [x] **T048** Create ProjectDetails component in `src/features/clients-projects/components/projects/ProjectDetails.tsx`:
   - Accept project prop
   - Display all project fields
   - Show ProjectStatusBadge
