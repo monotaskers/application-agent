@@ -513,13 +513,13 @@ Next.js 15 App Router structure:
 
 **Prerequisites: Components implemented (T041-T048)**
 
-- [ ] **T053** [P] Test EmptyState component in `src/features/clients-projects/__tests__/components/EmptyState.test.tsx`:
+- [x] **T053** [P] Test EmptyState component in `src/features/clients-projects/__tests__/components/EmptyState.test.tsx`:
   - Renders title and description
   - Renders action button when provided
   - Calls onAction when button clicked
   - Uses React Testing Library
 
-- [ ] **T054** [P] Test ClientForm component in `src/features/clients-projects/__tests__/components/ClientForm.test.tsx`:
+- [x] **T054** [P] Test ClientForm component in `src/features/clients-projects/__tests__/components/ClientForm.test.tsx`:
   - Renders all form fields
   - Shows validation errors for invalid data
   - Calls create mutation on submit (create mode)
@@ -527,14 +527,14 @@ Next.js 15 App Router structure:
   - Populates initial data in edit mode
   - Shows loading state during submission
 
-- [ ] **T055** [P] Test ProjectForm component in `src/features/clients-projects/__tests__/components/ProjectForm.test.tsx`:
+- [x] **T055** [P] Test ProjectForm component in `src/features/clients-projects/__tests__/components/ProjectForm.test.tsx`:
   - Renders all form fields
   - Loads clients for dropdown
   - Shows validation errors (email, date range)
   - Calls create mutation on submit
   - Handles clientId as optional
 
-- [ ] **T056** [P] Test ProjectStatusBadge component in `src/features/clients-projects/__tests__/components/ProjectStatusBadge.test.tsx`:
+- [x] **T056** [P] Test ProjectStatusBadge component in `src/features/clients-projects/__tests__/components/ProjectStatusBadge.test.tsx`:
   - Renders correct color for each status
   - Displays status text correctly
 
