@@ -9,11 +9,27 @@
 
 import '@testing-library/jest-dom/vitest';
 import { cleanup } from '@testing-library/react';
-import { afterEach, vi } from 'vitest';
+import { afterEach, beforeEach, vi } from 'vitest';
+import { db, clients, projects } from '@/db';
+import { sql } from 'drizzle-orm';
 
 // Cleanup after each test case
 afterEach(() => {
   cleanup();
+});
+
+// Clear database tables before each test for isolation
+beforeEach(async () => {
+  try {
+    // Truncate tables in correct order (projects first due to foreign key)
+    await db.delete(projects);
+    await db.delete(clients);
+  } catch (error) {
+    // Ignore errors if DATABASE_URL is not set (for non-database tests)
+    if (process.env.DATABASE_URL) {
+      console.warn('Failed to clear database tables:', error);
+    }
+  }
 });
 
 // Mock Next.js environment variables

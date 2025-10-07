@@ -35,6 +35,7 @@ export const createClientId = (id: string): ClientId => id as ClientId;
  * @property {string} phone - Contact phone number (E.164 format recommended)
  * @property {string} [address] - Optional address (max 500 chars)
  * @property {string} [notes] - Optional notes (max 2000 chars)
+ * @property {number} version - Version number for optimistic locking
  * @property {Date | null} deletedAt - Soft delete timestamp (null = active)
  * @property {Date} createdAt - Creation timestamp
  * @property {Date} updatedAt - Last update timestamp
@@ -53,6 +54,9 @@ export interface Client {
   // Optional Details
   address?: string;
   notes?: string;
+
+  // Optimistic Locking
+  version: number;
 
   // Soft Delete Support
   deletedAt: Date | null;

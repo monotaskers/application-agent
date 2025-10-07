@@ -4,6 +4,10 @@
       "type": "sse",
       "url": "https://mcp.copilotkit.ai/sse"
     },
+    "Neon": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote@latest", "https://mcp.neon.tech/mcp"]
+    },
     "shadcn": {
       "command": "npx",
       "args": [
@@ -12,7 +16,10 @@
       ]
     },
     "Sentry": {
-      "url": "https://mcp.sentry.dev/mcp/ocupop-d9/ocupop-admin-agent"
+      "command": "npx",
+      "args": ["-y", "mcp-remote@latest", "https://mcp.sentry.dev/mcp"],
+      "env": {},
+      "working_directory": null
     }
   }
 }

@@ -76,16 +76,19 @@ export function useClientMutations() {
     mutationFn: async ({
       id,
       data,
+      expectedVersion,
     }: {
       id: ClientId;
       data: UpdateClientInput;
+      expectedVersion: number;
     }): Promise<Client> => {
-      const result = await updateClient(id, data);
+      const result = await updateClient(id, data, expectedVersion);
 
       if (!result.success) {
         throw new Error(
           result.error.type === 'ValidationError' ||
-            result.error.type === 'NotFoundError'
+            result.error.type === 'NotFoundError' ||
+            result.error.type === 'ConflictError'
             ? result.error.message
             : 'Failed to update client'
         );
@@ -110,7 +113,7 @@ export function useClientMutations() {
 
       return { previousClients };
     },
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       // Rollback on error
       if (context?.previousClients) {
         queryClient.setQueryData(['clients'], context.previousClients);
@@ -148,7 +151,7 @@ export function useClientMutations() {
 
       return { previousClients };
     },
-    onError: (err, variables, context) => {
+    onError: (_err, _variables, context) => {
       // Rollback on error
       if (context?.previousClients) {
         queryClient.setQueryData(['clients'], context.previousClients);

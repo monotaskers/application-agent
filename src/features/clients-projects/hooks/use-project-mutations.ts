@@ -88,16 +88,19 @@ export function useProjectMutations() {
     mutationFn: async ({
       id,
       data,
+      expectedVersion,
     }: {
       id: ProjectId;
       data: UpdateProjectInput;
+      expectedVersion: number;
     }): Promise<Project> => {
-      const result = await updateProject(id, data);
+      const result = await updateProject(id, data, expectedVersion);
 
       if (!result.success) {
         throw new Error(
           result.error.type === 'ValidationError' ||
-            result.error.type === 'NotFoundError'
+            result.error.type === 'NotFoundError' ||
+            result.error.type === 'ConflictError'
             ? result.error.message
             : 'Failed to update project'
         );
@@ -139,16 +142,19 @@ export function useProjectMutations() {
     mutationFn: async ({
       id,
       status,
+      expectedVersion,
     }: {
       id: ProjectId;
-      status: ProjectStatus;
+      status: string;
+      expectedVersion: number;
     }): Promise<Project> => {
-      const result = await updateProjectStatus(id, status);
+      const result = await updateProjectStatus(id, status, expectedVersion);
 
       if (!result.success) {
         throw new Error(
           result.error.type === 'ValidationError' ||
-            result.error.type === 'NotFoundError'
+            result.error.type === 'NotFoundError' ||
+            result.error.type === 'ConflictError'
             ? result.error.message
             : 'Failed to update project status'
         );

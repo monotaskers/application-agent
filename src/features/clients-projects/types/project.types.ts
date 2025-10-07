@@ -58,6 +58,7 @@ export enum ProjectStatus {
  * @property {Date | null} endDate - Optional end date
  * @property {number} [budget] - Optional budget (positive number, cents/smallest unit)
  * @property {string} [notes] - Optional notes (max 2000 chars)
+ * @property {number} version - Version number for optimistic locking
  * @property {Date} createdAt - Creation timestamp
  * @property {Date} updatedAt - Last update timestamp
  */
@@ -83,6 +84,9 @@ export interface Project {
 
   // Additional Details
   notes?: string;
+
+  // Optimistic Locking
+  version: number;
 
   // Audit Timestamps
   createdAt: Date;

@@ -11,22 +11,22 @@
 
 import { auth } from '@clerk/nextjs/server';
 import { revalidatePath } from 'next/cache';
-import { v4 as uuidv4 } from 'uuid';
 import {
   createProjectInputSchema,
   updateProjectInputSchema,
   projectFiltersSchema,
 } from '../schemas/project.schema';
 import {
-  getProjects as getProjectsFromStorage,
-  saveProject,
-  deleteProject as deleteProjectFromStorage,
-} from './storage';
-import { getClients as getClientsFromStorage } from './storage';
+  createProject as createProjectDb,
+  getProjects as getProjectsDb,
+  getProjectById as getProjectByIdDb,
+  updateProject as updateProjectDb,
+  updateProjectStatus as updateProjectStatusDb,
+  deleteProject as deleteProjectDb,
+} from '../db';
+import { getClientById as getClientByIdDb } from '../db';
 import {
-  createProjectId,
   createOrganizationId,
-  ProjectStatus,
   type Project,
   type CreateProjectInput,
   type UpdateProjectInput,
@@ -54,6 +54,16 @@ type UnauthorizedError = {
   message: string;
 };
 
+type ConflictError = {
+  type: 'ConflictError';
+  message: string;
+};
+
+type DatabaseError = {
+  type: 'DatabaseError';
+  message: string;
+};
+
 /**
  * Creates a new project for the authenticated user's organization.
  *
@@ -76,7 +86,7 @@ type UnauthorizedError = {
  */
 export async function createProject(
   data: CreateProjectInput
-): Promise<Result<Project, ValidationError | UnauthorizedError>> {
+): Promise<Result<Project, ValidationError | UnauthorizedError | DatabaseError>> {
   // Authenticate and get organization ID
   const { orgId } = await auth();
 
@@ -112,50 +122,58 @@ export async function createProject(
 
   // If clientId provided, verify client exists and belongs to org
   if (validation.data.clientId) {
-    const clients = getClientsFromStorage(createOrganizationId(orgId));
-    const client = clients.find((c) => c.id === validation.data.clientId);
+    try {
+      const client = await getClientByIdDb(
+        createOrganizationId(orgId),
+        validation.data.clientId
+      );
 
-    if (!client) {
+      if (!client) {
+        return {
+          success: false,
+          error: {
+            type: 'ValidationError',
+            message: 'Invalid client assignment',
+            fields: {
+              clientId: 'Client not found or does not belong to organization',
+            },
+          },
+        };
+      }
+    } catch (error) {
       return {
         success: false,
         error: {
-          type: 'ValidationError',
-          message: 'Invalid client assignment',
-          fields: {
-            clientId: 'Client not found or does not belong to organization',
-          },
+          type: 'DatabaseError',
+          message: error instanceof Error ? error.message : 'Failed to verify client',
         },
       };
     }
   }
 
-  // Create project
-  const now = new Date();
-  const project: Project = {
-    id: createProjectId(uuidv4()),
-    organizationId: createOrganizationId(orgId),
-    name: validation.data.name,
-    description: validation.data.description,
-    clientId: validation.data.clientId ?? null,
-    status: validation.data.status ?? ProjectStatus.Planning,
-    startDate: validation.data.startDate,
-    endDate: validation.data.endDate ?? null,
-    budget: validation.data.budget,
-    notes: validation.data.notes,
-    createdAt: now,
-    updatedAt: now,
-  };
+  try {
+    // Create project in database
+    const project = await createProjectDb(
+      createOrganizationId(orgId),
+      validation.data
+    );
 
-  // Save to storage
-  saveProject(createOrganizationId(orgId), project);
+    // Revalidate projects list
+    revalidatePath('/projects');
 
-  // Revalidate projects list
-  revalidatePath('/projects');
-
-  return {
-    success: true,
-    data: project,
-  };
+    return {
+      success: true,
+      data: project,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        type: 'DatabaseError',
+        message: error instanceof Error ? error.message : 'Failed to create project',
+      },
+    };
+  }
 }
 
 /**
@@ -178,7 +196,7 @@ export async function createProject(
  */
 export async function getProjects(
   filters?: ProjectFilters
-): Promise<Result<Project[], Error | UnauthorizedError>> {
+): Promise<Result<Project[], ValidationError | UnauthorizedError | DatabaseError>> {
   // Authenticate and get organization ID
   const { orgId } = await auth();
 
@@ -198,63 +216,35 @@ export async function getProjects(
     if (!validation.success) {
       return {
         success: false,
-        error: new Error('Invalid filters'),
+        error: {
+          type: 'ValidationError',
+          message: 'Invalid filters',
+        },
       };
     }
     filters = validation.data;
   }
 
-  // Get projects from storage
-  let projects = getProjectsFromStorage(createOrganizationId(orgId));
-
-  // Apply filters
-  if (filters?.search) {
-    const searchLower = filters.search.toLowerCase();
-    projects = projects.filter(
-      (project) =>
-        project.name.toLowerCase().includes(searchLower) ||
-        project.description?.toLowerCase().includes(searchLower)
+  try {
+    // Get projects from database with filters applied
+    const projects = await getProjectsDb(
+      createOrganizationId(orgId),
+      filters
     );
-  }
 
-  if (filters?.clientId) {
-    projects = projects.filter(
-      (project) => project.clientId === filters.clientId
-    );
+    return {
+      success: true,
+      data: projects,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      error: {
+        type: 'DatabaseError',
+        message: error instanceof Error ? error.message : 'Failed to fetch projects',
+      },
+    };
   }
-
-  if (filters?.status) {
-    projects = projects.filter((project) => project.status === filters.status);
-  }
-
-  if (filters?.startDateFrom) {
-    projects = projects.filter(
-      (project) => project.startDate >= filters.startDateFrom!
-    );
-  }
-
-  if (filters?.startDateTo) {
-    projects = projects.filter(
-      (project) => project.startDate <= filters.startDateTo!
-    );
-  }
-
-  if (filters?.endDateFrom) {
-    projects = projects.filter(
-      (project) => project.endDate && project.endDate >= filters.endDateFrom!
-    );
-  }
-
-  if (filters?.endDateTo) {
-    projects = projects.filter(
-      (project) => project.endDate && project.endDate <= filters.endDateTo!
-    );
-  }
-
-  return {
-    success: true,
-    data: projects,
-  };
 }
 
 /**
@@ -274,7 +264,7 @@ export async function getProjects(
  */
 export async function getProjectById(
   id: ProjectId
-): Promise<Result<Project, NotFoundError | UnauthorizedError>> {
+): Promise<Result<Project, NotFoundError | UnauthorizedError | DatabaseError>> {
   // Authenticate and get organization ID
   const { orgId } = await auth();
 
@@ -288,48 +278,61 @@ export async function getProjectById(
     };
   }
 
-  // Get projects from storage
-  const projects = getProjectsFromStorage(createOrganizationId(orgId));
+  try {
+    // Get project from database
+    const project = await getProjectByIdDb(createOrganizationId(orgId), id);
 
-  // Find project
-  const project = projects.find((p) => p.id === id);
+    if (!project) {
+      return {
+        success: false,
+        error: {
+          type: 'NotFoundError',
+          message: 'Project not found',
+        },
+      };
+    }
 
-  if (!project) {
+    return {
+      success: true,
+      data: project,
+    };
+  } catch (error) {
     return {
       success: false,
       error: {
-        type: 'NotFoundError',
-        message: 'Project not found',
+        type: 'DatabaseError',
+        message: error instanceof Error ? error.message : 'Failed to fetch project',
       },
     };
   }
-
-  return {
-    success: true,
-    data: project,
-  };
 }
 
 /**
- * Updates an existing project.
+ * Updates an existing project with optimistic locking.
  *
  * @param id - Project ID
  * @param data - Partial project data to update
- * @returns Result with updated Project or ValidationError/NotFoundError
+ * @param expectedVersion - Expected version for optimistic locking
+ * @returns Result with updated Project or ValidationError/NotFoundError/ConflictError
  *
  * @example
  * ```ts
  * const result = await updateProject(projectId, {
  *   status: ProjectStatus.Active,
  *   notes: 'Updated notes',
- * });
+ * }, currentVersion);
+ *
+ * if (!result.success && result.error.type === 'ConflictError') {
+ *   // Handle concurrent edit conflict
+ * }
  * ```
  */
 export async function updateProject(
   id: ProjectId,
-  data: UpdateProjectInput
+  data: UpdateProjectInput,
+  expectedVersion: number
 ): Promise<
-  Result<Project, ValidationError | NotFoundError | UnauthorizedError>
+  Result<Project, ValidationError | NotFoundError | UnauthorizedError | ConflictError | DatabaseError>
 > {
   // Authenticate and get organization ID
   const { orgId } = await auth();
@@ -364,38 +367,56 @@ export async function updateProject(
     };
   }
 
-  // Get existing project
-  const projects = getProjectsFromStorage(createOrganizationId(orgId));
-  const existingProject = projects.find((p) => p.id === id);
+  try {
+    // Update project in database with optimistic locking
+    const updatedProject = await updateProjectDb(
+      createOrganizationId(orgId),
+      id,
+      validation.data,
+      expectedVersion
+    );
 
-  if (!existingProject) {
+    // Revalidate paths
+    revalidatePath('/projects');
+    revalidatePath(`/projects/${id}`);
+
+    return {
+      success: true,
+      data: updatedProject,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      // Handle optimistic locking conflict
+      if (error.message.includes('Conflict')) {
+        return {
+          success: false,
+          error: {
+            type: 'ConflictError',
+            message: 'Project was modified by another user. Please refresh and try again.',
+          },
+        };
+      }
+
+      // Handle not found error
+      if (error.message.includes('not found')) {
+        return {
+          success: false,
+          error: {
+            type: 'NotFoundError',
+            message: 'Project not found',
+          },
+        };
+      }
+    }
+
     return {
       success: false,
       error: {
-        type: 'NotFoundError',
-        message: 'Project not found',
+        type: 'DatabaseError',
+        message: error instanceof Error ? error.message : 'Failed to update project',
       },
     };
   }
-
-  // Merge updates
-  const updatedProject: Project = {
-    ...existingProject,
-    ...validation.data,
-    updatedAt: new Date(),
-  };
-
-  // Save to storage
-  saveProject(createOrganizationId(orgId), updatedProject);
-
-  // Revalidate paths
-  revalidatePath('/projects');
-  revalidatePath(`/projects/${id}`);
-
-  return {
-    success: true,
-    data: updatedProject,
-  };
 }
 
 /**
@@ -403,21 +424,95 @@ export async function updateProject(
  *
  * @param id - Project ID
  * @param status - New project status
- * @returns Result with updated Project or NotFoundError
+ * @param expectedVersion - Expected version for optimistic locking
+ * @returns Result with updated Project or NotFoundError/ConflictError
  *
  * @example
  * ```ts
- * const result = await updateProjectStatus(projectId, ProjectStatus.Active);
+ * const result = await updateProjectStatus(projectId, ProjectStatus.Active, currentVersion);
  * ```
  */
 export async function updateProjectStatus(
   id: ProjectId,
-  status: ProjectStatus
+  status: string,
+  expectedVersion: number
 ): Promise<
-  Result<Project, ValidationError | NotFoundError | UnauthorizedError>
+  Result<Project, ValidationError | NotFoundError | UnauthorizedError | ConflictError | DatabaseError>
 > {
-  // Delegate to updateProject
-  return updateProject(id, { status });
+  // Authenticate and get organization ID
+  const { orgId } = await auth();
+
+  if (!orgId) {
+    return {
+      success: false,
+      error: {
+        type: 'UnauthorizedError',
+        message: 'User must belong to an organization',
+      },
+    };
+  }
+
+  try {
+    // Update project status in database with optimistic locking
+    const updatedProject = await updateProjectStatusDb(
+      createOrganizationId(orgId),
+      id,
+      status,
+      expectedVersion
+    );
+
+    // Revalidate paths
+    revalidatePath('/projects');
+    revalidatePath(`/projects/${id}`);
+
+    return {
+      success: true,
+      data: updatedProject,
+    };
+  } catch (error) {
+    if (error instanceof Error) {
+      // Handle optimistic locking conflict
+      if (error.message.includes('Conflict')) {
+        return {
+          success: false,
+          error: {
+            type: 'ConflictError',
+            message: 'Project was modified by another user. Please refresh and try again.',
+          },
+        };
+      }
+
+      // Handle not found error
+      if (error.message.includes('not found')) {
+        return {
+          success: false,
+          error: {
+            type: 'NotFoundError',
+            message: 'Project not found',
+          },
+        };
+      }
+
+      // Handle invalid status transition
+      if (error.message.includes('Invalid status transition')) {
+        return {
+          success: false,
+          error: {
+            type: 'ValidationError',
+            message: error.message,
+          },
+        };
+      }
+    }
+
+    return {
+      success: false,
+      error: {
+        type: 'DatabaseError',
+        message: error instanceof Error ? error.message : 'Failed to update project status',
+      },
+    };
+  }
 }
 
 /**
@@ -437,7 +532,7 @@ export async function updateProjectStatus(
  */
 export async function deleteProject(
   id: ProjectId
-): Promise<Result<void, NotFoundError | UnauthorizedError>> {
+): Promise<Result<void, NotFoundError | UnauthorizedError | DatabaseError>> {
   // Authenticate and get organization ID
   const { orgId } = await auth();
 
@@ -451,28 +546,34 @@ export async function deleteProject(
     };
   }
 
-  // Get existing project
-  const projects = getProjectsFromStorage(createOrganizationId(orgId));
-  const existingProject = projects.find((p) => p.id === id);
+  try {
+    // Delete project from database
+    await deleteProjectDb(createOrganizationId(orgId), id);
 
-  if (!existingProject) {
+    // Revalidate paths
+    revalidatePath('/projects');
+
+    return {
+      success: true,
+      data: undefined,
+    };
+  } catch (error) {
+    if (error instanceof Error && error.message.includes('not found')) {
+      return {
+        success: false,
+        error: {
+          type: 'NotFoundError',
+          message: 'Project not found',
+        },
+      };
+    }
+
     return {
       success: false,
       error: {
-        type: 'NotFoundError',
-        message: 'Project not found',
+        type: 'DatabaseError',
+        message: error instanceof Error ? error.message : 'Failed to delete project',
       },
     };
   }
-
-  // Delete from storage
-  deleteProjectFromStorage(createOrganizationId(orgId), id);
-
-  // Revalidate paths
-  revalidatePath('/projects');
-
-  return {
-    success: true,
-    data: undefined,
-  };
 }
