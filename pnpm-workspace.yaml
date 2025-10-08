@@ -1,5 +1,7 @@
 onlyBuiltDependencies:
+  - '@clerk/shared'
   - '@scarf/scarf'
+  - '@sentry/cli'
   - '@tailwindcss/oxide'
   - msw
   - protobufjs
