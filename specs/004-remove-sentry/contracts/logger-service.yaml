@@ -1,0 +1,158 @@
+openapi: 3.0.0
+info:
+  title: Console Logger Service Contract
+  version: 1.0.0
+  description: Internal logging service to replace Sentry integration
+
+paths:
+  # Note: These are internal service contracts, not HTTP endpoints
+  # They represent the public interface of the logger module
+
+components:
+  schemas:
+    LogLevel:
+      type: string
+      enum:
+        - error
+        - warn
+        - info
+        - debug
+      description: Log severity levels
+
+    LogEntry:
+      type: object
+      required:
+        - timestamp
+        - level
+        - message
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+          description: ISO 8601 timestamp
+        level:
+          $ref: '#/components/schemas/LogLevel'
+        message:
+          type: string
+          minLength: 1
+          description: Log message
+        data:
+          type: object
+          description: Optional structured data
+        error:
+          type: object
+          properties:
+            name:
+              type: string
+            message:
+              type: string
+            stack:
+              type: string
+          description: Error details if applicable
+
+    PerformanceMetric:
+      type: object
+      required:
+        - timestamp
+        - name
+        - value
+      properties:
+        timestamp:
+          type: string
+          format: date-time
+        name:
+          type: string
+          minLength: 1
+          description: Metric identifier
+        value:
+          type: number
+          minimum: 0
+          description: Metric value
+        unit:
+          type: string
+          default: ms
+          enum:
+            - ms
+            - s
+            - bytes
+            - KB
+            - MB
+            - count
+            - '%'
+
+    LoggerConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          default: true
+        minLevel:
+          $ref: '#/components/schemas/LogLevel'
+          default: info
+        includeTimestamp:
+          type: boolean
+          default: true
+        includeStackTrace:
+          type: boolean
+          default: true
+
+  # Service Interface Contracts
+  x-service-methods:
+    error:
+      description: Log an error with optional Error object
+      parameters:
+        - name: message
+          type: string
+          required: true
+        - name: error
+          type: Error
+          required: false
+      returns: void
+
+    warn:
+      description: Log a warning with optional data
+      parameters:
+        - name: message
+          type: string
+          required: true
+        - name: data
+          type: any
+          required: false
+      returns: void
+
+    info:
+      description: Log an info message with optional data
+      parameters:
+        - name: message
+          type: string
+          required: true
+        - name: data
+          type: any
+          required: false
+      returns: void
+
+    debug:
+      description: Log a debug message with optional data
+      parameters:
+        - name: message
+          type: string
+          required: true
+        - name: data
+          type: any
+          required: false
+      returns: void
+
+    performance:
+      description: Log a performance metric
+      parameters:
+        - name: name
+          type: string
+          required: true
+        - name: value
+          type: number
+          required: true
+        - name: unit
+          type: string
+          required: false
+          default: ms
+      returns: void
