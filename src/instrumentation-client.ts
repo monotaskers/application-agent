@@ -1,32 +1,33 @@
-// This file configures the initialization of Sentry on the client.
-// The added config here will be used whenever a users loads a page in their browser.
-// https://docs.sentry.io/platforms/javascript/guides/nextjs/
-import * as Sentry from "@sentry/nextjs";
+// This file configures client-side instrumentation and error tracking
+// Replaces Sentry with console logging for error and performance monitoring
+import { logger } from '@/lib/logger';
 
-const sentryDsn = process.env.NEXT_PUBLIC_SENTRY_DSN;
+// Initialize client-side logging
+if (typeof window !== 'undefined') {
+  logger.info('Client instrumentation initialized', {
+    userAgent: window.navigator.userAgent,
+    url: window.location.href,
+  });
 
-if (!process.env.NEXT_PUBLIC_SENTRY_DISABLED && sentryDsn) {
-  Sentry.init({
-    dsn: sentryDsn,
-    // Add optional integrations for additional features
-    integrations: [Sentry.replayIntegration()],
+  // Add global error handler for uncaught errors
+  window.addEventListener('error', (event) => {
+    logger.error(`Uncaught error: ${event.message}`, event.error);
+  });
 
-    // Define how likely traces are sampled. Adjust this value in production, or use tracesSampler for greater control.
-    tracesSampleRate: 1,
-    // Enable logs to be sent to Sentry
-    enableLogs: true,
-
-    // Define how likely Replay events are sampled.
-    // This sets the sample rate to be 10%. You may want this to be 100% while
-    // in development and sample at a lower rate in production
-    replaysSessionSampleRate: 0.1,
-
-    // Define how likely Replay events are sampled when an error occurs.
-    replaysOnErrorSampleRate: 1.0,
-
-    // Setting this option to true will print useful information to the console while you're setting up Sentry.
-    debug: false,
+  // Add handler for unhandled promise rejections
+  window.addEventListener('unhandledrejection', (event) => {
+    const error = event.reason instanceof Error
+      ? event.reason
+      : new Error(String(event.reason));
+    logger.error('Unhandled promise rejection', error);
   });
 }
 
-export const onRouterTransitionStart = Sentry.captureRouterTransitionStart;
+// Replace Sentry's router transition tracking with performance logging
+export const onRouterTransitionStart = (pathname: string): void => {
+  if (typeof window !== 'undefined' && window.performance) {
+    const navigationStart = window.performance.now();
+    logger.performance('route-transition-start', navigationStart);
+    logger.debug('Navigation started', { pathname });
+  }
+};

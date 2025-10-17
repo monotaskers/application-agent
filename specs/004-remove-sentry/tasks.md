@@ -45,28 +45,28 @@
 ## Phase 3.2: Remove Sentry Integration
 
 ### Error Boundaries
-- [ ] T007 Replace Sentry error reporting in src/app/global-error.tsx with console logger
-- [ ] T008 [P] Replace Sentry error reporting in src/app/dashboard/overview/@bar_stats/error.tsx with console logger
+- [x] T007 Replace Sentry error reporting in src/app/global-error.tsx with console logger
+- [x] T008 [P] Replace Sentry error reporting in src/app/dashboard/overview/@bar_stats/error.tsx with console logger
 
 ### Instrumentation Files
-- [ ] T009 [P] Remove Sentry initialization from src/instrumentation.ts
-- [ ] T010 [P] Remove Sentry initialization from src/instrumentation-client.ts
+- [x] T009 [P] Remove Sentry initialization from src/instrumentation.ts
+- [x] T010 [P] Remove Sentry initialization from src/instrumentation-client.ts
 
 ### Configuration Files
-- [ ] T011 Remove withSentryConfig wrapper from next.config.ts
-- [ ] T012 [P] Delete sentry.server.config.ts file
-- [ ] T013 [P] Delete sentry.edge.config.ts file
-- [ ] T014 [P] Remove SENTRY_* environment variables from .env and .env.local files
+- [x] T011 Remove withSentryConfig wrapper from next.config.ts
+- [x] T012 [P] Delete sentry.server.config.ts file
+- [x] T013 [P] Delete sentry.edge.config.ts file
+- [x] T014 [P] Remove SENTRY_* environment variables from .env and .env.local files
 
 ## Phase 3.3: Cleanup
 
-- [ ] T015 Remove @sentry/nextjs dependency using `pnpm remove @sentry/nextjs`
-- [ ] T016 Run `pnpm install` to update lockfile without Sentry
+- [x] T015 Remove @sentry/nextjs dependency using `pnpm remove @sentry/nextjs`
+- [x] T016 Run `pnpm install` to update lockfile without Sentry
 
 ## Phase 3.4: Verification
 
-- [ ] T017 Run quickstart verification steps to confirm Sentry removal
-- [ ] T018 [P] Verify no Sentry network calls in browser DevTools
+- [x] T017 Run quickstart verification steps to confirm Sentry removal
+- [x] T018 [P] Verify no Sentry network calls in browser DevTools
 
 ## Dependencies
 - Logger tests (T001-T003) before logger implementation (T004-T006)

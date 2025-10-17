@@ -1,8 +1,8 @@
 'use client';
 
-import * as Sentry from '@sentry/nextjs';
 import NextError from 'next/error';
 import { useEffect, ReactElement } from 'react';
+import { logger } from '@/lib/logger';
 
 export default function GlobalError({
   error
@@ -10,7 +10,13 @@ export default function GlobalError({
   error: Error & { digest?: string };
 }): ReactElement {
   useEffect(() => {
-    Sentry.captureException(error);
+    // Log the error to console instead of Sentry
+    logger.error('Global application error', error);
+
+    // Also log the error digest if available for debugging
+    if (error.digest) {
+      logger.debug('Error digest for tracking', { digest: error.digest });
+    }
   }, [error]);
 
   return (
