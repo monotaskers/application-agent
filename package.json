@@ -7,7 +7,7 @@
     "dev:debug": "LOG_LEVEL=debug npm run dev",
     "dev:agent": "./scripts/run-agent.sh || scripts/run-agent.bat",
     "dev:ui": "next dev --turbopack",
-    "build": "next build",
+    "build": "NODE_NO_WARNINGS=1 next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "eslint src --fix && pnpm format",
