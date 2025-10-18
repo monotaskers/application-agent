@@ -13,6 +13,12 @@ const baseConfig: NextConfig = {
     ]
   },
   transpilePackages: ['geist'],
+  // Disable webpack caching to resolve build issues
+  webpack: (config) => {
+    // Disable filesystem cache
+    config.cache = false;
+    return config;
+  }
   // These packages are used by Sentry internally and need special handling
   // Remove from serverExternalPackages since they're not direct dependencies
   // serverExternalPackages: []
