@@ -23,7 +23,8 @@ export default async function Page(): Promise<ReactElement> {
       stars = data.stargazers_count || stars; // Update stars if API response is valid
     }
   } catch (error) {
-    // Error fetching GitHub stars, using default value
+    // Log the error for monitoring but don't break the page
+    console.error('Failed to fetch GitHub stars:', error);
   }
   return <SignUpViewPage stars={stars} />;
 }
