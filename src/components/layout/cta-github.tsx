@@ -3,10 +3,18 @@ import { Button } from '@/components/ui/button';
 import { IconBrandGithub } from '@tabler/icons-react';
 
 export default function CtaGithub() {
+  // Use environment variable for GitHub repository URL
+  const githubUrl = process.env.NEXT_PUBLIC_GITHUB_REPO_URL;
+
+  // Don't render the CTA if no GitHub URL is configured
+  if (!githubUrl) {
+    return null;
+  }
+
   return (
     <Button variant='ghost' asChild size='sm' className='hidden sm:flex'>
       <a
-        href='https://github.com/Kiranism/next-shadcn-dashboard-starter'
+        href={githubUrl}
         rel='noopener noreferrer'
         target='_blank'
         className='dark:text-foreground'
