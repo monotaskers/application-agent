@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 
 export const dynamic = "force-dynamic";
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-declaration-merging -- Custom Error class pattern
 class SentryExampleAPIError extends Error {
   constructor(message: string | undefined) {
     super(message);

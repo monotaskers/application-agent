@@ -23,22 +23,14 @@ import NewSectionDialog from './new-section-dialog';
 import { TaskCard } from './task-card';
 // import { coordinateGetter } from "./multipleContainersKeyboardPreset";
 
-const defaultCols = [
-  {
-    id: 'TODO' as const,
-    title: 'Todo'
-  },
-  {
-    id: 'IN_PROGRESS' as const,
-    title: 'In progress'
-  },
-  {
-    id: 'DONE' as const,
-    title: 'Done'
-  }
-] satisfies Column[];
+// Type-only constant for column IDs
+type DefaultColumns = [
+  { id: 'TODO'; title: 'Todo' },
+  { id: 'IN_PROGRESS'; title: 'In progress' },
+  { id: 'DONE'; title: 'Done' }
+];
 
-export type ColumnId = (typeof defaultCols)[number]['id'];
+export type ColumnId = DefaultColumns[number]['id'];
 
 export function KanbanBoard() {
   // const [columns, setColumns] = useState<Column[]>(defaultCols);
@@ -53,7 +45,7 @@ export function KanbanBoard() {
   const tasks = useTaskStore((state) => state.tasks);
   const setTasks = useTaskStore((state) => state.setTasks);
   const [activeColumn, setActiveColumn] = useState<Column | null>(null);
-  const [isMounted, setIsMounted] = useState<Boolean>(false);
+  const [isMounted, setIsMounted] = useState<boolean>(false);
 
   const [activeTask, setActiveTask] = useState<Task | null>(null);
 
