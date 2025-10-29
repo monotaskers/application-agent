@@ -179,6 +179,7 @@ src/
 │   ├── env.ts             # Environment validation
 │   └── constants.ts       # Application constants
 ├── hooks/                 # Shared custom hooks
+├── middleware.ts          # Middleware
 ├── styles/                # Styling files
 └── types/                 # Shared TypeScript types
 ```
