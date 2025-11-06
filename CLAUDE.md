@@ -721,6 +721,58 @@ export default eslintConfig;
 
 **IMPORTANT**: Always use `pnpm run <command>` instead of `npm run <command>`
 
+## 🎨 Design System & Figma Integration
+
+This project has a comprehensive design system built on Tailwind CSS v4, shadcn/ui, and Next.js 15.
+
+**Complete Design System Documentation**: `.cursor/rules/design_system_rules.mdc`
+
+### Quick Reference
+
+**For Figma Integration using Model Context Protocol (MCP)**:
+
+1. **Use Figma MCP Server assets directly** - DO NOT create placeholders or import new icon packages
+2. **Map Figma tokens to CSS variables** - Defined in `src/app/globals.css` (OKLCH color space)
+3. **Follow existing component patterns** - See `src/components/ui/` for examples
+4. **Use Tailwind utilities** - Compose styles, avoid custom CSS
+5. **Test in light & dark modes** - Theme switching via `next-themes`
+
+**Key Locations**:
+- Design tokens: `src/app/globals.css` (colors, spacing, radius)
+- Theme variants: `src/app/theme.css` (blue, green, amber, mono)
+- Component library: `src/components/ui/` (shadcn/ui components)
+- Icons: `src/components/icons.tsx` (@tabler/icons-react)
+- Font configuration: `src/lib/font.ts` (Geist, Inter, etc.)
+
+**Component Pattern**:
+```typescript
+import { cn } from '@/lib/utils';
+import { cva, type VariantProps } from 'class-variance-authority';
+
+const componentVariants = cva("base-classes", {
+  variants: { /* variant definitions */ },
+  defaultVariants: { /* defaults */ }
+});
+
+function Component({ className, variant, ...props }) {
+  return (
+    <div
+      data-slot='component-name'
+      className={cn(componentVariants({ variant, className }))}
+      {...props}
+    />
+  );
+}
+```
+
+**Refer to `.cursor/rules/design_system_rules.mdc` for**:
+- Complete token reference and mapping guide
+- Figma → Code integration workflow
+- Component creation templates
+- Asset management strategies
+- Responsive design patterns
+- Icon system usage
+
 ## ⚠️ CRITICAL GUIDELINES (MUST FOLLOW ALL)
 
 1. **ENFORCE strict TypeScript** - ZERO compromises on type safety

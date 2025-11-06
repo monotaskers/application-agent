@@ -1,0 +1,1130 @@
+# Design System Rules for Figma Integration (MCP)
+
+This document provides comprehensive guidelines for integrating Figma designs into this codebase using the Model Context Protocol (MCP).
+
+---
+
+## 1. Token Definitions
+
+### Color Tokens
+
+**Location**: `src/app/globals.css` and `src/app/theme.css`
+
+**Format**: CSS Custom Properties using OKLCH color space
+
+**Structure**:
+```css
+/* Primary tokens defined in globals.css using OKLCH */
+:root {
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  --primary: oklch(0.205 0 0);
+  --primary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.97 0 0);
+  --muted: oklch(0.97 0 0);
+  --accent: oklch(0.97 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.922 0 0);
+  --ring: oklch(0.708 0 0);
+  /* Chart colors */
+  --chart-1 through --chart-5
+  /* Sidebar specific colors */
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  /* etc... */
+}
+
+.dark {
+  /* Dark mode overrides */
+}
+```
+
+**Theme Transformations** (`theme.css`):
+- `.theme-blue`, `.theme-green`, `.theme-amber`, `.theme-mono` - color variants
+- `.theme-scaled` - responsive scaling system for desktop (>1024px)
+- Theme-specific primary color overrides using Tailwind color palette
+
+**Usage Pattern**:
+```typescript
+// In components, reference via Tailwind utilities
+<div className="bg-background text-foreground">
+<Button className="bg-primary text-primary-foreground">
+```
+
+### Typography Tokens
+
+**Location**: `src/lib/font.ts` and `src/app/theme.css`
+
+**Available Fonts**:
+```typescript
+// From font.ts
+const fontSans = Geist;           // --font-sans
+const fontMono = Geist_Mono;      // --font-mono
+const fontInstrument = Instrument_Sans;  // --font-instrument
+const fontNotoMono = Noto_Sans_Mono;     // --font-noto-mono
+const fontMullish = Mulish;       // --font-mullish
+const fontInter = Inter;          // --font-inter (default)
+```
+
+**Font Variables** (`theme.css`):
+```css
+:root {
+  --font-sans: var(--font-inter);
+}
+
+.theme-mono {
+  --font-sans: var(--font-mono);
+}
+```
+
+**Text Sizes** (Tailwind CSS v4):
+```css
+/* Scaled theme adjustments */
+.theme-scaled {
+  --text-lg: 1.05rem;
+  --text-base: 0.85rem;
+  --text-sm: 0.8rem;
+}
+```
+
+### Spacing & Radius Tokens
+
+**Location**: `src/app/globals.css` and `src/app/theme.css`
+
+```css
+:root {
+  --radius: 0.625rem;  /* Base radius */
+  --spacing: 0.222222rem;  /* Base spacing unit */
+  --header-height: calc(var(--spacing) * 12 + 1px);
+}
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+.theme-scaled {
+  @media (min-width: 1024px) {
+    --radius: 0.6rem;
+    --spacing: 0.222222rem;
+  }
+}
+```
+
+**Usage**:
+```tsx
+<div className="rounded-lg">  // Uses --radius-lg
+<Card className="rounded-xl"> // Uses --radius-xl
+```
+
+---
+
+## 2. Component Library
+
+### Component Location & Architecture
+
+**Base UI Components**: `src/components/ui/`
+- All components follow shadcn/ui architecture
+- Built with Radix UI primitives
+- Styled with Tailwind CSS v4
+
+**Feature Components**: `src/features/[feature]/components/`
+- Feature-specific components organized by domain
+- Examples: `auth/`, `kanban/`, `overview/`, `products/`, `profile/`
+
+**Layout Components**: `src/components/layout/`
+- `app-sidebar.tsx` - Main navigation sidebar
+- `header.tsx` - Page header
+- `page-container.tsx` - Page wrapper with consistent padding
+- `providers.tsx` - Context providers wrapper
+
+**Form Components**: `src/components/forms/`
+- Pre-built form field wrappers for react-hook-form
+- Examples: `form-input.tsx`, `form-select.tsx`, `form-textarea.tsx`
+
+### Component Pattern
+
+**Standard Pattern**:
+```typescript
+import * as React from 'react';
+import { cn } from '@/lib/utils';
+
+function ComponentName({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot='component-name'  // Unique data attribute
+      className={cn(
+        'base-classes here',
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+export { ComponentName };
+```
+
+**Variant Pattern** (using class-variance-authority):
+```typescript
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+
+const componentVariants = cva(
+  "base-classes",
+  {
+    variants: {
+      variant: {
+        default: 'variant-specific-classes',
+        destructive: 'destructive-classes',
+        outline: 'outline-classes',
+      },
+      size: {
+        default: 'h-9 px-4 py-2',
+        sm: 'h-8 px-3',
+        lg: 'h-10 px-6',
+      }
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default'
+    }
+  }
+);
+
+function Component({ className, variant, size, ...props }: 
+  React.ComponentProps<'button'> & VariantProps<typeof componentVariants>) {
+  return (
+    <button
+      data-slot='component'
+      className={cn(componentVariants({ variant, size, className }))}
+      {...props}
+    />
+  );
+}
+```
+
+### Component Configuration
+
+**Location**: `components.json`
+```json
+{
+  "style": "new-york",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "css": "src/app/globals.css",
+    "baseColor": "zinc",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "iconLibrary": "lucide"
+}
+```
+
+---
+
+## 3. Frameworks & Libraries
+
+### Core Stack
+
+**Framework**: Next.js 15.5.6 (App Router with React Server Components)
+- File-based routing in `src/app/`
+- Server Components by default
+- Client Components marked with `'use client'`
+
+**React**: v19.0.0
+- Server Actions support
+- Enhanced async/await patterns
+
+**TypeScript**: 5.7.2
+- Strict mode enabled
+- Path aliases: `@/*` → `src/*`
+
+### UI Framework
+
+**Radix UI**: Headless component primitives
+- All interactive components (Dialog, Dropdown, Popover, etc.)
+- Accessible by default
+- Unstyled primitives
+
+**Tailwind CSS**: v4.0.0 (Latest)
+- Utility-first CSS framework
+- CSS-based configuration (no JS config)
+- Custom `@theme inline` blocks in `globals.css`
+
+**shadcn/ui**: Component system
+- Pre-styled Radix UI components
+- Customizable via `components.json`
+- CLI: `npx shadcn@latest add [component]`
+
+### Styling Libraries
+
+**Primary**:
+- `tailwind-merge` - Merge Tailwind classes intelligently
+- `class-variance-authority` (cva) - Variant management
+- `clsx` - Conditional className builder
+
+**Utility Function**:
+```typescript
+// src/lib/utils.ts
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+export function cn(...inputs: ClassValue[]): string {
+  return twMerge(clsx(inputs));
+}
+```
+
+### Form Management
+
+**react-hook-form** v7.54.1
+- Form state management
+- Validation with Zod schemas
+- `@hookform/resolvers` for Zod integration
+
+**Zod** v3.24.4 - Schema validation
+
+**Pattern**:
+```typescript
+const formSchema = z.object({
+  name: z.string().min(2),
+  email: z.string().email()
+});
+
+type FormData = z.infer<typeof formSchema>;
+
+const form = useForm<FormData>({
+  resolver: zodResolver(formSchema),
+  defaultValues: { ... }
+});
+```
+
+### State Management
+
+**Zustand** v5.0.2 - Lightweight state management
+- Example: `src/features/kanban/utils/store.ts`
+
+### Additional Libraries
+
+- **next-themes** v0.4.6 - Theme switching
+- **framer-motion** (via motion v11.17.0) - Animations
+- **@tanstack/react-table** v8.21.2 - Data tables
+- **recharts** v2.15.1 - Charts
+- **date-fns** v3.6.0 - Date utilities
+- **@clerk/nextjs** v6.12.12 - Authentication
+
+### Build System
+
+**Bundler**: Next.js built-in (Turbopack in dev)
+- `pnpm dev` uses `--turbopack` flag
+- Webpack for production builds
+
+**PostCSS**: v8.4.49
+```javascript
+// postcss.config.mjs
+{
+  plugins: ["@tailwindcss/postcss"]
+}
+```
+
+**Package Manager**: pnpm (workspace configured)
+
+---
+
+## 4. Asset Management
+
+### Static Assets
+
+**Location**: `/public/`
+- Direct access via `/<filename>`
+- SVG icons: `file.svg`, `globe.svg`, `next.svg`, `vercel.svg`, `window.svg`
+
+### Image Optimization
+
+**Next.js Image Component**:
+```typescript
+import Image from 'next/image';
+
+<Image
+  src="/path/to/image.png"
+  alt="Description"
+  width={500}
+  height={300}
+  // Automatic optimization
+/>
+```
+
+**Remote Patterns** (`next.config.ts`):
+```typescript
+images: {
+  remotePatterns: [
+    {
+      protocol: 'https',
+      hostname: 'api.slingacademy.com',
+      port: ''
+    }
+  ]
+}
+```
+
+### Asset Storage Strategy
+
+**Figma Assets from MCP**:
+- **CRITICAL**: When Figma MCP Server returns localhost sources for images/SVGs, use them directly
+- **DO NOT** import new icon packages
+- **DO NOT** create placeholders if localhost source is provided
+- Use the assets endpoint from Figma MCP Server
+
+**Pattern for Figma Assets**:
+```typescript
+// If Figma provides: http://localhost:XXXX/assets/image.png
+<Image src="http://localhost:XXXX/assets/image.png" alt="Figma asset" width={...} height={...} />
+
+// For SVGs from Figma
+<img src="http://localhost:XXXX/assets/icon.svg" alt="Icon from Figma" />
+```
+
+---
+
+## 5. Icon System
+
+### Primary Icon Library
+
+**@tabler/icons-react** v3.31.0
+
+**Location**: `src/components/icons.tsx`
+
+**Pattern**:
+```typescript
+import {
+  IconLayoutDashboard,
+  IconShoppingBag,
+  IconUser,
+  // ... more icons
+} from '@tabler/icons-react';
+
+export type Icon = React.ComponentType<IconProps>;
+
+export const Icons = {
+  dashboard: IconLayoutDashboard,
+  product: IconShoppingBag,
+  user: IconUser,
+  // Centralized icon mapping
+};
+```
+
+**Usage**:
+```typescript
+import { Icons } from '@/components/icons';
+
+<Icons.dashboard className="size-4" />
+```
+
+### Secondary Icon Libraries
+
+**Radix Icons**: `@radix-ui/react-icons` v1.3.2 (used by shadcn/ui components)
+
+**Lucide React**: v0.476.0 (configured as iconLibrary in `components.json`)
+
+### Icon Naming Convention
+
+**Pattern**: Semantic names mapped to actual icon components
+- `dashboard` → `IconLayoutDashboard`
+- `product` → `IconShoppingBag`
+- `user` → `IconUser`
+- `chevronLeft` → `IconChevronLeft`
+
+### Icon Sizing
+
+**Tailwind Classes**:
+- `size-3` (12px) - Very small
+- `size-4` (16px) - Default for inline icons
+- `size-5` (20px) - Medium
+- `size-6` (24px) - Large
+- `size-8` (32px) - Extra large
+
+**SVG Properties** (auto-applied):
+```tsx
+// In component variants
+"[&_svg]:size-4 [&_svg]:shrink-0"
+```
+
+### Adding New Icons
+
+1. Import from `@tabler/icons-react`
+2. Add to `Icons` object in `src/components/icons.tsx`
+3. Use via `Icons.[name]`
+
+**DO NOT**:
+- Add new icon packages when Figma assets are available
+- Use inline SVG when icon libraries suffice
+
+---
+
+## 6. Styling Approach
+
+### CSS Methodology
+
+**Tailwind CSS v4 Utility-First**
+- Compose styles with utility classes
+- No CSS Modules or Styled Components
+- Minimal custom CSS
+
+### Tailwind CSS v4 Specifics
+
+**Configuration**: CSS-based (not JavaScript)
+```css
+/* globals.css */
+@import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-primary: var(--primary);
+  /* Define custom theme values inline */
+}
+```
+
+### Global Styles
+
+**Location**: `src/app/globals.css`
+
+**Structure**:
+```css
+@import 'tailwindcss';
+@import 'tw-animate-css';         /* Animation utilities */
+@custom-variant dark (&:is(.dark *));
+@import './theme.css';            /* Theme-specific styles */
+
+:root {
+  /* CSS variables */
+}
+
+.dark {
+  /* Dark mode overrides */
+}
+
+@theme inline {
+  /* Tailwind theme customizations */
+}
+
+@layer base {
+  /* Base element styles */
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+```
+
+### Theme Implementation
+
+**Multi-Theme System**:
+```css
+/* theme.css */
+.theme-default { /* neutral colors */ }
+.theme-blue { /* blue primary */ }
+.theme-green { /* green primary */ }
+.theme-amber { /* amber primary */ }
+.theme-mono { 
+  /* monospace font, no rounded corners, no shadows */
+  .rounded-* { @apply !rounded-none; }
+}
+```
+
+**Dark Mode**:
+```typescript
+// Implemented via next-themes
+<ThemeProvider
+  attribute='class'
+  defaultTheme='system'
+  enableSystem
+>
+  {children}
+</ThemeProvider>
+```
+
+**Theme Switching**:
+```typescript
+// src/components/layout/ThemeToggle/theme-toggle.tsx
+import { useTheme } from 'next-themes';
+
+const { theme, setTheme } = useTheme();
+setTheme('dark' | 'light' | 'system');
+```
+
+### Responsive Design
+
+**Breakpoints** (Tailwind defaults):
+- `sm`: 640px
+- `md`: 768px
+- `lg`: 1024px
+- `xl`: 1280px
+- `2xl`: 1536px
+
+**Patterns**:
+```tsx
+<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+<div className="hidden lg:block">
+<div className="text-sm md:text-base lg:text-lg">
+```
+
+**Scaled Theme Responsive**:
+```css
+.theme-scaled {
+  @media (min-width: 1024px) {
+    --radius: 0.6rem;
+    --text-base: 0.85rem;
+    /* Smaller, denser UI on desktop */
+  }
+}
+```
+
+### Component Styling Best Practices
+
+1. **Use the `cn()` utility** for className composition:
+```typescript
+import { cn } from '@/lib/utils';
+
+<div className={cn("base-classes", conditionalClass && "conditional", className)} />
+```
+
+2. **Use `data-slot` attributes** for component identification:
+```typescript
+<div data-slot="button" className={...} />
+```
+
+3. **Leverage CSS variables** for theming:
+```tsx
+<div className="bg-primary text-primary-foreground" />
+// Automatically adapts to active theme
+```
+
+4. **Focus states**:
+```css
+focus-visible:border-ring 
+focus-visible:ring-ring/50 
+focus-visible:ring-[3px]
+```
+
+5. **Disabled states**:
+```css
+disabled:pointer-events-none 
+disabled:opacity-50
+```
+
+### Animations
+
+**Tailwind Animate**: `tailwindcss-animate` v1.0.7
+**Custom Animations**: `tw-animate-css` v1.2.4
+
+**View Transitions**:
+```css
+/* globals.css - Theme switching animation */
+::view-transition-new(root) {
+  animation: reveal 0.4s ease-in-out forwards;
+}
+
+@keyframes reveal {
+  from {
+    clip-path: circle(0% at var(--x, 50%) var(--y, 50%));
+  }
+  to {
+    clip-path: circle(150% at var(--x, 50%) var(--y, 50%));
+  }
+}
+```
+
+---
+
+## 7. Project Structure
+
+### Root Organization
+
+```
+/Users/tombeck/Projects/Monotasker/starters/application-agent/
+├── agent/                    # PydanticAI agent (Python)
+│   ├── agent.py
+│   └── requirements.txt
+├── scripts/                  # Setup and dev scripts
+│   ├── run-agent.sh
+│   └── setup-agent.sh
+├── public/                   # Static assets
+├── src/                      # Main application code
+│   ├── app/                  # Next.js App Router
+│   ├── components/           # Reusable components
+│   ├── features/             # Feature modules
+│   ├── hooks/                # Custom React hooks
+│   ├── lib/                  # Utilities
+│   ├── types/                # TypeScript types
+│   └── config/               # Configuration
+├── components.json           # shadcn/ui config
+├── package.json
+├── tsconfig.json
+└── next.config.ts
+```
+
+### App Router Structure (`src/app/`)
+
+```
+src/app/
+├── api/                      # API routes
+│   └── copilotkit/
+│       └── route.ts
+├── auth/                     # Auth pages (Clerk)
+│   ├── sign-in/[[...sign-in]]/
+│   └── sign-up/[[...sign-up]]/
+├── dashboard/                # Main app routes
+│   ├── layout.tsx           # Dashboard layout
+│   ├── page.tsx             # Dashboard home
+│   ├── overview/            # Parallel routes example
+│   │   ├── @area_stats/
+│   │   ├── @bar_stats/
+│   │   ├── @pie_stats/
+│   │   ├── @sales/
+│   │   └── layout.tsx
+│   ├── kanban/
+│   ├── product/
+│   │   └── [productId]/     # Dynamic route
+│   └── profile/
+├── layout.tsx               # Root layout
+├── page.tsx                 # Home page
+├── globals.css              # Global styles
+├── theme.css                # Theme styles
+├── favicon.ico
+├── not-found.tsx
+└── global-error.tsx
+```
+
+### Component Structure (`src/components/`)
+
+```
+src/components/
+├── ui/                      # Base UI components (shadcn/ui)
+│   ├── button.tsx
+│   ├── card.tsx
+│   ├── input.tsx
+│   ├── dialog.tsx
+│   ├── table/              # Complex components in subdirs
+│   └── ...
+├── layout/                 # Layout components
+│   ├── app-sidebar.tsx
+│   ├── header.tsx
+│   ├── providers.tsx
+│   └── ThemeToggle/
+├── forms/                  # Form field wrappers
+│   ├── form-input.tsx
+│   ├── form-select.tsx
+│   └── form-textarea.tsx
+├── modal/                  # Modal components
+├── kbar/                   # Command palette
+└── icons.tsx              # Icon exports
+```
+
+### Feature Organization (`src/features/`)
+
+**Pattern**: Domain-driven feature modules
+
+```
+src/features/
+├── auth/
+│   └── components/
+│       ├── github-auth-button.tsx
+│       └── user-auth-form.tsx
+├── kanban/
+│   ├── components/
+│   │   ├── kanban-board.tsx
+│   │   ├── board-column.tsx
+│   │   └── task-card.tsx
+│   └── utils/
+│       ├── index.ts
+│       └── store.ts        # Zustand store
+├── products/
+│   └── components/
+│       ├── product-form.tsx
+│       ├── product-listing.tsx
+│       └── product-tables/
+└── overview/
+    └── components/
+        ├── area-graph.tsx
+        ├── bar-graph.tsx
+        └── recent-sales.tsx
+```
+
+**Organization Principles**:
+1. Each feature has its own folder
+2. Components related to feature live in `components/`
+3. Feature-specific utilities in `utils/`
+4. Feature-specific types can be co-located or in `types/`
+
+### Utilities & Libs (`src/lib/`)
+
+```
+src/lib/
+├── utils.ts               # cn() and utility functions
+├── font.ts                # Font configurations
+├── format.ts              # Formatting utilities
+├── parsers.ts             # Data parsers
+├── searchparams.ts        # URL search param helpers
+└── data-table.ts          # Table utilities
+```
+
+### Custom Hooks (`src/hooks/`)
+
+```
+src/hooks/
+├── use-mobile.tsx         # Mobile detection
+├── use-media-query.ts     # Media query hook
+├── use-debounce.tsx       # Debounce hook
+├── use-data-table.ts      # Table state management
+└── use-multistep-form.tsx # Multi-step form hook
+```
+
+### Types (`src/types/`)
+
+```
+src/types/
+├── index.ts               # Exported types
+├── base-form.ts           # Form types
+└── data-table.ts          # Table types
+```
+
+### File Naming Conventions
+
+- **Components**: `kebab-case.tsx` (e.g., `app-sidebar.tsx`)
+- **Utilities**: `kebab-case.ts` (e.g., `use-mobile.tsx`)
+- **Routes**: Next.js conventions (`page.tsx`, `layout.tsx`, `[param]/`)
+- **Types**: `kebab-case.ts`
+
+---
+
+## 8. Figma Integration Workflow (MCP)
+
+### Step-by-Step Process
+
+1. **Extract Figma Node Data**
+   ```typescript
+   // Use Figma MCP tools to get design context
+   // The tool will return code + asset URLs
+   ```
+
+2. **Use Provided Assets**
+   - Assets served via Figma MCP Server endpoints (localhost URLs)
+   - **DO NOT** create placeholder images
+   - **DO NOT** import new icon packages
+   - Use localhost URLs directly in `<Image>` or `<img>` tags
+
+3. **Map Figma Tokens to CSS Variables**
+   ```css
+   /* globals.css */
+   :root {
+     --primary: oklch(...);  /* Map from Figma primary color */
+   }
+   ```
+
+4. **Create/Update Components**
+   - Use existing `src/components/ui/` components as base
+   - Apply Figma design via Tailwind classes
+   - Use `cn()` for className composition
+   - Follow variant pattern if multiple states
+
+5. **Apply Typography**
+   ```tsx
+   // Map Figma text styles to Tailwind + font variables
+   <h1 className="font-sans text-2xl font-bold">
+   ```
+
+6. **Implement Spacing**
+   ```tsx
+   // Use Tailwind spacing scale
+   <div className="p-4 gap-6">  // padding, gap from Figma
+   ```
+
+7. **Add Responsive Behavior**
+   ```tsx
+   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+   ```
+
+### Token Mapping Guide
+
+| Figma Token | CSS Variable | Tailwind Class |
+|-------------|--------------|----------------|
+| Primary Color | `--primary` | `bg-primary` |
+| Text Color | `--foreground` | `text-foreground` |
+| Background | `--background` | `bg-background` |
+| Border Color | `--border` | `border-border` |
+| Border Radius | `--radius-*` | `rounded-lg` |
+| Spacing (8px) | N/A | `p-2` or `gap-2` |
+| Spacing (16px) | N/A | `p-4` or `gap-4` |
+
+### Component Creation Template
+
+```typescript
+'use client';  // If client-side interaction needed
+
+import * as React from 'react';
+import { cn } from '@/lib/utils';
+import { cva, type VariantProps } from 'class-variance-authority';
+
+// Define variants based on Figma design states
+const componentVariants = cva(
+  "base-classes-from-figma",
+  {
+    variants: {
+      variant: {
+        default: "default-state-classes",
+        // other states from Figma
+      },
+      size: {
+        default: "default-size",
+        sm: "small-size",
+        lg: "large-size",
+      }
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default'
+    }
+  }
+);
+
+interface ComponentProps
+  extends React.ComponentProps<'div'>,
+    VariantProps<typeof componentVariants> {
+  // Additional props
+}
+
+function Component({ className, variant, size, ...props }: ComponentProps) {
+  return (
+    <div
+      data-slot='component-name'
+      className={cn(componentVariants({ variant, size, className }))}
+      {...props}
+    />
+  );
+}
+
+export { Component, componentVariants };
+export type { ComponentProps };
+```
+
+### Image Asset Integration
+
+```typescript
+// For Figma-provided image assets
+import Image from 'next/image';
+
+<Image
+  src="http://localhost:XXXX/assets/figma-image.png"  // From Figma MCP
+  alt="Description from Figma"
+  width={500}   // From Figma dimensions
+  height={300}  // From Figma dimensions
+  className="rounded-lg"  // From Figma border-radius
+/>
+```
+
+### Icon Integration
+
+```typescript
+// If Figma provides SVG via localhost
+<img 
+  src="http://localhost:XXXX/assets/icon.svg" 
+  alt="Icon name"
+  className="size-4"  // Size from Figma
+/>
+
+// Or use existing icon library if matching icon exists
+import { Icons } from '@/components/icons';
+<Icons.dashboard className="size-4" />
+```
+
+---
+
+## 9. Development Guidelines
+
+### Adding New Features
+
+1. Create feature folder in `src/features/[feature-name]/`
+2. Add components in `components/` subfolder
+3. Add route in `src/app/dashboard/[feature-name]/`
+4. Update navigation in `src/constants/data.ts` if needed
+
+### Adding New UI Components
+
+1. Use shadcn CLI: `npx shadcn@latest add [component-name]`
+2. Or manually create in `src/components/ui/`
+3. Follow the component pattern outlined above
+4. Export from component file
+
+### Styling New Components from Figma
+
+1. **Extract design tokens** (colors, spacing, typography)
+2. **Map to existing CSS variables** or create new ones
+3. **Use Tailwind utilities** as much as possible
+4. **Create variants** using CVA if multiple states exist
+5. **Ensure responsive** behavior with Tailwind breakpoints
+6. **Test dark mode** by toggling theme
+
+### Testing Checklist
+
+- [ ] Component renders correctly in light mode
+- [ ] Component renders correctly in dark mode
+- [ ] Responsive behavior works (mobile, tablet, desktop)
+- [ ] All interactive states work (hover, focus, active, disabled)
+- [ ] Accessibility: keyboard navigation, screen reader support
+- [ ] Type safety: no TypeScript errors
+- [ ] Follows existing patterns in codebase
+
+---
+
+## 10. Common Patterns & Examples
+
+### Button Component Example
+
+```typescript
+// src/components/ui/button.tsx
+import { cva, type VariantProps } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+
+const buttonVariants = cva(
+  "inline-flex items-center justify-center gap-2 rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        default: 'bg-primary text-primary-foreground hover:bg-primary/90',
+        destructive: 'bg-destructive text-white hover:bg-destructive/90',
+        outline: 'border bg-background hover:bg-accent',
+        ghost: 'hover:bg-accent hover:text-accent-foreground',
+      },
+      size: {
+        default: 'h-9 px-4 py-2',
+        sm: 'h-8 px-3',
+        lg: 'h-10 px-6',
+        icon: 'size-9'
+      }
+    },
+    defaultVariants: {
+      variant: 'default',
+      size: 'default'
+    }
+  }
+);
+
+export { buttonVariants };
+```
+
+### Card Component Example
+
+```typescript
+// src/components/ui/card.tsx
+import { cn } from '@/lib/utils';
+
+function Card({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot='card'
+      className={cn(
+        'bg-card text-card-foreground flex flex-col gap-6 rounded-xl border py-6 shadow-sm',
+        className
+      )}
+      {...props}
+    />
+  );
+}
+
+function CardHeader({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot='card-header'
+      className={cn('grid items-start gap-1.5 px-6', className)}
+      {...props}
+    />
+  );
+}
+
+// CardTitle, CardContent, CardFooter follow similar pattern
+```
+
+### Form Field Example
+
+```typescript
+// Pattern used in src/components/forms/form-input.tsx
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+
+<FormField
+  control={form.control}
+  name="fieldName"
+  render={({ field }) => (
+    <FormItem>
+      <FormLabel>
+        Label
+        {required && <span className="text-red-500">*</span>}
+      </FormLabel>
+      <FormControl>
+        <Input placeholder="Placeholder" {...field} />
+      </FormControl>
+      <FormMessage />
+    </FormItem>
+  )}
+/>
+```
+
+### Layout Pattern
+
+```typescript
+// Typical page layout
+import { Heading } from '@/components/ui/heading';
+import { Separator } from '@/components/ui/separator';
+import PageContainer from '@/components/layout/page-container';
+
+export default function Page() {
+  return (
+    <PageContainer>
+      <div className="space-y-4">
+        <div className="flex items-start justify-between">
+          <Heading
+            title="Page Title"
+            description="Page description"
+          />
+          {/* Actions */}
+        </div>
+        <Separator />
+        {/* Page content */}
+      </div>
+    </PageContainer>
+  );
+}
+```
+
+---
+
+## Summary
+
+This design system is built on:
+- **Tailwind CSS v4** for styling
+- **shadcn/ui** components (Radix UI + Tailwind)
+- **Next.js 15** with App Router
+- **TypeScript** with strict mode
+- **CSS variables** for theming (OKLCH color space)
+- **Feature-based architecture** for scalability
+
+When integrating Figma designs:
+1. Use the Figma MCP Server's asset endpoints directly
+2. Map Figma tokens to existing CSS variables
+3. Compose with Tailwind utilities
+4. Follow existing component patterns
+5. Ensure responsive and accessible implementation
+6. Test in both light and dark modes
