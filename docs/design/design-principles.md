@@ -1,4 +1,4 @@
-# S-Tier SaaS Dashboard Design Checklist (Inspired by Stripe, Airbnb, Linear)
+# SaaS Dashboard Design Checklist
 
 ## I. Core Design Philosophy & Strategy
 

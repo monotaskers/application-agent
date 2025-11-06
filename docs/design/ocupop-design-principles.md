@@ -5,7 +5,7 @@
 ### Foundation Principles
 
 *   [ ] **Purpose Over Polish:** Every design decision serves a clear functional purpose. Beautiful work that doesn't solve the problem is a failure. Getting shit done is our love language.
-*   [ான] **Authentic Communication:** Design with honesty and directness. No unnecessary decoration or complexity that obscures the message. Zero ego means the work speaks for itself.
+*   [ ] **Authentic Communication:** Design with honesty and directness. No unnecessary decoration or complexity that obscures the message. Zero ego means the work speaks for itself.
 *   [ ] **Human-Centered Simplicity:** Complex problems deserve elegant solutions. Simplify relentlessly while maintaining warmth and approachability.
 *   [ ] **Bold Clarity:** Make confident design choices. Strong, memorable forms that communicate instantly and work across all contexts.
 *   [ ] **Collaborative Craft:** Great design emerges from deep listening and genuine partnership. We're business therapists who work WITH clients, not FOR them.
