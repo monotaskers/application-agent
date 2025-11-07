@@ -11,6 +11,12 @@
         "mcp"
       ]
     },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "@playwright/mcp@latest"
+      ]
+    },
     "sentry": {
       "url": "https://mcp.sentry.dev/mcp/ocupop-d9/ocupop-admin-agent"
     }
