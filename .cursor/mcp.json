@@ -11,7 +11,7 @@
         "mcp"
       ]
     },
-    "Sentry": {
+    "sentry": {
       "url": "https://mcp.sentry.dev/mcp/ocupop-d9/ocupop-admin-agent"
     }
   }
