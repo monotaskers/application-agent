@@ -6,19 +6,22 @@
     },
     "shadcn": {
       "command": "npx",
-      "args": [
-        "shadcn@latest",
-        "mcp"
-      ]
+      "args": ["shadcn@latest", "mcp"]
     },
     "playwright": {
       "command": "npx",
-      "args": [
-        "@playwright/mcp@latest"
-      ]
+      "args": ["@playwright/mcp@latest"]
     },
     "sentry": {
       "url": "https://mcp.sentry.dev/mcp/ocupop-d9/ocupop-admin-agent"
+    },
+    "supabase": {
+      "type": "http",
+      "url": "https://mcp.supabase.com/mcp?project_ref=grunqujpnjklxnwcrnde"
+    },
+    "remix-icon": {
+      "command": "npx",
+      "args": ["-y", "remixicon-mcp"]
     }
   }
 }

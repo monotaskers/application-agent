@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { usePathname } from 'next/navigation';
-import { useMemo } from 'react';
+import { usePathname } from "next/navigation";
+import { useMemo } from "react";
 
 type BreadcrumbItem = {
   title: string;
@@ -10,15 +10,8 @@ type BreadcrumbItem = {
 
 // This allows to add custom title as well
 const routeMapping: Record<string, BreadcrumbItem[]> = {
-  '/dashboard': [{ title: 'Dashboard', link: '/dashboard' }],
-  '/dashboard/employee': [
-    { title: 'Dashboard', link: '/dashboard' },
-    { title: 'Employee', link: '/dashboard/employee' }
-  ],
-  '/dashboard/product': [
-    { title: 'Dashboard', link: '/dashboard' },
-    { title: 'Product', link: '/dashboard/product' }
-  ]
+  "/admin": [], // Admin is not a navigatable route, so no breadcrumbs
+  "/admin/employee": [{ title: "Employee", link: "/admin/employee" }],
   // Add more custom mappings as needed
 };
 
@@ -32,12 +25,19 @@ export function useBreadcrumbs(): BreadcrumbItem[] {
     }
 
     // If no exact match, fall back to generating breadcrumbs from the path
-    const segments = pathname.split('/').filter(Boolean);
-    return segments.map((segment, index) => {
-      const path = `/${segments.slice(0, index + 1).join('/')}`;
+    const segments = pathname.split("/").filter(Boolean);
+    // Filter out "admin" segment as it's not a navigatable route
+    const filteredSegments = segments.filter((segment) => segment !== "admin");
+
+    return filteredSegments.map((segment, index) => {
+      // Reconstruct path including "admin" prefix for navigation, but don't show it in breadcrumbs
+      const pathSegments = ["admin", ...filteredSegments.slice(0, index + 1)];
+      const path = `/${pathSegments.join("/")}`;
+
+      // Default: capitalize first letter
       return {
         title: segment.charAt(0).toUpperCase() + segment.slice(1),
-        link: path
+        link: path,
       };
     });
   }, [pathname]);

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { IconBrandGithub } from '@tabler/icons-react';
+import React from "react";
+import { Button } from "@/components/ui/button";
+import { RiGithubLine } from "@remixicon/react";
 
 export default function CtaGithub() {
   // Use environment variable for GitHub repository URL
@@ -12,14 +12,14 @@ export default function CtaGithub() {
   }
 
   return (
-    <Button variant='ghost' asChild size='sm' className='hidden sm:flex'>
+    <Button variant="ghost" asChild size="sm" className="hidden sm:flex">
       <a
         href={githubUrl}
-        rel='noopener noreferrer'
-        target='_blank'
-        className='dark:text-foreground'
+        rel="noopener noreferrer"
+        target="_blank"
+        className="dark:text-foreground"
       >
-        <IconBrandGithub />
+        <RiGithubLine />
       </a>
     </Button>
   );

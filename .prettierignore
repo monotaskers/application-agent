@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+coverage/
+
+# Generated files
+*.tsbuildinfo
+next-env.d.ts
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Config files
+*.config.js
+*.config.mjs
+*.config.ts
+
+# Misc
+.DS_Store
+*.log
+.env*
+
+# Specs
+specs/
+.specify/
+
+# Docs
+docs/
+
+# Cursor
+.cursor/
+
+# Storybook
+storybook-static/
+.storybook-static/

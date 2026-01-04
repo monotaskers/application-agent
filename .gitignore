@@ -30,6 +30,11 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
+# logs
+*.log
+*.log.*
+**/*.log
+
 # env files (can opt-in for committing if needed)
 .env*
 # check in example files
@@ -48,13 +53,28 @@ next-env.d.ts
 # lock files
 package-lock.json
 yarn.lock
-pnpm-lock.yaml
+# pnpm-lock.yaml - committed for Vercel builds
 bun.lockb
 
 # python
 agent/venv/
 agent/__pycache__/
 agent/.venv/
-# clerk configuration (can include secrets)
-/.clerk/
 
+# Supabase local development
+# Keep migrations/ and config.toml in git, but ignore temp files
+supabase/.branches/
+supabase/.temp/
+supabase/.seed/
+supabase/.logs/
+
+/tmp
+/_local
+
+# http://localhost:3000/api/jwt to get the JWT token for backend authentication
+# We do not want to commit to the repo, used for local development only.
+src/app/api/jwt/
+
+# Storybook
+.storybook-static/
+storybook-static/

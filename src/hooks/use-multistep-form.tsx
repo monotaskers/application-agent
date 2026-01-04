@@ -1,4 +1,4 @@
-import { ReactElement, useCallback, useState } from 'react';
+import { ReactElement, useCallback, useState } from "react";
 
 interface UseMultistepFormReturn {
   currentStepIndex: number;
@@ -11,7 +11,9 @@ interface UseMultistepFormReturn {
   back: () => void;
 }
 
-export default function useMultistepForm(steps: ReactElement[]): UseMultistepFormReturn {
+export default function useMultistepForm(
+  steps: ReactElement[]
+): UseMultistepFormReturn {
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
 
   const next = useCallback((): void => {
@@ -34,6 +36,6 @@ export default function useMultistepForm(steps: ReactElement[]): UseMultistepFor
     isLastStep: currentStepIndex === steps.length - 1,
     goTo,
     next,
-    back
+    back,
   };
 }
