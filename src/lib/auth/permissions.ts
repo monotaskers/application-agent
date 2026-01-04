@@ -85,6 +85,8 @@ export const ROLE_PERMISSIONS: Record<
   member: [
     PERMISSIONS.interviews.view,
     PERMISSIONS.interviews.create,
+    PERMISSIONS.profiles.view,
+    PERMISSIONS.profiles.edit,
   ] as const,
 
   admin: [
