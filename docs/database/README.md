@@ -12,7 +12,7 @@ This documentation provides a complete guide for maintaining database context ac
 
 **CRITICAL:** Before making any schema-related changes or assumptions:
 
-1. **Always verify against remote schema** - Check `docs/database/remote-schema-reference.md` first
+1. **Always verify against remote schema** - Check `docs/database/schema.md` and `docs/database/schema.sql` first
 2. **Never assume local files are accurate** - Local schema files may be out of sync
 3. **Remote database is authoritative** - All schema decisions must align with production database
 4. **No database schema changes** - All columns are required; no columns should be removed
@@ -33,14 +33,10 @@ The database context consists of several interconnected files:
 
 ### Core Files
 
-- `docs/database/remote-schema-reference.md` - **Current remote schema snapshot** (pulled directly from production, authoritative reference)
 - `docs/database/schema.md` - Human-readable schema documentation (manually maintained, must match remote)
 - `docs/database/schema.sql` - SQL schema export from remote database (auto-generated)
-- `docs/database/schema-validation.md` - Schema validation process and checklist
-- `docs/database/schema-change-log.md` - Schema change history and verification tracking
-- `supabase/schemas/base_schema.sql` - Base schema definition file (synced from remote)
-- `src/types/database.types.ts` - Auto-generated TypeScript types from remote database (see file header for regeneration instructions)
-- `supabase/migrations_backup/` - Backup of old migration files (archived, not used)
+- `supabase/schemas/base_schema.sql` - Base schema definition file (synced from schema.sql)
+- `src/types/database.types.ts` - Auto-generated TypeScript types from remote database
 
 ### Feature-Specific Documentation
 
@@ -87,41 +83,28 @@ When database schema changes are made on the remote:
    - Document any breaking changes
    - Use the agent prompts below to automate documentation updates
 
-6. **Update Remote Schema Reference** (if using MCP tools):
-
-   - Pull fresh schema snapshot: Use Supabase MCP tools to introspect remote database
-   - Update `docs/database/remote-schema-reference.md` with current schema state
-   - Document any findings or discrepancies
-
-7. **Update Feature-Specific Docs** (if applicable):
+6. **Update Feature-Specific Docs** (if applicable):
 
    - Review and update any feature-specific documentation files in `docs/database/`
    - Update relationship diagrams if entity relationships change
    - Document any schema fixes or discrepancies
 
-8. **Sync Local Database** (optional, for local development):
+7. **Sync Local Database** (optional, for local development):
    ```bash
    # Reset local database to match remote (this will wipe local data)
    supabase db reset
    ```
 
-9. **Update Schema Change Log**:
-   - Document changes in `docs/database/schema-change-log.md`
-   - Record date, type of change, and affected files
-
 ### 2. File Synchronization Checklist
 
 After any schema change on the remote database, verify:
 
-- [ ] Remote schema has been pulled/verified (check `docs/database/remote-schema-reference.md`)
 - [ ] `schema.sql` has been exported from remote and matches remote database structure
 - [ ] `supabase/schemas/base_schema.sql` is synchronized with `schema.sql`
 - [ ] `database.types.ts` has been regenerated from remote and reflects all tables, columns, and relationships
 - [ ] `schema.md` documents all tables and their purposes (manually updated to match remote)
-- [ ] Any feature-specific documentation references correct table/column names
 - [ ] TypeScript code compiles without type errors (`pnpm run type-check`)
 - [ ] Zod schemas in code match remote database structure
-- [ ] Schema change log updated (`docs/database/schema-change-log.md`)
 - [ ] Local database has been reset if needed for development (`supabase db reset`)
 
 ### 3. Documentation Update Procedures
@@ -162,105 +145,64 @@ When feature-specific changes occur:
 - Regenerate ER diagrams if structure changes
 - Document any schema fixes or workarounds
 
+## Creating schema.md
+
+If `schema.md` doesn't exist, create it by generating human-readable documentation from `schema.sql`:
+
+### Steps to Create schema.md
+
+1. **Ensure schema.sql is current**:
+   ```bash
+   supabase db dump --linked -s public -f docs/database/schema.sql
+   ```
+
+2. **Generate schema.md using AI agent**:
+   Use the prompt below with an AI agent to generate comprehensive documentation from `schema.sql`
+
+3. **Review and refine**:
+   - Verify all tables are documented
+   - Check that relationships are clearly explained
+   - Ensure indexes and constraints are documented
+
+### Prompt for Creating schema.md
+
+```
+Please create docs/database/schema.md by analyzing docs/database/schema.sql (or supabase/schemas/base_schema.sql). 
+
+Generate comprehensive human-readable documentation that includes:
+- Overview section explaining the database purpose
+- For each table:
+  - Purpose statement (use existing COMMENT ON TABLE if available)
+  - Complete column table with types, nullability, defaults, and descriptions (use COMMENT ON COLUMN if available)
+  - All constraints (primary keys, foreign keys, check constraints)
+  - Indexes
+  - RLS policies (if applicable)
+  - Triggers
+  - Notes on usage patterns and relationships
+- Relationships diagram showing foreign key relationships between tables
+- Indexes summary section
+- Functions documentation (if any)
+
+Use clear markdown formatting with proper headings, tables, and code blocks. Preserve any existing comments from the SQL schema.
+```
+
 ## Agent Prompts for Documentation Updates
 
-Use these prompts with AI agents to automate or assist with documentation maintenance:
+Use these prompts with AI agents to automate documentation maintenance:
 
 ### Updating schema.md After Schema Changes
 
-**Prompt:**
-
 ```
-I've updated the database schema. Please review docs/database/schema.sql (or supabase/schemas/base_schema.sql) and update docs/database/schema.md to reflect any new tables, columns, constraints, indexes, or relationships. Maintain the existing documentation format and structure. For each new table, include:
-- Purpose statement
-- Complete column table with types and descriptions
-- All constraints (primary keys, foreign keys, checks)
-- Indexes
-- RLS policies (if applicable)
-- Triggers
-- Notes on usage patterns
-
-Also update the relationships diagram and indexes summary sections if needed.
-```
-
-### Syncing Documentation After Remote Schema Changes
-
-**Prompt:**
-
-```
-I've made schema changes on the remote database and exported a fresh schema.sql. Please:
-1. Review docs/database/schema.sql (or supabase/schemas/base_schema.sql) to identify schema changes
-2. Compare with docs/database/schema.md
-3. Update schema.md to document any new tables, columns, or modified structures
-4. Verify that all foreign key relationships are documented
-5. Update the relationships diagram if entity relationships changed
+I've updated the database schema. Please review docs/database/schema.sql (or supabase/schemas/base_schema.sql) and update docs/database/schema.md to reflect any new tables, columns, constraints, indexes, or relationships. Maintain the existing documentation format and structure.
 ```
 
 ### Verifying Documentation Consistency
 
-**Prompt:**
-
 ```
-Please verify that the database documentation is consistent across all files:
-1. Compare docs/database/schema.sql (or supabase/schemas/base_schema.sql) with docs/database/schema.md - ensure all tables and columns are documented
+Please verify that the database documentation is consistent:
+1. Compare docs/database/schema.sql with docs/database/schema.md - ensure all tables and columns are documented
 2. Check that src/types/database.types.ts matches the schema structure
-3. Verify that any feature-specific documentation in docs/database/ references correct table and column names
-4. Identify any discrepancies or missing documentation
-5. Provide a report of findings and suggested updates
-```
-
-### Generating Documentation for New Tables
-
-**Prompt:**
-
-```
-A new table has been added to the database schema. Please:
-1. Review the CREATE TABLE statement in docs/database/schema.sql (or supabase/schemas/base_schema.sql)
-2. Generate comprehensive documentation for this table following the format in docs/database/schema.md
-3. Include all columns with their types, constraints, and descriptions
-4. Document all indexes, foreign keys, and constraints
-5. Add the table to the appropriate section in schema.md
-6. Update the relationships diagram to show how this table relates to others
-```
-
-### Updating Relationships Documentation
-
-**Prompt:**
-
-```
-The database schema relationships have changed. Please:
-1. Review docs/database/schema.sql (or supabase/schemas/base_schema.sql) to identify all foreign key relationships
-2. Update the relationships diagram in docs/database/schema.md
-3. Ensure all foreign key constraints are documented in the relevant table sections
-4. Verify that relationship descriptions are accurate and complete
-```
-
-### Bulk Documentation Update
-
-**Prompt:**
-
-```
-I've exported a fresh schema.sql from the database. Please:
-1. Compare the new schema.sql (or supabase/schemas/base_schema.sql) with the existing schema.md
-2. Identify all differences (new tables, new columns, modified columns, removed columns, new constraints, etc.)
-3. Update schema.md to match the current schema
-4. Preserve existing documentation quality and format
-5. Update the table of contents if new sections were added
-6. Update the relationships diagram to reflect current structure
-7. Update the indexes summary section
-```
-
-### Type Verification and Documentation Sync
-
-**Prompt:**
-
-```
-Please verify that the TypeScript types match the schema documentation:
-1. Compare src/types/database.types.ts with docs/database/schema.md
-2. Ensure all tables in the types are documented in schema.md
-3. Verify that column types match between TypeScript types and schema documentation
-4. Check that foreign key relationships are correctly documented
-5. Identify any discrepancies and suggest corrections
+3. Identify any discrepancies or missing documentation
 ```
 
 ## Key Commands Reference
@@ -359,9 +301,7 @@ Remote Supabase Database (SOURCE OF TRUTH)
 ## Maintenance Schedule
 
 - **After each remote schema change**: Export schema, sync base_schema.sql, regenerate types, update docs
-- **Weekly review**: Verify all files are in sync with remote
 - **Before releases**: Complete synchronization checklist
-- **Quarterly audit**: Review all documentation for accuracy
 
 ## Resetting Local Database to Match Remote
 
@@ -396,7 +336,7 @@ If your local database has diverged from remote or you want a fresh start:
 
 **Note**: The local database reset will remove all local data. The local database is primarily for development and testing. Production data lives on the remote database.
 
-## Quick Reference: Common Tasks
+## Quick Reference
 
 ### Making Schema Changes
 
@@ -404,32 +344,16 @@ If your local database has diverged from remote or you want a fresh start:
 2. Export schema: `supabase db dump --linked -s public -f docs/database/schema.sql`
 3. Sync base schema: `cp docs/database/schema.sql supabase/schemas/base_schema.sql`
 4. Regenerate types: `supabase gen types typescript --linked > src/types/database.types.ts`
-5. Update documentation: Use agent prompts below to update `schema.md`
-
-### Syncing Local Development Environment
-
-1. Export remote schema: `supabase db dump --linked -s public -f docs/database/schema.sql`
-2. Reset local database: `supabase db reset` (wipes local data)
-3. Regenerate types: `supabase gen types typescript --linked > src/types/database.types.ts`
+5. Update documentation: Use agent prompts above to update `schema.md`
 
 ### Verifying Everything is in Sync
 
-**Quick Validation:**
 ```bash
 # Run automated validation script
 pnpm run validate:schema
 ```
 
-**Manual Verification:**
-
-1. Check remote is linked: `supabase projects list`
-2. Export fresh schema: `supabase db dump --linked -s public -f docs/database/schema.sql`
-3. Compare with base_schema.sql: `diff docs/database/schema.sql supabase/schemas/base_schema.sql`
-4. Regenerate and check types: `supabase gen types typescript --linked > src/types/database.types.ts && pnpm run type-check`
-
 ## Related Documentation
 
 - Supabase CLI: https://supabase.com/docs/reference/cli
-- TypeScript Types: `src/types/database.types.ts`
 - Schema Documentation: `docs/database/schema.md`
-- Additional documentation: `docs/database/`

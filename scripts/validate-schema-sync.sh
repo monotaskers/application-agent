@@ -17,14 +17,14 @@ YELLOW='\033[1;33m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
 
-# 1. Check if remote schema reference exists
-echo "1️⃣ Checking remote schema reference..."
-if [ ! -f "docs/database/remote-schema-reference.md" ]; then
-  echo -e "${RED}❌ ERROR: docs/database/remote-schema-reference.md not found${NC}"
-  echo "   Run schema introspection to create this file"
+# 1. Check if schema documentation exists
+echo "1️⃣ Checking schema documentation..."
+if [ ! -f "docs/database/schema.md" ]; then
+  echo -e "${RED}❌ ERROR: docs/database/schema.md not found${NC}"
+  echo "   Create schema documentation based on schema.sql"
   ERRORS=$((ERRORS + 1))
 else
-  echo -e "${GREEN}✅ Remote schema reference exists${NC}"
+  echo -e "${GREEN}✅ Schema documentation exists${NC}"
 fi
 
 # 2. Check if schema.sql exists
@@ -73,7 +73,7 @@ fi
 # 5. Check for common deprecated field references
 echo ""
 echo "5️⃣ Checking for deprecated field references..."
-DEPRECATED_REFS=$(rg -i "maturity_level|total_score.*\b1500\b|size_classification|survey_version|assessment_snapshot" src/ --type ts --type tsx 2>/dev/null | grep -v "__tests__" | grep -v ".test." | grep -v "remote-schema-reference.md" | grep -v "schema-change-log.md" | grep -v "schema-validation.md" || true)
+DEPRECATED_REFS=$(rg -i "maturity_level|total_score.*\b1500\b|size_classification|survey_version|assessment_snapshot" src/ --type ts --type tsx 2>/dev/null | grep -v "__tests__" | grep -v ".test." | grep -v "schema.md" | grep -v "schema-change-log.md" | grep -v "schema-validation.md" || true)
 
 if [ -n "$DEPRECATED_REFS" ]; then
   echo -e "${YELLOW}⚠️  WARNING: Found references to deprecated/non-existent fields:${NC}"
@@ -89,7 +89,7 @@ fi
 # 6. Check for backward compatibility comments
 echo ""
 echo "6️⃣ Checking for backward compatibility code..."
-BC_REFS=$(rg -i "backward compat|backwards compat|old schema|legacy.*schema" src/ --type ts --type tsx 2>/dev/null | grep -v "__tests__" | grep -v ".test." | grep -v "remote-schema-reference.md" | grep -v "CONTEXT.md" || true)
+BC_REFS=$(rg -i "backward compat|backwards compat|old schema|legacy.*schema" src/ --type ts --type tsx 2>/dev/null | grep -v "__tests__" | grep -v ".test." | grep -v "schema.md" | grep -v "CONTEXT.md" || true)
 
 if [ -n "$BC_REFS" ]; then
   echo -e "${YELLOW}⚠️  WARNING: Found backward compatibility references (project does not maintain BC):${NC}"
