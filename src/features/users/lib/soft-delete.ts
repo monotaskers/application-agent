@@ -5,6 +5,7 @@
 
 import { createAdminClient } from "@/utils/supabase/admin";
 import type { User } from "../types/user.types";
+import type { UserRole } from "@/features/auth/schemas/role.schema";
 
 /**
  * Soft deletes a user by setting deleted_at timestamp
@@ -49,18 +50,41 @@ export async function softDeleteUser(userId: string): Promise<User> {
 
   const company = (profile as { companies?: { name: string } | null }).companies;
 
-  // TODO: Fetch role from auth.users.app_metadata
+  // Fetch role and email from auth.users
+  let role: UserRole = "member";
+  let authEmail: string | null = null;
+  try {
+    const { data: authUserData } = await supabase.auth.admin.getUserById(
+      profile.id
+    );
+    if (authUserData?.user) {
+      const { getUserRole } = await import("@/lib/auth/roles");
+      role = getUserRole(authUserData.user);
+      authEmail = authUserData.user.email || null;
+    }
+  } catch {
+    // If user not found in auth, use default role
+    role = "member";
+  }
+
   return {
     id: profile.id,
-    email: profile.email || null,
-    role: "member" as const,
+    // Use profiles.email if set, otherwise fallback to auth.users.email
+    email: profile.email || authEmail || null,
+    role,
     full_name: profile.full_name,
     avatar_url: profile.avatar_url,
     bio: profile.bio,
     phone: profile.phone,
-    company_email: profile.company_email,
     company_id: (profile as { company_id?: string | null }).company_id || null,
     company_name: company?.name || null,
+    address_1: (profile as { address_1?: string | null }).address_1 || null,
+    address_2: (profile as { address_2?: string | null }).address_2 || null,
+    city: (profile as { city?: string | null }).city || null,
+    state: (profile as { state?: string | null }).state || null,
+    postal_code: (profile as { postal_code?: string | null }).postal_code || null,
+    country: (profile as { country?: string | null }).country || null,
+    title: (profile as { title?: string | null }).title || null,
     deleted_at: (profile as { deleted_at?: string | null }).deleted_at || null,
     created_at: profile.created_at,
     updated_at: profile.updated_at,
@@ -110,18 +134,41 @@ export async function restoreUser(userId: string): Promise<User> {
 
   const company = (profile as { companies?: { name: string } | null }).companies;
 
-  // TODO: Fetch role from auth.users.app_metadata
+  // Fetch role and email from auth.users
+  let role: UserRole = "member";
+  let authEmail: string | null = null;
+  try {
+    const { data: authUserData } = await supabase.auth.admin.getUserById(
+      profile.id
+    );
+    if (authUserData?.user) {
+      const { getUserRole } = await import("@/lib/auth/roles");
+      role = getUserRole(authUserData.user);
+      authEmail = authUserData.user.email || null;
+    }
+  } catch {
+    // If user not found in auth, use default role
+    role = "member";
+  }
+
   return {
     id: profile.id,
-    email: profile.email || null,
-    role: "member" as const,
+    // Use profiles.email if set, otherwise fallback to auth.users.email
+    email: profile.email || authEmail || null,
+    role,
     full_name: profile.full_name,
     avatar_url: profile.avatar_url,
     bio: profile.bio,
     phone: profile.phone,
-    company_email: profile.company_email,
     company_id: (profile as { company_id?: string | null }).company_id || null,
     company_name: company?.name || null,
+    address_1: (profile as { address_1?: string | null }).address_1 || null,
+    address_2: (profile as { address_2?: string | null }).address_2 || null,
+    city: (profile as { city?: string | null }).city || null,
+    state: (profile as { state?: string | null }).state || null,
+    postal_code: (profile as { postal_code?: string | null }).postal_code || null,
+    country: (profile as { country?: string | null }).country || null,
+    title: (profile as { title?: string | null }).title || null,
     deleted_at: null,
     created_at: profile.created_at,
     updated_at: profile.updated_at,

@@ -80,9 +80,9 @@ export async function fetchProfileServer(
   const limitedProfile: LimitedProfile = {
     id: profileData.id,
     full_name: profileData.full_name,
-    company_email: profileData.company_email,
     phone: profileData.phone,
     avatar_url: profileData.avatar_url,
+    title: (profileData as { title?: string | null }).title || null,
   };
 
   return limitedProfile;

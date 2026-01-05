@@ -101,9 +101,15 @@ export async function getUsers(
       avatar_url: profile.avatar_url,
       bio: profile.bio,
       phone: profile.phone,
-      company_email: profile.company_email,
       company_id: (profile as { company_id?: string | null }).company_id || null,
       company_name: company?.name || null,
+      address_1: (profile as { address_1?: string | null }).address_1 || null,
+      address_2: (profile as { address_2?: string | null }).address_2 || null,
+      city: (profile as { city?: string | null }).city || null,
+      state: (profile as { state?: string | null }).state || null,
+      postal_code: (profile as { postal_code?: string | null }).postal_code || null,
+      country: (profile as { country?: string | null }).country || null,
+      title: (profile as { title?: string | null }).title || null,
       deleted_at:
         (profile as { deleted_at?: string | null }).deleted_at || null,
       created_at: profile.created_at,
@@ -147,14 +153,16 @@ export async function getUserById(
     throw new Error(`Failed to fetch user: ${error.message}`);
   }
 
-  // Fetch role from auth.users.app_metadata
+  // Fetch role and email from auth.users
   let role: UserRole = "member";
+  let authEmail: string | null = null;
   try {
     const { data: authUserData } = await supabase.auth.admin.getUserById(
       data.id
     );
     if (authUserData?.user) {
       role = getUserRole(authUserData.user);
+      authEmail = authUserData.user.email || null;
     }
   } catch {
     // If user not found in auth, use default role
@@ -165,15 +173,23 @@ export async function getUserById(
 
   return {
     id: data.id,
-    email: data.email || null,
+    // Use profiles.email if set, otherwise fallback to auth.users.email
+    // This ensures OAuth users (with NULL profiles.email) still have an email value
+    email: data.email || authEmail || null,
     role,
     full_name: data.full_name,
     avatar_url: data.avatar_url,
     bio: data.bio,
     phone: data.phone,
-    company_email: data.company_email,
     company_id: (data as { company_id?: string | null }).company_id || null,
     company_name: company?.name || null,
+    address_1: (data as { address_1?: string | null }).address_1 || null,
+    address_2: (data as { address_2?: string | null }).address_2 || null,
+    city: (data as { city?: string | null }).city || null,
+    state: (data as { state?: string | null }).state || null,
+    postal_code: (data as { postal_code?: string | null }).postal_code || null,
+    country: (data as { country?: string | null }).country || null,
+    title: (data as { title?: string | null }).title || null,
     deleted_at: (data as { deleted_at?: string | null }).deleted_at || null,
     created_at: data.created_at,
     updated_at: data.updated_at,
@@ -232,7 +248,13 @@ export async function createUser(
       avatar_url: input.avatar_url || null,
       bio: input.bio || null,
       phone: input.phone || null,
-      company_email: input.company_email || null,
+      address_1: input.address_1 || null,
+      address_2: input.address_2 || null,
+      city: input.city || null,
+      state: input.state || null,
+      postal_code: input.postal_code || null,
+      country: input.country || null,
+      title: input.title || null,
       company_id: companyId,
     })
     .select("*, companies!profiles_company_id_fkey(id, name)")
@@ -254,9 +276,15 @@ export async function createUser(
     avatar_url: profile.avatar_url,
     bio: profile.bio,
     phone: profile.phone,
-    company_email: profile.company_email,
     company_id: (profile as { company_id?: string | null }).company_id || null,
     company_name: company?.name || null,
+    address_1: (profile as { address_1?: string | null }).address_1 || null,
+    address_2: (profile as { address_2?: string | null }).address_2 || null,
+    city: (profile as { city?: string | null }).city || null,
+    state: (profile as { state?: string | null }).state || null,
+    postal_code: (profile as { postal_code?: string | null }).postal_code || null,
+    country: (profile as { country?: string | null }).country || null,
+    title: (profile as { title?: string | null }).title || null,
     deleted_at: null,
     created_at: profile.created_at,
     updated_at: profile.updated_at,
@@ -313,8 +341,13 @@ export async function updateUser(
   if (input.avatar_url !== undefined) updateData.avatar_url = input.avatar_url;
   if (input.bio !== undefined) updateData.bio = input.bio;
   if (input.phone !== undefined) updateData.phone = input.phone;
-  if (input.company_email !== undefined)
-    updateData.company_email = input.company_email;
+  if (input.address_1 !== undefined) updateData.address_1 = input.address_1;
+  if (input.address_2 !== undefined) updateData.address_2 = input.address_2;
+  if (input.city !== undefined) updateData.city = input.city;
+  if (input.state !== undefined) updateData.state = input.state;
+  if (input.postal_code !== undefined) updateData.postal_code = input.postal_code;
+  if (input.country !== undefined) updateData.country = input.country;
+  if (input.title !== undefined) updateData.title = input.title;
 
   const { error: profileError } = await adminSupabase
     .from("profiles")

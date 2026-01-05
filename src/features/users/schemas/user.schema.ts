@@ -21,11 +21,13 @@ export const createUserSchema = z.object({
     .optional(),
   bio: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),
-  company_email: z
-    .string()
-    .email("Company email must be a valid email")
-    .nullable()
-    .optional(),
+  address_1: z.string().nullable().optional(),
+  address_2: z.string().nullable().optional(),
+  city: z.string().nullable().optional(),
+  state: z.string().nullable().optional(),
+  postal_code: z.string().nullable().optional(),
+  country: z.string().nullable().optional(),
+  title: z.string().nullable().optional(),
 });
 
 /**
@@ -43,11 +45,13 @@ export const updateUserSchema = z.object({
     .optional(),
   bio: z.string().nullable().optional(),
   phone: z.string().nullable().optional(),
-  company_email: z
-    .string()
-    .email("Company email must be a valid email")
-    .nullable()
-    .optional(),
+  address_1: z.string().nullable().optional(),
+  address_2: z.string().nullable().optional(),
+  city: z.string().nullable().optional(),
+  state: z.string().nullable().optional(),
+  postal_code: z.string().nullable().optional(),
+  country: z.string().nullable().optional(),
+  title: z.string().nullable().optional(),
   // Optional updated_at for optimistic locking (concurrent edit detection)
   updated_at: z.string().datetime().optional(),
 });

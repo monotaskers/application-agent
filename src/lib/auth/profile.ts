@@ -134,17 +134,27 @@ export async function createProfile(
   }
 
   // Determine company assignment based on email domain
+  // Use auth.users.email for company assignment (source of truth for authentication)
   const companyId = await assignCompanyByEmail(user.email);
 
   const profileData = {
     id: user.id,
+    // Sync email from auth.users.email as initial value
+    // Users can update profiles.email independently later if needed
+    email: input?.email ?? user.email ?? null,
     full_name: input?.full_name ?? null,
     bio: input?.bio ?? null,
     avatar_url: input?.avatar_url ?? null,
-    company_email: input?.company_email ?? null,
     phone: input?.phone ?? null,
     dashboard_layout_preferences: input?.dashboard_layout_preferences ?? null,
     company_id: companyId,
+    address_1: input?.address_1 ?? null,
+    address_2: input?.address_2 ?? null,
+    city: input?.city ?? null,
+    state: input?.state ?? null,
+    postal_code: input?.postal_code ?? null,
+    country: input?.country ?? null,
+    title: input?.title ?? null,
   };
 
   const { data, error } = await supabase

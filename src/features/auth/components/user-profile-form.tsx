@@ -60,11 +60,17 @@ export function UserProfileForm({
       full_name: initialProfile?.full_name ?? null,
       bio: initialProfile?.bio ?? null,
       avatar_url: initialProfile?.avatar_url ?? null,
-      company_email: initialProfile?.company_email ?? null,
       company_id: initialProfile?.company_id ?? null,
       phone: initialProfile?.phone ?? null,
       dashboard_layout_preferences:
         initialProfile?.dashboard_layout_preferences ?? null,
+      address_1: initialProfile?.address_1 ?? null,
+      address_2: initialProfile?.address_2 ?? null,
+      city: initialProfile?.city ?? null,
+      state: initialProfile?.state ?? null,
+      postal_code: initialProfile?.postal_code ?? null,
+      country: initialProfile?.country ?? null,
+      title: initialProfile?.title ?? null,
     },
   });
 
@@ -77,11 +83,17 @@ export function UserProfileForm({
         full_name: initialProfile.full_name ?? null,
         bio: initialProfile.bio ?? null,
         avatar_url: initialProfile.avatar_url ?? null,
-        company_email: initialProfile.company_email ?? null,
         company_id: initialProfile.company_id ?? null,
         phone: initialProfile.phone ?? null,
         dashboard_layout_preferences:
           initialProfile.dashboard_layout_preferences ?? null,
+        address_1: initialProfile.address_1 ?? null,
+        address_2: initialProfile.address_2 ?? null,
+        city: initialProfile.city ?? null,
+        state: initialProfile.state ?? null,
+        postal_code: initialProfile.postal_code ?? null,
+        country: initialProfile.country ?? null,
+        title: initialProfile.title ?? null,
       });
     }
   }, [initialProfile, reset]);
@@ -249,29 +261,6 @@ export function UserProfileForm({
         <p className="text-xs text-muted-foreground mt-1 font-sans">
           Select the company you belong to
         </p>
-      </div>
-
-      <div>
-        <Label htmlFor="company_email" className="font-sans font-medium">
-          Company Email
-        </Label>
-        <Input
-          id="company_email"
-          type="email"
-          {...register("company_email")}
-          placeholder="company@example.com"
-          className="font-sans"
-          aria-invalid={errors.company_email ? "true" : "false"}
-          aria-describedby={
-            errors.company_email ? "company-email-error" : undefined
-          }
-          disabled={isSubmitting}
-        />
-        {errors.company_email && (
-          <p id="company-email-error" className="text-sm text-red-500 mt-1">
-            {errors.company_email.message}
-          </p>
-        )}
       </div>
 
       <div>

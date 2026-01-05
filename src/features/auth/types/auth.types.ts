@@ -42,7 +42,7 @@ export interface AuthContext {
 export interface LimitedProfile {
   id: string;
   full_name: string | null;
-  company_email: string | null;
   phone: string | null;
   avatar_url: string | null;
+  title: string | null;
 }

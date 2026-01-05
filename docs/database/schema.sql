@@ -82,14 +82,19 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "full_name" "text",
     "bio" "text",
     "avatar_url" "text",
-    "company_email" "text",
     "phone" "text",
     "dashboard_layout_preferences" "jsonb",
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "deleted_at" timestamp with time zone,
     "company_id" "uuid",
-    CONSTRAINT "profiles_company_email_format" CHECK ((("company_email" IS NULL) OR ("company_email" ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$'::"text"))),
+    "address_1" "text",
+    "address_2" "text",
+    "city" "text",
+    "state" "text",
+    "postal_code" "text",
+    "country" "text" DEFAULT 'US'::"text",
+    "title" "text",
     CONSTRAINT "profiles_email_format" CHECK ((("email" IS NULL) OR ("email" ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$'::"text"))),
     CONSTRAINT "profiles_full_name_length" CHECK ((("full_name" IS NULL) OR ("length"("full_name") <= 255))),
     CONSTRAINT "profiles_phone_length" CHECK ((("phone" IS NULL) OR (("length"("phone") >= 5) AND ("length"("phone") <= 20))))
@@ -123,10 +128,6 @@ COMMENT ON COLUMN "public"."profiles"."avatar_url" IS 'URL to user avatar image'
 
 
 
-COMMENT ON COLUMN "public"."profiles"."company_email" IS 'User company email address';
-
-
-
 COMMENT ON COLUMN "public"."profiles"."phone" IS 'User phone number (5-20 characters)';
 
 
@@ -151,6 +152,34 @@ COMMENT ON COLUMN "public"."profiles"."company_id" IS 'Foreign key referencing c
 
 
 
+COMMENT ON COLUMN "public"."profiles"."address_1" IS 'Primary address line (street address, PO box, etc.)';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."address_2" IS 'Secondary address line (apartment, suite, unit, building, floor, etc.)';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."city" IS 'City or locality name';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."state" IS 'State, province, or region code';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."postal_code" IS 'Postal or ZIP code';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."country" IS 'Country code (defaults to US)';
+
+
+
+COMMENT ON COLUMN "public"."profiles"."title" IS 'User job title or role';
+
+
+
 ALTER TABLE ONLY "public"."companies"
     ADD CONSTRAINT "companies_name_key" UNIQUE ("name");
 
@@ -167,10 +196,6 @@ ALTER TABLE ONLY "public"."profiles"
 
 
 CREATE INDEX "companies_deleted_at_idx" ON "public"."companies" USING "btree" ("deleted_at") WHERE ("deleted_at" IS NULL);
-
-
-
-CREATE INDEX "profiles_company_email_idx" ON "public"."profiles" USING "btree" ("company_email") WHERE ("company_email" IS NOT NULL);
 
 
 

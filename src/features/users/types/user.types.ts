@@ -25,9 +25,15 @@ export interface User {
   avatar_url: string | null;
   bio: string | null;
   phone: string | null;
-  company_email: string | null;
   company_id: string | null;
   company_name: string | null;
+  address_1: string | null;
+  address_2: string | null;
+  city: string | null;
+  state: string | null;
+  postal_code: string | null;
+  country: string | null;
+  title: string | null;
   deleted_at: string | null;
   created_at: string;
   updated_at: string;

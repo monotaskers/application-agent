@@ -14,10 +14,16 @@ export const profileSchema = z.object({
   full_name: z.string().max(255).nullable(),
   bio: z.string().nullable(),
   avatar_url: z.string().url().nullable(),
-  company_email: z.string().email().nullable(),
   company_id: z.string().uuid().nullable(),
   phone: z.string().min(5).max(20).nullable(),
   dashboard_layout_preferences: z.record(z.unknown()).nullable(),
+  address_1: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
+  address_2: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
+  city: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
+  state: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
+  postal_code: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
+  country: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
+  title: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
   created_at: z
     .union([z.string(), z.date()])
     .transform((val) => {
@@ -47,13 +53,20 @@ export const profileSchema = z.object({
  * All fields are optional since users may only update specific fields
  */
 export const updateProfileInputSchema = z.object({
+  email: z.string().email().nullable().optional(),
   full_name: z.string().max(255).nullable().optional(),
   bio: z.string().nullable().optional(),
   avatar_url: z.string().url().nullable().optional(),
-  company_email: z.string().email().nullable().optional(),
   company_id: z.string().uuid().nullable().optional(),
   phone: z.string().min(5).max(20).nullable().optional(),
   dashboard_layout_preferences: z.record(z.unknown()).nullable().optional(),
+  address_1: z.string().nullable().optional(),
+  address_2: z.string().nullable().optional(),
+  city: z.string().nullable().optional(),
+  state: z.string().nullable().optional(),
+  postal_code: z.string().nullable().optional(),
+  country: z.string().nullable().optional(),
+  title: z.string().nullable().optional(),
 });
 
 /**

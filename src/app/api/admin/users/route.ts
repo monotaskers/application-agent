@@ -133,7 +133,13 @@ export const GET = withAuth(async (request: NextRequest) => {
  * - avatar_url: User avatar URL (optional)
  * - bio: User bio (optional)
  * - phone: User phone number (optional)
- * - company_email: User's company email (optional)
+ * - address_1: Primary address line (optional)
+ * - address_2: Secondary address line (optional)
+ * - city: City name (optional)
+ * - state: State or province code (optional)
+ * - postal_code: Postal or ZIP code (optional)
+ * - country: Country code (optional, defaults to US)
+ * - title: Job title or role (optional)
  *
  * @param request - Next.js request object with user data in body
  * @param context - Authentication context from withAuth

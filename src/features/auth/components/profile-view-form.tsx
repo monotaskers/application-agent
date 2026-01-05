@@ -60,16 +60,16 @@ export function ProfileViewForm({
         </div>
 
         <div>
-          <Label htmlFor="company_email" className="font-sans font-medium">
-            Company Email
+          <Label htmlFor="title" className="font-sans font-medium">
+            Title
           </Label>
           <Input
-            id="company_email"
-            type="email"
-            value={profile.company_email ?? ""}
+            id="title"
+            type="text"
+            value={profile.title ?? ""}
             disabled
             className="font-sans bg-muted"
-            aria-label="Company email (read-only)"
+            aria-label="Title (read-only)"
           />
         </div>
 
