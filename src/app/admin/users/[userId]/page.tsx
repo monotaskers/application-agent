@@ -4,11 +4,12 @@
  *
  * Page for viewing and editing user details.
  * Displays user information and allows updates to profile, role, and company association.
+ * Supports both admin view (full user management) and profile view (limited read-only).
  */
 
 import { type ReactElement } from "react";
 import { notFound } from "next/navigation";
-import { requirePermission } from "@/lib/auth/gateways/server";
+import { requireAnyPermission } from "@/lib/auth/gateways/server";
 import { hasPermission } from "@/lib/auth/permission-checker";
 import { PERMISSIONS } from "@/lib/auth/permissions";
 import { fetchUserServer } from "@/features/users/lib/fetch-user-server";
@@ -25,6 +26,8 @@ export const revalidate = 60;
  *
  * Fetches user data on the server and renders with client components
  * for interactivity. Handles authentication, authorization, and 404 errors.
+ * Supports both admin view (users.view permission) and limited profile view
+ * (profiles.view permission).
  *
  * @param props - Component props with route parameters
  * @param props.params - Route parameters containing user ID
@@ -37,23 +40,46 @@ export default async function UserDetailPage({
 }): Promise<ReactElement> {
   const { userId } = await params;
 
-  // Check authentication and view permission
-  const { user } = await requirePermission(PERMISSIONS.users.view);
+  // Check authentication - allow either users.view (admin) or profiles.view (member)
+  const { user: currentUser } = await requireAnyPermission([
+    PERMISSIONS.users.view,
+    PERMISSIONS.profiles.view,
+  ]);
 
-  // Fetch user data
-  const userData = await fetchUserServer(userId);
+  // Determine if user has admin view permission
+  const hasAdminView = await hasPermission(
+    currentUser,
+    PERMISSIONS.users.view
+  );
 
-  // Handle not found
+  // Fetch user data with appropriate view mode
+  const userData = await fetchUserServer(userId, {
+    viewerUserId: currentUser.id,
+    limitedView: !hasAdminView,
+  });
+
+  // Handle not found (profile doesn't exist, soft-deleted, or no relationship)
   if (!userData) {
     notFound();
   }
 
-  // Check action-level permissions
-  const canEdit = await hasPermission(user, PERMISSIONS.users.edit);
-  const canDelete = await hasPermission(user, PERMISSIONS.users.delete);
+  // Check action-level permissions (only for admin view)
+  const canEdit =
+    hasAdminView && (await hasPermission(currentUser, PERMISSIONS.users.edit));
+  const canDelete =
+    hasAdminView &&
+    (await hasPermission(currentUser, PERMISSIONS.users.delete));
+
+  // Determine view mode
+  const viewMode = hasAdminView ? "admin" : "profile";
 
   // Render with client component for interactivity
   return (
-    <UserDetailClient user={userData} canEdit={canEdit} canDelete={canDelete} />
+    <UserDetailClient
+      user={userData}
+      viewMode={viewMode}
+      canEdit={canEdit}
+      canDelete={canDelete}
+    />
   );
 }
