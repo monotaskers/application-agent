@@ -129,7 +129,6 @@ This starts both the Next.js UI server (port 3000) and the PydanticAI agent serv
 
 ### Development Tools
 
-- **Storybook 9.1.16** - Component development and documentation environment
 - **Vitest** - Fast unit test framework
 - **React Testing Library** - Component testing utilities
 - **ESLint** - Code linting
@@ -175,11 +174,6 @@ This starts both the Next.js UI server (port 3000) and the PydanticAI agent serv
 - `test:watch` - Run tests in watch mode
 - `test:coverage` - Run tests with coverage report
 - `test:ui` - Run tests with Vitest UI
-
-### Storybook
-
-- `storybook` - Start Storybook development server (port 6006)
-- `build-storybook` - Build static Storybook documentation
 
 ### Validation
 
@@ -288,29 +282,6 @@ pnpm test:coverage
 # Run tests with UI
 pnpm test:ui
 ```
-
-### Component Development with Storybook
-
-Storybook enables isolated component development and documentation. See [`specs/001-storybook-setup/README.md`](specs/001-storybook-setup/README.md) for complete documentation.
-
-```bash
-# Start Storybook development server
-pnpm run storybook
-
-# Build static Storybook documentation
-pnpm run build-storybook
-```
-
-**Features:**
-
-- View and interact with 15+ UI components in isolation
-- Test components across 5 theme variants
-- Interactive controls for real-time prop modification
-- Automatic documentation generation
-- Accessibility testing with a11y addon
-- Responsive testing with viewport addon
-
-**Quick Start:** Open `http://localhost:6006/` after running `pnpm run storybook`
 
 ### Code Validation
 

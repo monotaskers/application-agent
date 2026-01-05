@@ -74,7 +74,3 @@ supabase/.logs/
 # http://localhost:3000/api/jwt to get the JWT token for backend authentication
 # We do not want to commit to the repo, used for local development only.
 src/app/api/jwt/
-
-# Storybook
-.storybook-static/
-storybook-static/
