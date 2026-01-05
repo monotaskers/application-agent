@@ -13,14 +13,14 @@ import { DeleteUserDialog } from "@/features/users/components/delete-user-dialog
 import { useRestoreUser } from "@/features/users/hooks/use-user-mutations";
 import { toast } from "sonner";
 import { Trash2, RotateCcw } from "lucide-react";
-import type { UserWithCompany } from "@/features/users/types/user.types";
+import type { User } from "@/features/users/types/user.types";
 
 /**
  * Props for UserDetailClient component
  */
 export interface UserDetailClientProps {
   /** User data to display */
-  user: UserWithCompany;
+  user: User;
   /** Whether user can edit */
   canEdit: boolean;
   /** Whether user can delete */

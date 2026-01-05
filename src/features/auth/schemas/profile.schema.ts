@@ -15,6 +15,7 @@ export const profileSchema = z.object({
   bio: z.string().nullable(),
   avatar_url: z.string().url().nullable(),
   company_email: z.string().email().nullable(),
+  company_id: z.string().uuid().nullable(),
   phone: z.string().min(5).max(20).nullable(),
   dashboard_layout_preferences: z.record(z.unknown()).nullable(),
   created_at: z
@@ -50,6 +51,7 @@ export const updateProfileInputSchema = z.object({
   bio: z.string().nullable().optional(),
   avatar_url: z.string().url().nullable().optional(),
   company_email: z.string().email().nullable().optional(),
+  company_id: z.string().uuid().nullable().optional(),
   phone: z.string().min(5).max(20).nullable().optional(),
   dashboard_layout_preferences: z.record(z.unknown()).nullable().optional(),
 });

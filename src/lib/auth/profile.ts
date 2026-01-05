@@ -14,6 +14,7 @@ import type {
   Profile,
   UpdateProfileInput,
 } from "@/features/auth/types/auth.types";
+import { assignCompanyByEmail } from "@/features/companies/lib/company-service";
 
 /**
  * Table name for profiles in Supabase
@@ -132,6 +133,9 @@ export async function createProfile(
     }
   }
 
+  // Determine company assignment based on email domain
+  const companyId = await assignCompanyByEmail(user.email);
+
   const profileData = {
     id: user.id,
     full_name: input?.full_name ?? null,
@@ -140,6 +144,7 @@ export async function createProfile(
     company_email: input?.company_email ?? null,
     phone: input?.phone ?? null,
     dashboard_layout_preferences: input?.dashboard_layout_preferences ?? null,
+    company_id: companyId,
   };
 
   const { data, error } = await supabase

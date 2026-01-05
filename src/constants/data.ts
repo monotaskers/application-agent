@@ -1,7 +1,38 @@
 import { NavItem } from "@/types";
 
 //Info: The following data is used for the sidebar navigation and Cmd K bar.
-export const navItems: NavItem[] = [];
+export const navItems: NavItem[] = [
+  {
+    title: "Users",
+    url: "/admin/users",
+    icon: "user2",
+    items: [
+      {
+        title: "All Users",
+        url: "/admin/users",
+      },
+      {
+        title: "Create User",
+        url: "/admin/users/new",
+      },
+    ],
+  },
+  {
+    title: "Companies",
+    url: "/admin/companies",
+    icon: "building",
+    items: [
+      {
+        title: "All Companies",
+        url: "/admin/companies",
+      },
+      {
+        title: "Create Company",
+        url: "/admin/companies/new",
+      },
+    ],
+  },
+];
 
 export interface SaleUser {
   id: number;

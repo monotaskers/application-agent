@@ -40,6 +40,42 @@ SET default_tablespace = '';
 SET default_table_access_method = "heap";
 
 
+CREATE TABLE IF NOT EXISTS "public"."companies" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "name" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "deleted_at" timestamp with time zone
+);
+
+
+ALTER TABLE "public"."companies" OWNER TO "postgres";
+
+
+COMMENT ON TABLE "public"."companies" IS 'Company/organization entities that users can belong to';
+
+
+
+COMMENT ON COLUMN "public"."companies"."id" IS 'Primary key (UUID)';
+
+
+
+COMMENT ON COLUMN "public"."companies"."name" IS 'Company name (unique)';
+
+
+
+COMMENT ON COLUMN "public"."companies"."created_at" IS 'Timestamp when company was created';
+
+
+
+COMMENT ON COLUMN "public"."companies"."updated_at" IS 'Timestamp when company was last updated (automatically maintained)';
+
+
+
+COMMENT ON COLUMN "public"."companies"."deleted_at" IS 'Soft delete timestamp (null = active, non-null = deleted)';
+
+
+
 CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "id" "uuid" NOT NULL,
     "email" "text",
@@ -52,6 +88,7 @@ CREATE TABLE IF NOT EXISTS "public"."profiles" (
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "updated_at" timestamp with time zone DEFAULT "now"() NOT NULL,
     "deleted_at" timestamp with time zone,
+    "company_id" "uuid",
     CONSTRAINT "profiles_company_email_format" CHECK ((("company_email" IS NULL) OR ("company_email" ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$'::"text"))),
     CONSTRAINT "profiles_email_format" CHECK ((("email" IS NULL) OR ("email" ~* '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}$'::"text"))),
     CONSTRAINT "profiles_full_name_length" CHECK ((("full_name" IS NULL) OR ("length"("full_name") <= 255))),
@@ -110,12 +147,34 @@ COMMENT ON COLUMN "public"."profiles"."deleted_at" IS 'Soft delete timestamp (nu
 
 
 
+COMMENT ON COLUMN "public"."profiles"."company_id" IS 'Foreign key referencing companies.id. Automatically assigned based on email domain.';
+
+
+
+ALTER TABLE ONLY "public"."companies"
+    ADD CONSTRAINT "companies_name_key" UNIQUE ("name");
+
+
+
+ALTER TABLE ONLY "public"."companies"
+    ADD CONSTRAINT "companies_pkey" PRIMARY KEY ("id");
+
+
+
 ALTER TABLE ONLY "public"."profiles"
     ADD CONSTRAINT "profiles_pkey" PRIMARY KEY ("id");
 
 
 
+CREATE INDEX "companies_deleted_at_idx" ON "public"."companies" USING "btree" ("deleted_at") WHERE ("deleted_at" IS NULL);
+
+
+
 CREATE INDEX "profiles_company_email_idx" ON "public"."profiles" USING "btree" ("company_email") WHERE ("company_email" IS NOT NULL);
+
+
+
+CREATE INDEX "profiles_company_id_idx" ON "public"."profiles" USING "btree" ("company_id") WHERE ("company_id" IS NOT NULL);
 
 
 
@@ -131,7 +190,16 @@ CREATE INDEX "profiles_email_idx" ON "public"."profiles" USING "btree" ("email")
 
 
 
+CREATE OR REPLACE TRIGGER "companies_updated_at" BEFORE UPDATE ON "public"."companies" FOR EACH ROW EXECUTE FUNCTION "public"."handle_updated_at"();
+
+
+
 CREATE OR REPLACE TRIGGER "profiles_updated_at" BEFORE UPDATE ON "public"."profiles" FOR EACH ROW EXECUTE FUNCTION "public"."handle_updated_at"();
+
+
+
+ALTER TABLE ONLY "public"."profiles"
+    ADD CONSTRAINT "profiles_company_id_fkey" FOREIGN KEY ("company_id") REFERENCES "public"."companies"("id") ON DELETE SET NULL;
 
 
 
@@ -148,8 +216,15 @@ CREATE POLICY "Users can update own profile" ON "public"."profiles" FOR UPDATE U
 
 
 
+CREATE POLICY "Users can view active companies" ON "public"."companies" FOR SELECT USING (("deleted_at" IS NULL));
+
+
+
 CREATE POLICY "Users can view own profile" ON "public"."profiles" FOR SELECT USING ((("auth"."uid"() = "id") AND ("deleted_at" IS NULL)));
 
+
+
+ALTER TABLE "public"."companies" ENABLE ROW LEVEL SECURITY;
 
 
 ALTER TABLE "public"."profiles" ENABLE ROW LEVEL SECURITY;
@@ -165,6 +240,12 @@ GRANT USAGE ON SCHEMA "public" TO "service_role";
 GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "anon";
 GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "authenticated";
 GRANT ALL ON FUNCTION "public"."handle_updated_at"() TO "service_role";
+
+
+
+GRANT ALL ON TABLE "public"."companies" TO "anon";
+GRANT ALL ON TABLE "public"."companies" TO "authenticated";
+GRANT ALL ON TABLE "public"."companies" TO "service_role";
 
 
 

@@ -165,20 +165,8 @@ export const POST = withAuth(async (request: NextRequest) => {
       // Continue with user creation success even if magic link fails
     }
 
-    // Return created user and optional company
-    const response: {
-      user: typeof user;
-      company?: typeof user.company;
-    } = {
-      user,
-    };
-
-    // Include company in response if it was created inline
-    if (validatedData.company && user.company) {
-      response.company = user.company;
-    }
-
-    return NextResponse.json(response, { status: 201 });
+    // Return created user
+    return NextResponse.json({ user }, { status: 201 });
   } catch (error) {
     // Handle Zod validation errors
     if (error instanceof z.ZodError) {

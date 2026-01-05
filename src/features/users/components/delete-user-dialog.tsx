@@ -20,14 +20,14 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useDeleteUser } from "../hooks/use-user-mutations";
-import type { UserWithCompany } from "../types/user.types";
+import type { User } from "../types/user.types";
 
 /**
  * Props for DeleteUserDialog component
  */
 export interface DeleteUserDialogProps {
   /** User to delete */
-  user: UserWithCompany;
+  user: User;
   /** Whether dialog is open */
   open: boolean;
   /** Handler for open state changes */

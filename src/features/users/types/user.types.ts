@@ -26,6 +26,8 @@ export interface User {
   bio: string | null;
   phone: string | null;
   company_email: string | null;
+  company_id: string | null;
+  company_name: string | null;
   deleted_at: string | null;
   created_at: string;
   updated_at: string;

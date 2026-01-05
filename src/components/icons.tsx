@@ -66,6 +66,7 @@ export const Icons = {
   media: RiImageLine,
   settings: RiSettingsLine,
   billing: RiBankCardLine,
+  building: RiBuildingLine,
   ellipsis: RiMoreFill,
   ellipsisVertical: RiMore2Fill,
   add: RiAddLine,

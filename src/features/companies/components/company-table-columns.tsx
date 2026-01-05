@@ -1,22 +1,17 @@
 /**
- * @fileoverview Column definitions for user data grid
- * @module features/users/components/user-table-columns
+ * @fileoverview Column definitions for company data grid
+ * @module features/companies/components/company-table-columns
  */
 
 import { type ColumnDef } from "@tanstack/react-table";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import type { User } from "../types/user.types";
+import type { Company } from "../lib/company-service";
 
 /**
  * Sortable column options
  */
-export type UserSortColumn =
-  | "full_name"
-  | "email"
-  | "role"
-  | "created_at"
-  | null;
+export type CompanySortColumn = "name" | "created_at" | null;
 
 /**
  * Maps column accessor key to sort column
@@ -24,31 +19,29 @@ export type UserSortColumn =
  * @param accessorKey - Column accessor key
  * @returns Sort column or null if not sortable
  */
-export function getUserSortColumn(accessorKey: string): UserSortColumn {
-  if (accessorKey === "full_name") return "full_name";
-  if (accessorKey === "email") return "email";
-  if (accessorKey === "role") return "role";
+export function getCompanySortColumn(accessorKey: string): CompanySortColumn {
+  if (accessorKey === "name") return "name";
   if (accessorKey === "created_at") return "created_at";
   return null;
 }
 
 /**
- * Creates column definitions for user data grid
+ * Creates column definitions for company data grid
  *
  * @param options - Configuration options
  * @param options.onSort - Sort handler function
  * @param options.renderSortIndicator - Function to render sort indicator
  * @returns Array of column definitions
  */
-export function createUserColumns(options: {
+export function createCompanyColumns(options: {
   onSort: (columnId: string) => void;
   renderSortIndicator: (columnId: string) => React.ReactNode;
-}): ColumnDef<User>[] {
+}): ColumnDef<Company>[] {
   const { onSort, renderSortIndicator } = options;
 
   return [
     {
-      accessorKey: "full_name",
+      accessorKey: "name",
       header: ({ column }) => {
         const isSortable = true;
         return (
@@ -64,16 +57,10 @@ export function createUserColumns(options: {
           </div>
         );
       },
-      cell: ({ row }) => (
-        <div>
-          {row.original.full_name || (
-            <span className="text-muted-foreground">No name</span>
-          )}
-        </div>
-      ),
+      cell: ({ row }) => <div>{row.original.name}</div>,
     },
     {
-      accessorKey: "email",
+      accessorKey: "created_at",
       header: ({ column }) => {
         const isSortable = true;
         return (
@@ -84,46 +71,14 @@ export function createUserColumns(options: {
             )}
             onClick={() => isSortable && onSort(column.id)}
           >
-            Email
+            Created
             {isSortable && renderSortIndicator(column.id)}
           </div>
         );
       },
       cell: ({ row }) => (
         <div>
-          {row.original.email || (
-            <span className="text-muted-foreground">No email</span>
-          )}
-        </div>
-      ),
-    },
-    {
-      accessorKey: "role",
-      header: ({ column }) => {
-        const isSortable = true;
-        return (
-          <div
-            className={cn(
-              "flex items-center",
-              isSortable && "cursor-pointer select-none hover:text-foreground"
-            )}
-            onClick={() => isSortable && onSort(column.id)}
-          >
-            Role
-            {isSortable && renderSortIndicator(column.id)}
-          </div>
-        );
-      },
-      cell: ({ row }) => <Badge variant="outline">{row.original.role}</Badge>,
-    },
-    {
-      accessorKey: "company",
-      header: "Company",
-      cell: ({ row }) => (
-        <div>
-          {row.original.company_name || (
-            <span className="text-muted-foreground">No company</span>
-          )}
+          {new Date(row.original.created_at).toLocaleDateString()}
         </div>
       ),
     },

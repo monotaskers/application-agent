@@ -4,6 +4,10 @@
 
 This documentation provides a complete guide for maintaining database context across all related files. **The remote Supabase database is the single source of truth** for the schema. All local files are derived from and synchronized with the remote database.
 
+### Recent Schema Changes
+
+- **Companies Table**: Added `companies` table to support company/organization entities. The `profiles` table now includes a nullable `company_id` foreign key. Users with `@ocupop.com` email addresses are automatically assigned to the default "Ocupop" company. See migration `20250127000000_add_companies_table.sql` for details.
+
 ## ⚠️ Before You Start
 
 **CRITICAL:** Before making any schema-related changes or assumptions:

@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { updateProfileInputSchema } from "../schemas/profile.schema";
 import { useUpdateProfile } from "../hooks/use-update-profile";
@@ -8,6 +8,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useCompanyOptions } from "@/features/companies/hooks/use-companies-simple";
 import type { Profile, UpdateProfileInput } from "../types/auth.types";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -42,6 +50,7 @@ export function UserProfileForm({
 
   const {
     register,
+    control,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
@@ -52,11 +61,14 @@ export function UserProfileForm({
       bio: initialProfile?.bio ?? null,
       avatar_url: initialProfile?.avatar_url ?? null,
       company_email: initialProfile?.company_email ?? null,
+      company_id: initialProfile?.company_id ?? null,
       phone: initialProfile?.phone ?? null,
       dashboard_layout_preferences:
         initialProfile?.dashboard_layout_preferences ?? null,
     },
   });
+
+  const companyOptions = useCompanyOptions();
 
   // Reset form when initialProfile changes
   useEffect(() => {
@@ -66,6 +78,7 @@ export function UserProfileForm({
         bio: initialProfile.bio ?? null,
         avatar_url: initialProfile.avatar_url ?? null,
         company_email: initialProfile.company_email ?? null,
+        company_id: initialProfile.company_id ?? null,
         phone: initialProfile.phone ?? null,
         dashboard_layout_preferences:
           initialProfile.dashboard_layout_preferences ?? null,
@@ -190,6 +203,52 @@ export function UserProfileForm({
             {errors.avatar_url.message}
           </p>
         )}
+      </div>
+
+      <div>
+        <Label htmlFor="company_id" className="font-sans font-medium">
+          Company
+        </Label>
+        <Controller
+          name="company_id"
+          control={control}
+          render={({ field }) => (
+            <Select
+              onValueChange={(value) => {
+                // Convert sentinel value to null, otherwise keep the value
+                field.onChange(value === "__none__" ? null : value);
+              }}
+              value={field.value ?? "__none__"}
+              disabled={isSubmitting}
+            >
+              <SelectTrigger
+                className="font-sans"
+                aria-invalid={errors.company_id ? "true" : "false"}
+                aria-describedby={
+                  errors.company_id ? "company-id-error" : undefined
+                }
+              >
+                <SelectValue placeholder="Select a company" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="__none__">None</SelectItem>
+                {companyOptions.map((option) => (
+                  <SelectItem key={option.value} value={option.value}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.company_id && (
+          <p id="company-id-error" className="text-sm text-red-500 mt-1">
+            {errors.company_id.message}
+          </p>
+        )}
+        <p className="text-xs text-muted-foreground mt-1 font-sans">
+          Select the company you belong to
+        </p>
       </div>
 
       <div>

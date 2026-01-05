@@ -35,17 +35,19 @@ export async function softDeleteUser(userId: string): Promise<User> {
     throw new Error("User is already soft-deleted");
   }
 
-  // Soft delete: set deleted_at timestamp
+  // Soft delete: set deleted_at timestamp (with company join)
   const { data: profile, error: updateError } = await supabase
     .from("profiles")
     .update({ deleted_at: new Date().toISOString() })
     .eq("id", userId)
-    .select("*")
+    .select("*, companies!profiles_company_id_fkey(id, name)")
     .single();
 
   if (updateError) {
     throw new Error(`Failed to soft delete user: ${updateError.message}`);
   }
+
+  const company = (profile as { companies?: { name: string } | null }).companies;
 
   // TODO: Fetch role from auth.users.app_metadata
   return {
@@ -57,6 +59,8 @@ export async function softDeleteUser(userId: string): Promise<User> {
     bio: profile.bio,
     phone: profile.phone,
     company_email: profile.company_email,
+    company_id: (profile as { company_id?: string | null }).company_id || null,
+    company_name: company?.name || null,
     deleted_at: (profile as { deleted_at?: string | null }).deleted_at || null,
     created_at: profile.created_at,
     updated_at: profile.updated_at,
@@ -92,17 +96,19 @@ export async function restoreUser(userId: string): Promise<User> {
     throw new Error("User is not soft-deleted");
   }
 
-  // Restore: clear deleted_at timestamp
+  // Restore: clear deleted_at timestamp (with company join)
   const { data: profile, error: updateError } = await supabase
     .from("profiles")
     .update({ deleted_at: null })
     .eq("id", userId)
-    .select("*")
+    .select("*, companies!profiles_company_id_fkey(id, name)")
     .single();
 
   if (updateError) {
     throw new Error(`Failed to restore user: ${updateError.message}`);
   }
+
+  const company = (profile as { companies?: { name: string } | null }).companies;
 
   // TODO: Fetch role from auth.users.app_metadata
   return {
@@ -114,6 +120,8 @@ export async function restoreUser(userId: string): Promise<User> {
     bio: profile.bio,
     phone: profile.phone,
     company_email: profile.company_email,
+    company_id: (profile as { company_id?: string | null }).company_id || null,
+    company_name: company?.name || null,
     deleted_at: null,
     created_at: profile.created_at,
     updated_at: profile.updated_at,

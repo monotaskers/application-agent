@@ -25,6 +25,8 @@ const UsersResponseSchema = z.object({
       bio: z.string().nullable(),
       phone: z.string().nullable(),
       company_email: z.string().nullable(),
+      company_id: z.string().uuid().nullable(),
+      company_name: z.string().nullable(),
       deleted_at: z.string().nullable(),
       created_at: z.string(),
       updated_at: z.string(),

@@ -12,6 +12,7 @@ import type {
 } from "../schemas/user.schema";
 import { getUserRole } from "@/lib/auth/roles";
 import type { UserRole } from "@/features/auth/schemas/role.schema";
+import { assignCompanyByEmail } from "@/features/companies/lib/company-service";
 
 /**
  * Fetches a list of users with optional search, filters, and pagination
@@ -24,9 +25,13 @@ export async function getUsers(
 ): Promise<{ users: User[]; total: number }> {
   const supabase = createAdminClient();
 
+  // Join with companies table to fetch company name
   let queryBuilder = supabase
     .from("profiles")
-    .select("*", { count: "exact" });
+    .select(
+      "*, companies!profiles_company_id_fkey(id, name)",
+      { count: "exact" }
+    );
 
   // Filter deleted users
   if (!query.include_deleted) {
@@ -83,9 +88,11 @@ export async function getUsers(
     }
   }
 
-  // Transform data to include role from auth.users
+  // Transform data to include role from auth.users and company name
   let users: User[] = data.map((profile) => {
     const authUser = authUsersMap.get(profile.id);
+    const company = (profile as { companies?: { name: string } | null }).companies;
+    
     return {
       id: profile.id,
       email: profile.email || null,
@@ -95,6 +102,8 @@ export async function getUsers(
       bio: profile.bio,
       phone: profile.phone,
       company_email: profile.company_email,
+      company_id: (profile as { company_id?: string | null }).company_id || null,
+      company_name: company?.name || null,
       deleted_at:
         (profile as { deleted_at?: string | null }).deleted_at || null,
       created_at: profile.created_at,
@@ -124,9 +133,10 @@ export async function getUserById(
 ): Promise<User | null> {
   const supabase = createAdminClient();
 
+  // Join with companies table to fetch company name
   const { data, error } = await supabase
     .from("profiles")
-    .select("*")
+    .select("*, companies!profiles_company_id_fkey(id, name)")
     .eq("id", userId)
     .single();
 
@@ -151,6 +161,8 @@ export async function getUserById(
     role = "member";
   }
 
+  const company = (data as { companies?: { name: string } | null }).companies;
+
   return {
     id: data.id,
     email: data.email || null,
@@ -160,6 +172,8 @@ export async function getUserById(
     bio: data.bio,
     phone: data.phone,
     company_email: data.company_email,
+    company_id: (data as { company_id?: string | null }).company_id || null,
+    company_name: company?.name || null,
     deleted_at: (data as { deleted_at?: string | null }).deleted_at || null,
     created_at: data.created_at,
     updated_at: data.updated_at,
@@ -205,7 +219,10 @@ export async function createUser(
     throw new Error(`Failed to create user: ${authError.message}`);
   }
 
-  // Create profile
+  // Determine company assignment based on email domain
+  const companyId = await assignCompanyByEmail(input.email);
+
+  // Create profile with company join to fetch company name
   const { data: profile, error: profileError } = await adminSupabase
     .from("profiles")
     .insert({
@@ -216,8 +233,9 @@ export async function createUser(
       bio: input.bio || null,
       phone: input.phone || null,
       company_email: input.company_email || null,
+      company_id: companyId,
     })
-    .select("*")
+    .select("*, companies!profiles_company_id_fkey(id, name)")
     .single();
 
   if (profileError) {
@@ -225,6 +243,8 @@ export async function createUser(
     await adminSupabase.auth.admin.deleteUser(authUser.user.id);
     throw new Error(`Failed to create profile: ${profileError.message}`);
   }
+
+  const company = (profile as { companies?: { name: string } | null }).companies;
 
   return {
     id: profile.id,
@@ -235,6 +255,8 @@ export async function createUser(
     bio: profile.bio,
     phone: profile.phone,
     company_email: profile.company_email,
+    company_id: (profile as { company_id?: string | null }).company_id || null,
+    company_name: company?.name || null,
     deleted_at: null,
     created_at: profile.created_at,
     updated_at: profile.updated_at,

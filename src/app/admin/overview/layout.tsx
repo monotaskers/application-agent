@@ -6,7 +6,7 @@ export default function OverViewLayout({
   bar_stats,
   area_stats,
 }: {
-  sales: ReactNode;
+  clients: ReactNode;
   pie_stats: ReactNode;
   bar_stats: ReactNode;
   area_stats: ReactNode;

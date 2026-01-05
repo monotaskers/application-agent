@@ -39,11 +39,36 @@ export type Database = {
   }
   public: {
     Tables: {
+      companies: {
+        Row: {
+          created_at: string
+          deleted_at: string | null
+          id: string
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          deleted_at?: string | null
+          id?: string
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
           bio: string | null
           company_email: string | null
+          company_id: string | null
           created_at: string
           dashboard_layout_preferences: Json | null
           deleted_at: string | null
@@ -57,6 +82,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           company_email?: string | null
+          company_id?: string | null
           created_at?: string
           dashboard_layout_preferences?: Json | null
           deleted_at?: string | null
@@ -70,6 +96,7 @@ export type Database = {
           avatar_url?: string | null
           bio?: string | null
           company_email?: string | null
+          company_id?: string | null
           created_at?: string
           dashboard_layout_preferences?: Json | null
           deleted_at?: string | null
@@ -79,7 +106,15 @@ export type Database = {
           phone?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "profiles_company_id_fkey"
+            columns: ["company_id"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
