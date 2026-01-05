@@ -8,8 +8,8 @@ import type { ReactElement } from "react";
 import { Suspense } from "react";
 
 export const metadata: Metadata = {
-  title: "Sign In - InScope",
-  description: "Sign in to InScope",
+  title: "Sign In - AppName",
+  description: "Sign in to AppName",
 };
 
 // Local design assets (downloaded from Figma)
@@ -45,9 +45,9 @@ export default function SignInViewPage(): ReactElement {
             <Logo size="large" />
           </div>
 
-          {/* InScope text */}
+          {/* AppName text */}
           <h1 className="font-sans text-center text-[61.32px] font-bold leading-none tracking-[-1.2264px] text-white">
-            InScope
+            AppName
           </h1>
         </div>
       </div>

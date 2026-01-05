@@ -21,7 +21,7 @@ interface LogoProps {
 }
 
 /**
- * InScope logo component with theme-aware colors
+ * AppName logo component with theme-aware colors
  *
  * Uses brand primary color on light theme and brand accent color on dark theme.
  * Renders the logo as an inline SVG to support CSS variable theming.
@@ -56,7 +56,7 @@ export function Logo({
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         className={cn(sizeClasses[size], className)}
-        aria-label="InScope"
+        aria-label="AppName"
         role="img"
       >
         <path
@@ -83,7 +83,7 @@ export function Logo({
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       className={cn(sizeClasses[size], className)}
-      aria-label="InScope"
+      aria-label="AppName"
       role="img"
     >
       <path

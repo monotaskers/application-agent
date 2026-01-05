@@ -16,7 +16,7 @@ import {
  * @example
  * ```typescript
  * const config = loadAgentConfig();
- * // Returns: { agentName: "inscope-assistant", agentUrl: "http://localhost:8000/", ... }
+ * // Returns: { agentName: "appname-assistant", agentUrl: "http://localhost:8000/", ... }
  * ```
  */
 export function loadAgentConfig(): AgentConfiguration {

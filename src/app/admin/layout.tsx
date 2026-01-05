@@ -8,7 +8,7 @@ import type { Metadata } from "next";
 import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
-  title: "Admin | InScope",
+  title: "Admin | AppName",
   description: "Sustainable supply chain management platform",
 };
 

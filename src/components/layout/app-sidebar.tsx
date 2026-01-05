@@ -88,7 +88,7 @@ export default function AppSidebar() {
             <Logo variant="sidebar" size="small" />
           </div>
           <h2 className="font-sans text-2xl font-bold leading-none tracking-[-0.48px] text-sidebar-accent-foreground group-data-[collapsible=icon]:hidden">
-            InScope
+            AppName
           </h2>
         </div>
       </SidebarHeader>

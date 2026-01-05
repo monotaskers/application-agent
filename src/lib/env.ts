@@ -36,8 +36,8 @@ const envSchema = z.object({
     .string()
     .min(1, "COPILOTKIT_AGENT_NAME must be a non-empty string")
     .optional()
-    .default("inscope-assistant")
-    .describe("CopilotKit agent identifier (defaults to 'inscope-assistant')"),
+    .default("appname-assistant")
+    .describe("CopilotKit agent identifier (defaults to 'appname-assistant')"),
   COPILOTKIT_TIMEOUT: z
     .union([z.string().regex(/^\d+$/), z.number()])
     .optional()
@@ -127,7 +127,7 @@ function getValidatedEnv(): z.infer<typeof envSchema> {
       COPILOTKIT_AGENT_URL:
         process.env.COPILOTKIT_AGENT_URL || "http://localhost:8000/",
       COPILOTKIT_AGENT_NAME:
-        process.env.COPILOTKIT_AGENT_NAME || "inscope-assistant",
+        process.env.COPILOTKIT_AGENT_NAME || "appname-assistant",
       COPILOTKIT_TIMEOUT: process.env.COPILOTKIT_TIMEOUT
         ? Number.parseInt(process.env.COPILOTKIT_TIMEOUT, 10)
         : 30000,
