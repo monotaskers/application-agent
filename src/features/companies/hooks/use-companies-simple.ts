@@ -84,4 +84,3 @@ export function useCompanyOptions(): Array<{ value: string; label: string }> {
     label: company.name,
   }));
 }
-

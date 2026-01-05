@@ -481,35 +481,36 @@ export function DataGrid<T = Record<string, unknown>>({
     <div
       className="h-full rounded-md border"
       onScroll={handleScroll}
-      style={{ 
-        width: "100%", 
-        maxWidth: "100%", 
+      style={{
+        width: "100%",
+        maxWidth: "100%",
         minWidth: 0,
         overflowX: "auto",
-        overflowY: "auto"
+        overflowY: "auto",
       }}
     >
-      <table className="caption-bottom text-foreground text-sm" style={{ tableLayout: "auto", width: "max-content", minWidth: "100%" }}>
-            <colgroup>
-              {table.getHeaderGroups()[0]?.headers.map((header) => {
-                const columnMeta = header.column.columnDef.meta as
-                  | { flexible?: boolean }
-                  | undefined;
-                const isFlexible = columnMeta?.flexible ?? false;
-                const columnSize = header.getSize();
-                return (
-                  <col
-                    key={header.id}
-                    style={
-                      isFlexible
-                        ? { width: "auto" }
-                        : { width: `${columnSize}px` }
-                    }
-                  />
-                );
-              })}
-            </colgroup>
-          <TableHeader>
+      <table
+        className="caption-bottom text-foreground text-sm"
+        style={{ tableLayout: "auto", width: "max-content", minWidth: "100%" }}
+      >
+        <colgroup>
+          {table.getHeaderGroups()[0]?.headers.map((header) => {
+            const columnMeta = header.column.columnDef.meta as
+              | { flexible?: boolean }
+              | undefined;
+            const isFlexible = columnMeta?.flexible ?? false;
+            const columnSize = header.getSize();
+            return (
+              <col
+                key={header.id}
+                style={
+                  isFlexible ? { width: "auto" } : { width: `${columnSize}px` }
+                }
+              />
+            );
+          })}
+        </colgroup>
+        <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {enableColumnReordering ? (
@@ -599,8 +600,15 @@ export function DataGrid<T = Record<string, unknown>>({
                         )}
                         style={
                           isFlexible
-                            ? { width: "auto", minWidth: `${cell.column.columnDef.minSize ?? 200}px` }
-                            : { width: `${columnSize}px`, minWidth: `${columnSize}px`, maxWidth: `${columnSize}px` }
+                            ? {
+                                width: "auto",
+                                minWidth: `${cell.column.columnDef.minSize ?? 200}px`,
+                              }
+                            : {
+                                width: `${columnSize}px`,
+                                minWidth: `${columnSize}px`,
+                                maxWidth: `${columnSize}px`,
+                              }
                         }
                         {...(isFlexible && { "data-flexible": "true" })}
                       >
@@ -618,14 +626,17 @@ export function DataGrid<T = Record<string, unknown>>({
             <EmptyTableRow columnCount={visibleColumns.length} />
           )}
         </TableBody>
-        </table>
+      </table>
     </div>
   );
 
   return (
     <div
       data-slot="data-grid"
-      className={cn("flex h-full flex-col w-full max-w-full min-w-0", className ?? "")}
+      className={cn(
+        "flex h-full flex-col w-full max-w-full min-w-0",
+        className ?? ""
+      )}
     >
       {/* Table with optional DnD context */}
       <div className="flex-1 min-h-0 min-w-0 w-full max-w-full overflow-hidden">

@@ -53,7 +53,10 @@ export default async function CompanyDetailPage({
 
   // Render with client component for interactivity
   return (
-    <CompanyDetailClient company={company} canEdit={canEdit} canDelete={canDelete} />
+    <CompanyDetailClient
+      company={company}
+      canEdit={canEdit}
+      canDelete={canDelete}
+    />
   );
 }
-

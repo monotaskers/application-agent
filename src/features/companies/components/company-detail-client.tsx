@@ -101,13 +101,17 @@ export function CompanyDetailClient({
       {canEdit && (
         <CompanyForm companyId={company.id} initialData={initialData} />
       )}
-      <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Company</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{company.name}"? This action cannot be undone.
-              All users associated with this company will have their company_id set to null.
+              Are you sure you want to delete "{company.name}"? This action
+              cannot be undone. All users associated with this company will have
+              their company_id set to null.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -125,4 +129,3 @@ export function CompanyDetailClient({
     </div>
   );
 }
-

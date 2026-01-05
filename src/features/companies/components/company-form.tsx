@@ -17,7 +17,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Form } from "@/components/ui/form";
 import { FormInput } from "@/components/forms/form-input";
-import { useCreateCompany, useUpdateCompany } from "../hooks/use-company-mutations";
+import {
+  useCreateCompany,
+  useUpdateCompany,
+} from "../hooks/use-company-mutations";
 import { useCompany } from "../hooks/use-companies";
 import {
   createCompanySchema,
@@ -113,7 +116,8 @@ export function CompanyForm({
           onError: (error) => {
             toast.error("Failed to update company", {
               description:
-                error.message || "An error occurred while updating the company.",
+                error.message ||
+                "An error occurred while updating the company.",
               duration: 5000,
             });
           },
@@ -144,7 +148,9 @@ export function CompanyForm({
   return (
     <Card>
       <CardHeader>
-        <CardTitle>{isEditMode ? "Edit Company" : "Create New Company"}</CardTitle>
+        <CardTitle>
+          {isEditMode ? "Edit Company" : "Create New Company"}
+        </CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -183,4 +189,3 @@ export function CompanyForm({
     </Card>
   );
 }
-

@@ -117,7 +117,11 @@ export function useColumnLayout(
     }
 
     const storageKey = getStorageKey(userId, storagePrefix);
-    const saved = loadLayoutFromStorage(storageKey, defaultColumns, defaultVisibility);
+    const saved = loadLayoutFromStorage(
+      storageKey,
+      defaultColumns,
+      defaultVisibility
+    );
 
     if (saved) {
       setColumnOrderState(saved.columnOrder);

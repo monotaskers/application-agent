@@ -77,9 +77,7 @@ export function createCompanyColumns(options: {
         );
       },
       cell: ({ row }) => (
-        <div>
-          {new Date(row.original.created_at).toLocaleDateString()}
-        </div>
+        <div>{new Date(row.original.created_at).toLocaleDateString()}</div>
       ),
     },
     {
@@ -96,4 +94,3 @@ export function createCompanyColumns(options: {
     },
   ];
 }
-

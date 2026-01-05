@@ -177,4 +177,3 @@ export interface DataGridProps<T> extends DataGridFeatures {
   /** Render sort indicator function (only if enableSorting is true) */
   renderSortIndicator?: (columnId: string) => React.ReactNode;
 }
-

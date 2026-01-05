@@ -28,10 +28,9 @@ export async function getUsers(
   // Join with companies table to fetch company name
   let queryBuilder = supabase
     .from("profiles")
-    .select(
-      "*, companies!profiles_company_id_fkey(id, name)",
-      { count: "exact" }
-    );
+    .select("*, companies!profiles_company_id_fkey(id, name)", {
+      count: "exact",
+    });
 
   // Filter deleted users
   if (!query.include_deleted) {
@@ -91,8 +90,9 @@ export async function getUsers(
   // Transform data to include role from auth.users and company name
   let users: User[] = data.map((profile) => {
     const authUser = authUsersMap.get(profile.id);
-    const company = (profile as { companies?: { name: string } | null }).companies;
-    
+    const company = (profile as { companies?: { name: string } | null })
+      .companies;
+
     return {
       id: profile.id,
       email: profile.email || null,
@@ -101,13 +101,15 @@ export async function getUsers(
       avatar_url: profile.avatar_url,
       bio: profile.bio,
       phone: profile.phone,
-      company_id: (profile as { company_id?: string | null }).company_id || null,
+      company_id:
+        (profile as { company_id?: string | null }).company_id || null,
       company_name: company?.name || null,
       address_1: (profile as { address_1?: string | null }).address_1 || null,
       address_2: (profile as { address_2?: string | null }).address_2 || null,
       city: (profile as { city?: string | null }).city || null,
       state: (profile as { state?: string | null }).state || null,
-      postal_code: (profile as { postal_code?: string | null }).postal_code || null,
+      postal_code:
+        (profile as { postal_code?: string | null }).postal_code || null,
       country: (profile as { country?: string | null }).country || null,
       title: (profile as { title?: string | null }).title || null,
       deleted_at:
@@ -134,9 +136,7 @@ export async function getUsers(
  * @param userId - User ID to fetch
  * @returns Promise resolving to User or null if not found
  */
-export async function getUserById(
-  userId: string
-): Promise<User | null> {
+export async function getUserById(userId: string): Promise<User | null> {
   const supabase = createAdminClient();
 
   // Join with companies table to fetch company name
@@ -202,9 +202,7 @@ export async function getUserById(
  * @param input - User creation data
  * @returns Promise resolving to created User
  */
-export async function createUser(
-  input: CreateUserInput
-): Promise<User> {
+export async function createUser(input: CreateUserInput): Promise<User> {
   const adminSupabase = createAdminClient();
 
   // Check email uniqueness (including soft-deleted users)
@@ -266,7 +264,8 @@ export async function createUser(
     throw new Error(`Failed to create profile: ${profileError.message}`);
   }
 
-  const company = (profile as { companies?: { name: string } | null }).companies;
+  const company = (profile as { companies?: { name: string } | null })
+    .companies;
 
   return {
     id: profile.id,
@@ -282,7 +281,8 @@ export async function createUser(
     address_2: (profile as { address_2?: string | null }).address_2 || null,
     city: (profile as { city?: string | null }).city || null,
     state: (profile as { state?: string | null }).state || null,
-    postal_code: (profile as { postal_code?: string | null }).postal_code || null,
+    postal_code:
+      (profile as { postal_code?: string | null }).postal_code || null,
     country: (profile as { country?: string | null }).country || null,
     title: (profile as { title?: string | null }).title || null,
     deleted_at: null,
@@ -345,7 +345,8 @@ export async function updateUser(
   if (input.address_2 !== undefined) updateData.address_2 = input.address_2;
   if (input.city !== undefined) updateData.city = input.city;
   if (input.state !== undefined) updateData.state = input.state;
-  if (input.postal_code !== undefined) updateData.postal_code = input.postal_code;
+  if (input.postal_code !== undefined)
+    updateData.postal_code = input.postal_code;
   if (input.country !== undefined) updateData.country = input.country;
   if (input.title !== undefined) updateData.title = input.title;
 

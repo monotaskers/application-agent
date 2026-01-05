@@ -127,4 +127,3 @@ export function createScrollHandler(options: ScrollHandlerOptions) {
     }
   };
 }
-

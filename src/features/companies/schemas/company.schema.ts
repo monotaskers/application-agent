@@ -10,7 +10,10 @@ import { z } from "zod";
  * Validates company creation input
  */
 export const createCompanySchema = z.object({
-  name: z.string().min(1, "Company name is required").max(255, "Company name must be 255 characters or less"),
+  name: z
+    .string()
+    .min(1, "Company name is required")
+    .max(255, "Company name must be 255 characters or less"),
 });
 
 /**
@@ -18,7 +21,11 @@ export const createCompanySchema = z.object({
  * All fields are optional except validation rules
  */
 export const updateCompanySchema = z.object({
-  name: z.string().min(1, "Company name is required").max(255, "Company name must be 255 characters or less").optional(),
+  name: z
+    .string()
+    .min(1, "Company name is required")
+    .max(255, "Company name must be 255 characters or less")
+    .optional(),
   // Optional updated_at for optimistic locking (concurrent edit detection)
   updated_at: z.string().datetime().optional(),
 });
@@ -40,4 +47,3 @@ export const companyQuerySchema = z.object({
 export type CreateCompanyInput = z.infer<typeof createCompanySchema>;
 export type UpdateCompanyInput = z.infer<typeof updateCompanySchema>;
 export type CompanyQueryInput = z.infer<typeof companyQuerySchema>;
-

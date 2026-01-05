@@ -61,7 +61,8 @@ export async function findUserByEmail(email: string): Promise<User | null> {
   // Note: This requires listing auth users (no direct email search in admin API)
   // For better performance, we could create a database function or view
   try {
-    const { data: authUsers, error: authError } = await supabase.auth.admin.listUsers();
+    const { data: authUsers, error: authError } =
+      await supabase.auth.admin.listUsers();
 
     if (authError) {
       // If we can't list users, return null (user not found)
@@ -85,4 +86,3 @@ export async function findUserByEmail(email: string): Promise<User | null> {
   // Not found in either location
   return null;
 }
-

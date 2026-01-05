@@ -127,4 +127,3 @@ export function useCompany(companyId: string | null) {
     entityName: "company",
   });
 }
-

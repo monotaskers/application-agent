@@ -30,9 +30,7 @@ const UserIdSchema = z.string().uuid("User ID must be a valid UUID");
  * }
  * ```
  */
-export async function fetchUserServer(
-  id: string
-): Promise<User | null> {
+export async function fetchUserServer(id: string): Promise<User | null> {
   // Validate user ID format
   const validatedId = UserIdSchema.parse(id);
 
@@ -41,4 +39,3 @@ export async function fetchUserServer(
 
   return user;
 }
-

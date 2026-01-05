@@ -20,8 +20,7 @@ const META_THEME_COLORS = {
 
 export const metadata: Metadata = {
   title: "InScope",
-  description:
-    "Sustainable supply chain management platform",
+  description: "Sustainable supply chain management platform",
 };
 
 export const viewport: Viewport = {

@@ -3,7 +3,11 @@
  * @module features/companies/hooks/use-company-mutations
  */
 
-import { useCreateEntity, useUpdateEntity, useDeleteEntity } from "@/hooks/use-entity-mutations";
+import {
+  useCreateEntity,
+  useUpdateEntity,
+  useDeleteEntity,
+} from "@/hooks/use-entity-mutations";
 import type { Company } from "../lib/company-service";
 import type {
   CreateCompanyInput,
@@ -145,4 +149,3 @@ export function useDeleteCompany(_options?: {
     entityName: "company",
   });
 }
-

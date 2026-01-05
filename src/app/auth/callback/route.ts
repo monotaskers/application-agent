@@ -21,14 +21,16 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     // Validate environment variables before creating client
     const { validateEnv, env } = await import("@/lib/env");
     const envValidation = validateEnv();
-    
+
     // Check if we're using placeholder values (indicates missing env vars)
-    const isUsingPlaceholderKey = 
+    const isUsingPlaceholderKey =
       env.NEXT_PUBLIC_SUPABASE_ANON_KEY === "placeholder-key" ||
       env.NEXT_PUBLIC_SUPABASE_URL === "https://placeholder.supabase.co";
-    
+
     if (isUsingPlaceholderKey) {
-      console.error("CRITICAL: Using placeholder Supabase credentials. Environment variables are not set!");
+      console.error(
+        "CRITICAL: Using placeholder Supabase credentials. Environment variables are not set!"
+      );
       console.error("Required environment variables:");
       console.error("  - NEXT_PUBLIC_SUPABASE_URL");
       console.error("  - NEXT_PUBLIC_SUPABASE_ANON_KEY");
@@ -36,9 +38,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
         `${requestUrl.origin}/auth/sign-in?error=oauth_error&message=${encodeURIComponent("Configuration error: Supabase credentials not configured")}`
       );
     }
-    
+
     if (!envValidation.success) {
-      console.error("Environment validation failed:", envValidation.error?.errors);
+      console.error(
+        "Environment validation failed:",
+        envValidation.error?.errors
+      );
       return NextResponse.redirect(
         `${requestUrl.origin}/auth/sign-in?error=oauth_error&message=${encodeURIComponent("Configuration error: Invalid environment variables")}`
       );
@@ -46,9 +51,11 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Log environment variable status (without exposing sensitive values)
     console.log("Supabase configuration check:", {
-      url: env.NEXT_PUBLIC_SUPABASE_URL ? `✓ Set (${env.NEXT_PUBLIC_SUPABASE_URL})` : "✗ Missing",
-      anonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY 
-        ? `✓ Set (${env.NEXT_PUBLIC_SUPABASE_ANON_KEY.substring(0, 20)}...)` 
+      url: env.NEXT_PUBLIC_SUPABASE_URL
+        ? `✓ Set (${env.NEXT_PUBLIC_SUPABASE_URL})`
+        : "✗ Missing",
+      anonKey: env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+        ? `✓ Set (${env.NEXT_PUBLIC_SUPABASE_ANON_KEY.substring(0, 20)}...)`
         : "✗ Missing",
     });
 

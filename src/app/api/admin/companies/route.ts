@@ -8,7 +8,10 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/lib/auth/gateways/api";
-import { getCompanies, createCompany } from "@/features/companies/lib/company-service";
+import {
+  getCompanies,
+  createCompany,
+} from "@/features/companies/lib/company-service";
 import {
   companyQuerySchema,
   createCompanySchema,
@@ -190,4 +193,3 @@ export const POST = withAuth(async (request: NextRequest) => {
     );
   }
 });
-

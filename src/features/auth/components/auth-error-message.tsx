@@ -12,7 +12,7 @@ import { useSearchParams } from "next/navigation";
  */
 function getErrorMessage(
   errorCode: string | null,
-  errorMessage: string | null,
+  errorMessage: string | null
 ): string | null {
   if (!errorCode) {
     return null;
@@ -65,4 +65,3 @@ export function AuthErrorMessage(): ReactElement | null {
     </div>
   );
 }
-

@@ -15,7 +15,6 @@ import type { SupabaseClient } from "@supabase/supabase-js";
  */
 const ProfileIdSchema = z.string().uuid("Profile ID must be a valid UUID");
 
-
 /**
  * Server-side function to fetch a profile by ID
  *

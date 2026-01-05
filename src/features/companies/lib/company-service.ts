@@ -148,9 +148,7 @@ export async function getCompanies(
 ): Promise<{ companies: Company[]; total: number }> {
   const supabase = createAdminClient();
 
-  let queryBuilder = supabase
-    .from("companies")
-    .select("*", { count: "exact" });
+  let queryBuilder = supabase.from("companies").select("*", { count: "exact" });
 
   // Filter deleted companies
   if (!query.include_deleted) {
@@ -298,9 +296,7 @@ export async function updateCompany(
  * @param companyId - Company ID to delete
  * @returns Promise resolving when deletion is complete
  */
-export async function softDeleteCompany(
-  companyId: string
-): Promise<void> {
+export async function softDeleteCompany(companyId: string): Promise<void> {
   const adminSupabase = createAdminClient();
 
   // Check if company exists
@@ -324,4 +320,3 @@ export async function softDeleteCompany(
     throw new Error(`Failed to delete company: ${error.message}`);
   }
 }
-

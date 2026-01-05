@@ -17,13 +17,27 @@ export const profileSchema = z.object({
   company_id: z.string().uuid().nullable(),
   phone: z.string().min(5).max(20).nullable(),
   dashboard_layout_preferences: z.record(z.unknown()).nullable(),
-  address_1: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
-  address_2: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
-  city: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
-  state: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
-  postal_code: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
-  country: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
-  title: z.union([z.string(), z.null(), z.undefined()]).transform((val) => val ?? null),
+  address_1: z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((val) => val ?? null),
+  address_2: z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((val) => val ?? null),
+  city: z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((val) => val ?? null),
+  state: z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((val) => val ?? null),
+  postal_code: z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((val) => val ?? null),
+  country: z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((val) => val ?? null),
+  title: z
+    .union([z.string(), z.null(), z.undefined()])
+    .transform((val) => val ?? null),
   created_at: z
     .union([z.string(), z.date()])
     .transform((val) => {

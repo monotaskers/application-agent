@@ -9,8 +9,7 @@ import { cookies } from "next/headers";
 
 export const metadata: Metadata = {
   title: "Admin | InScope",
-  description:
-    "Sustainable supply chain management platform",
+  description: "Sustainable supply chain management platform",
 };
 
 export default async function AdminLayout({

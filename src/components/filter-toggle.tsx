@@ -71,4 +71,3 @@ export function FilterToggle({
     </Button>
   );
 }
-

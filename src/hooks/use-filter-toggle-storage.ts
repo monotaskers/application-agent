@@ -64,4 +64,3 @@ export function saveFilterVisibility(
     console.error("Failed to save filter visibility to localStorage:", error);
   }
 }
-

@@ -119,4 +119,3 @@ export function useFilterToggle(feature: string): UseFilterToggleReturn {
     setOpen,
   };
 }
-

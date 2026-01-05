@@ -22,7 +22,10 @@ function ScrollArea({
     >
       <ScrollAreaPrimitive.Viewport
         ref={viewportRef}
-        className={cn("h-full w-full max-w-full rounded-[inherit]", viewportClassName)}
+        className={cn(
+          "h-full w-full max-w-full rounded-[inherit]",
+          viewportClassName
+        )}
       >
         {children}
       </ScrollAreaPrimitive.Viewport>

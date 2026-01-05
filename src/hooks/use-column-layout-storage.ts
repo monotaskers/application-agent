@@ -78,7 +78,8 @@ export function loadLayoutFromStorage(
     const visibility = defaultColumns.reduce(
       (acc, col) => {
         // Use saved visibility if available, otherwise use defaultVisibility, otherwise true
-        acc[col] = parsed.columnVisibility?.[col] ?? defaultVisibility?.[col] ?? true;
+        acc[col] =
+          parsed.columnVisibility?.[col] ?? defaultVisibility?.[col] ?? true;
         return acc;
       },
       {} as Record<string, boolean>

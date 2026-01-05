@@ -48,7 +48,8 @@ export async function softDeleteUser(userId: string): Promise<User> {
     throw new Error(`Failed to soft delete user: ${updateError.message}`);
   }
 
-  const company = (profile as { companies?: { name: string } | null }).companies;
+  const company = (profile as { companies?: { name: string } | null })
+    .companies;
 
   // Fetch role and email from auth.users
   let role: UserRole = "member";
@@ -82,7 +83,8 @@ export async function softDeleteUser(userId: string): Promise<User> {
     address_2: (profile as { address_2?: string | null }).address_2 || null,
     city: (profile as { city?: string | null }).city || null,
     state: (profile as { state?: string | null }).state || null,
-    postal_code: (profile as { postal_code?: string | null }).postal_code || null,
+    postal_code:
+      (profile as { postal_code?: string | null }).postal_code || null,
     country: (profile as { country?: string | null }).country || null,
     title: (profile as { title?: string | null }).title || null,
     deleted_at: (profile as { deleted_at?: string | null }).deleted_at || null,
@@ -132,7 +134,8 @@ export async function restoreUser(userId: string): Promise<User> {
     throw new Error(`Failed to restore user: ${updateError.message}`);
   }
 
-  const company = (profile as { companies?: { name: string } | null }).companies;
+  const company = (profile as { companies?: { name: string } | null })
+    .companies;
 
   // Fetch role and email from auth.users
   let role: UserRole = "member";
@@ -166,7 +169,8 @@ export async function restoreUser(userId: string): Promise<User> {
     address_2: (profile as { address_2?: string | null }).address_2 || null,
     city: (profile as { city?: string | null }).city || null,
     state: (profile as { state?: string | null }).state || null,
-    postal_code: (profile as { postal_code?: string | null }).postal_code || null,
+    postal_code:
+      (profile as { postal_code?: string | null }).postal_code || null,
     country: (profile as { country?: string | null }).country || null,
     title: (profile as { title?: string | null }).title || null,
     deleted_at: null,

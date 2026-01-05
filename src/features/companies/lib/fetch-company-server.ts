@@ -43,9 +43,7 @@ const CompanySchema = z.object({
  * }
  * ```
  */
-export async function fetchCompanyServer(
-  id: string
-): Promise<Company | null> {
+export async function fetchCompanyServer(id: string): Promise<Company | null> {
   return fetchEntityServer<Company>(id, {
     table: "companies",
     schema: CompanySchema,
@@ -53,4 +51,3 @@ export async function fetchCompanyServer(
     entityName: "company",
   });
 }
-

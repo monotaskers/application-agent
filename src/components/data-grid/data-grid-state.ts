@@ -131,4 +131,3 @@ export function useVisibleColumns<T = unknown>(
       .filter((col): col is T => col !== undefined);
   }, [columns, columnOrder, columnVisibility, getColumnId]);
 }
-

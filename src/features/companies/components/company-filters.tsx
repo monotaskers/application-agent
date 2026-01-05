@@ -33,7 +33,9 @@ export interface CompanyFiltersProps {
  * <CompanyFilters />
  * ```
  */
-export function CompanyFilters({ className }: CompanyFiltersProps): ReactElement {
+export function CompanyFilters({
+  className,
+}: CompanyFiltersProps): ReactElement {
   const [includeDeleted, setIncludeDeleted] = useQueryState("include_deleted", {
     defaultValue: false,
     parse: (value) => value === "true",
@@ -85,4 +87,3 @@ export function CompanyFilters({ className }: CompanyFiltersProps): ReactElement
     </div>
   );
 }
-

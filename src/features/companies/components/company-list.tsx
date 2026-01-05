@@ -12,7 +12,10 @@ import { DataGrid } from "@/components/data-grid";
 import { useCompanies } from "../hooks/use-companies";
 import { useColumnLayout } from "../hooks/use-column-layout";
 import { EmptyState } from "./empty-state";
-import { createCompanyColumns, getCompanySortColumn } from "./company-table-columns";
+import {
+  createCompanyColumns,
+  getCompanySortColumn,
+} from "./company-table-columns";
 import type { Company } from "../lib/company-service";
 import { Icons } from "@/components/icons";
 import type { UseColumnLayoutReturn } from "../hooks/use-column-layout";
@@ -200,7 +203,9 @@ export function CompanyList({
     () => (
       <EmptyState
         message={
-          hasFilters ? "No companies found matching your filters" : "No companies found"
+          hasFilters
+            ? "No companies found matching your filters"
+            : "No companies found"
         }
       />
     ),
@@ -241,4 +246,3 @@ export function CompanyList({
     />
   );
 }
-

@@ -31,4 +31,3 @@ export function EmptyState({ message }: EmptyStateProps): ReactElement {
     </div>
   );
 }
-

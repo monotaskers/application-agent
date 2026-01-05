@@ -8,7 +8,10 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/lib/auth/gateways/api";
-import { updateCompany, softDeleteCompany } from "@/features/companies/lib/company-service";
+import {
+  updateCompany,
+  softDeleteCompany,
+} from "@/features/companies/lib/company-service";
 import { updateCompanySchema } from "@/features/companies/schemas/company.schema";
 import { fetchCompanyServer } from "@/features/companies/lib/fetch-company-server";
 import { z } from "zod";
@@ -103,7 +106,10 @@ export async function PUT(
       const validatedData = updateCompanySchema.parse(body);
 
       // Update company via service
-      const { company, conflict } = await updateCompany(companyId, validatedData);
+      const { company, conflict } = await updateCompany(
+        companyId,
+        validatedData
+      );
 
       // Return updated company with conflict flag
       return NextResponse.json({ company, conflict }, { status: 200 });
@@ -256,4 +262,3 @@ export async function DELETE(
     }
   })(request);
 }
-

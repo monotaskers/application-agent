@@ -31,4 +31,3 @@ export function useColumnLayout(
     storagePrefix: "companies",
   });
 }
-

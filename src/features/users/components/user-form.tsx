@@ -105,7 +105,6 @@ export function UserForm({
     },
   });
 
-
   // Handle form submission
   const onSubmit = (data: CreateUserInput | UpdateUserInput): void => {
     if (isEditMode && userId) {

@@ -79,8 +79,15 @@ export function DataGridSortableHeader<T = unknown>({
       )}
       style={
         isFlexible
-          ? { width: "auto", minWidth: `${header.column.columnDef.minSize ?? 200}px` }
-          : { width: `${columnSize}px`, minWidth: `${columnSize}px`, maxWidth: `${columnSize}px` }
+          ? {
+              width: "auto",
+              minWidth: `${header.column.columnDef.minSize ?? 200}px`,
+            }
+          : {
+              width: `${columnSize}px`,
+              minWidth: `${columnSize}px`,
+              maxWidth: `${columnSize}px`,
+            }
       }
       {...(isFlexible && { "data-flexible": "true" })}
     >
