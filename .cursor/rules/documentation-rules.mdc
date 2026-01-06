@@ -1,0 +1,849 @@
+---
+description: "Documentation maintenance rules and commands for keeping project documentation up to date"
+globs: ["**/*.md", "docs/**", "src/**/*.ts", "src/**/*.tsx"]
+alwaysApply: true
+---
+
+# Documentation Maintenance Rules
+
+This file defines rules and commands for maintaining up-to-date documentation across the SDG Application (Next.js/React frontend). Use the `/documentation.ACTION` commands (located in `.cursor/commands/`) to trigger specific documentation maintenance tasks.
+
+## Core Principles
+
+1. **Documentation Must Match Code**: When code changes, documentation must be updated
+2. **Consistent Structure**: All documentation follows the structure defined in `docs/README.md`
+3. **Auto-Detection**: Documentation commands automatically detect what needs updating
+4. **Version Tracking**: Documentation includes last updated dates and version information
+
+## Documentation Commands
+
+All documentation commands are located in `.cursor/commands/documentation.*.md`. Each command file contains detailed usage instructions. The commands below reference the detailed specifications in those files.
+
+### `/documentation.update-api`
+
+**Command File**: `.cursor/commands/documentation.update-api.md`
+
+**Trigger**: When API endpoints, routes, or request/response models change
+
+**Actions**:
+1. Scan `src/app/api/` for route changes
+2. Update `docs/api/` documentation files
+3. Update `docs/api/curl-examples.md` with new endpoint examples
+4. Update OpenAPI schema references if needed
+5. Check for missing endpoint documentation
+
+**Files to Update**:
+- `docs/api/routes/{route-name}.md` - Individual route documentation
+- `docs/api/curl-examples.md` - cURL examples
+- `docs/frontend/api/{endpoint}.md` - Frontend-specific API docs
+
+**Example Usage**:
+```
+/documentation.update-api
+```
+
+### `/documentation.update-features`
+
+**Trigger**: When feature modules change (components, hooks, schemas, types, utilities)
+
+**Actions**:
+1. Scan `src/features/` for feature changes
+2. Update feature documentation in `docs/features/`
+3. Update architecture diagrams if service interactions change
+4. Check for missing feature documentation
+
+**Files to Update**:
+- `docs/features/{feature-name}.md` - Feature documentation
+- `docs/architecture/features.md` - Feature architecture overview
+
+**Example Usage**:
+```
+/documentation.update-features
+```
+
+### `/documentation.update-database`
+
+**Trigger**: When database schema, migrations, data models, or database functions change
+
+**Actions**:
+1. Check for new migrations in `supabase/migrations/`
+2. Update `docs/database/data-model-schema.md` with schema changes
+3. Update `docs/database/db.sql` if schema file exists
+4. Update database access patterns if needed
+5. Document migration rationale
+6. Scan migrations for new or modified database functions (CREATE OR REPLACE FUNCTION)
+7. Document database functions in `docs/database/functions/`
+8. Update function index in `docs/database/functions/README.md` if it exists
+
+**Files to Update**:
+- `docs/database/data-model-schema.md` - Schema documentation
+- `docs/database/patterns.md` - Database access patterns
+- `docs/database/optimistic-locking.md` - Concurrency patterns
+- `docs/database/functions/{function-name}.md` - Individual function documentation
+- `docs/database/functions/README.md` - Function index and overview
+
+**Example Usage**:
+```
+/documentation.update-database
+```
+
+### `/documentation.update-cli`
+
+**Trigger**: When CLI commands or CLI code changes
+
+**Actions**:
+1. Scan `src/cli/` for CLI changes
+2. Update CLI README files in `src/cli/{module}/README.md`
+3. Update `docs/cli/usage.md` with new commands
+4. Verify CLI examples are current
+
+**Files to Update**:
+- `src/cli/{module}/README.md` - Module-specific CLI docs
+- `docs/cli/usage.md` - General CLI usage guide
+
+**Example Usage**:
+```
+/documentation.update-cli
+```
+
+### `/documentation.update-deployment`
+
+**Command File**: `.cursor/commands/documentation.update-deployment.md`
+
+**Trigger**: When Modal deployment configuration, worker setup, or scaling configuration changes
+
+**Actions**:
+1. Scan `src/deployment/` for Modal app and worker configuration changes
+2. Update deployment documentation in `docs/deployment/`
+3. Document Modal app configuration (SDG-API)
+4. Document worker app configuration (SDG-Job-Worker)
+5. Document scaling configuration and resource allocation
+6. Document secrets configuration
+7. Document image definitions and dependencies
+8. Explain how the system scales and handles load
+9. Document worker schedules and functions
+
+**Files to Update**:
+- `docs/deployment/modal-setup.md` - Modal deployment overview
+- `docs/deployment/api-app.md` - API app configuration
+- `docs/deployment/worker-app.md` - Worker app configuration
+- `docs/deployment/scaling.md` - Scaling and resource allocation
+- `docs/deployment/secrets.md` - Secrets configuration
+
+**Example Usage**:
+```
+/documentation.update-deployment
+```
+
+### `/documentation.update-agents`
+
+**Command File**: `.cursor/commands/documentation.update-agents.md`
+
+**Trigger**: When AI agents are added, modified, or removed, or when agent configuration changes
+
+**Actions**:
+1. Scan `src/agents/` for all AI agent implementations
+2. Identify agent invocations in API routes, services, and CLI commands
+3. Extract agent configuration (model provider, model name, base URL, settings)
+4. Document agent dependencies and tools
+5. Document system prompts (static or database-loaded)
+6. Document output formats and result types
+7. Update agent documentation in `docs/agents/`
+8. Create/update agent overview documentation
+9. Check for missing agent documentation
+
+**Files to Update**:
+- `docs/agents/{agent-name}.md` - Individual agent documentation
+- `docs/agents/README.md` - Agent overview and index
+- `docs/architecture/agents.md` - Agent architecture overview (if exists)
+
+**Example Usage**:
+```
+/documentation.update-agents
+```
+
+### `/documentation.check-outdated`
+
+**Trigger**: Manual check or before releases to identify outdated documentation
+
+**Actions**:
+1. Compare code timestamps with documentation timestamps
+2. Check for missing documentation (new files without docs)
+3. Identify documentation referencing removed/deleted code
+4. Flag documentation with "TODO" or "FIXME" comments
+5. Generate report of outdated documentation
+
+**Output**:
+- List of outdated documentation files
+- Missing documentation for new code
+- Documentation referencing deleted code
+
+**Example Usage**:
+```
+/documentation.check-outdated
+```
+
+### `/documentation.sync-code`
+
+**Trigger**: After code changes to ensure documentation stays in sync
+
+**Actions**:
+1. Detect code changes (new files, modified files, deleted files)
+2. Check if corresponding documentation exists
+3. Update existing documentation to match code
+4. Create missing documentation for new code
+5. Remove or archive documentation for deleted code
+
+**Example Usage**:
+```
+/documentation.sync-code
+```
+
+### `/documentation.validate-structure`
+
+**Trigger**: To ensure documentation follows the defined structure
+
+**Actions**:
+1. Verify all documentation files are in correct directories
+2. Check for required frontmatter/metadata
+3. Validate markdown formatting
+4. Check for broken internal links
+5. Verify table of contents are up to date
+
+**Example Usage**:
+```
+/documentation.validate-structure
+```
+
+## Documentation Standards
+
+### File Naming Conventions
+
+- **API Documentation**: `docs/api/routes/{route-name}.md`
+- **Service Documentation**: `docs/features/{feature-name}.md`
+- **Database Documentation**: `docs/database/{topic}.md`
+- **Database Functions**: `docs/database/functions/{function-name}.md`
+- **CLI Documentation**: `docs/cli/{topic}.md`
+- **Deployment Documentation**: `docs/deployment/{topic}.md`
+- **Architecture Documentation**: `docs/architecture/{topic}.md`
+- **Frontend Documentation**: `docs/frontend/{topic}.md`
+- **Agent Documentation**: `docs/agents/{agent-name}.md`
+
+### Required Frontmatter
+
+All documentation files should include frontmatter:
+
+```markdown
+---
+title: "Documentation Title"
+last_updated: "2025-01-27"
+version: "1.0"
+status: "active" | "deprecated" | "draft"
+related_files:
+  - "src/path/to/file.py"
+---
+```
+
+### Documentation Structure Template
+
+```markdown
+# Title
+
+Brief overview (1-2 sentences)
+
+## Overview
+
+Detailed description
+
+## Usage
+
+Examples and usage patterns
+
+## API Reference / Implementation Details
+
+Technical details
+
+## Examples
+
+Code examples
+
+## Related Documentation
+
+Links to related docs
+```
+
+## Automatic Documentation Updates
+
+### When Creating New API Routes
+
+1. Create route file in `src/app/api/`
+2. Run `/documentation.update-api` to generate documentation
+3. Review and refine generated documentation
+
+### When Creating New Features
+
+1. Create service file in `src/features/`
+2. Run `/documentation.update-features` to generate documentation
+3. Add feature to architecture overview
+
+### When Adding Database Migrations
+
+1. Create migration file in `supabase/migrations/`
+2. Run `/documentation.update-database` to update schema docs
+3. Document migration rationale
+
+### When Adding or Modifying Database Functions
+
+1. Add or modify function in migration file in `supabase/migrations/`
+2. Run `/documentation.update-database` to generate/update function documentation
+3. Review generated function documentation in `docs/database/functions/`
+4. Update function index if needed
+
+### When Updating Modal Deployment Configuration
+
+1. Update Modal app or worker configuration in `src/deployment/`
+2. Run `/documentation.update-deployment` to update deployment docs
+3. Review scaling and resource allocation documentation
+
+
+### When Creating or Modifying AI Agents
+
+1. Create or modify agent in `src/agents/{agent-name}/`
+2. Run `/documentation.update-agents` to generate/update agent documentation
+3. Review agent configuration, tools, and invocation points
+
+## Documentation Review Checklist
+
+Before marking documentation as complete:
+
+- [ ] All code changes have corresponding documentation updates
+- [ ] Examples are tested and working
+- [ ] Links are valid and working
+- [ ] Frontmatter is complete and accurate
+- [ ] Documentation follows the structure template
+- [ ] Related documentation is cross-referenced
+- [ ] No TODO or FIXME comments remain
+
+## Integration with Development Workflow
+
+### Pre-Commit
+
+Before committing code changes:
+1. Run `/documentation.sync-code` to ensure docs are updated
+2. Review any generated documentation updates
+3. Commit documentation changes with code changes
+
+### Pre-Release
+
+Before releasing:
+1. Run `/documentation.check-outdated` to identify issues
+2. Run `/documentation.validate-structure` to ensure consistency
+3. Update version numbers and dates in documentation
+4. Review all documentation for accuracy
+
+### Post-Implementation
+
+After implementing a feature:
+1. Run appropriate `/documentation.update-*` hook
+2. Review generated documentation
+3. Add examples and use cases
+4. Cross-reference related documentation
+
+## Maintenance Commands
+
+### Quick Reference
+
+- `/documentation.update-api` - Update API documentation
+- `/documentation.update-features` - Update service documentation
+- `/documentation.update-database` - Update database documentation
+- `/documentation.update-cli` - Update CLI documentation
+- `/documentation.update-deployment` - Update deployment documentation (Modal)
+- `/documentation.update-agents` - Update AI agent documentation
+- `/documentation.update-dataflow` - Update data flow documentation
+- `/documentation.update-triggers` - Update trigger documentation
+- `/documentation.generate-frontend-api` - Generate frontend API documentation (Next.js/TypeScript)
+- `/documentation.check-outdated` - Check for outdated docs
+- `/documentation.sync-code` - Sync docs with code changes
+- `/documentation.validate-structure` - Validate doc structure
+
+## Notes
+
+- Documentation commands are designed to be run manually when needed
+- Commands analyze code and suggest/document updates but require review
+- Always review generated documentation before committing
+- Keep documentation concise but complete
+- Use code examples liberally
+- Cross-reference related documentation
+
+### `/documentation.update-dataflow`
+
+**Trigger**: When data flow changes (new entry points, service changes, trigger changes, processing logic changes)
+
+**Actions**:
+1. Scan `src/app/api/` for new/modified endpoints
+2. Scan `src/features/` for feature changes that affect data flow
+3. Scan `supabase/migrations/` for new triggers
+4. Update `docs/dataflow/flows/` documentation
+5. Update `docs/dataflow/triggers/` documentation
+6. Check for missing data flow documentation
+
+**Files to Update**:
+- `docs/dataflow/flows/{feature-name}.md` - Feature-specific data flow docs
+- `docs/dataflow/triggers/{trigger-name}.md` - Trigger documentation
+- `docs/dataflow/README.md` - Data flow overview
+
+**Example Usage**:
+```
+/documentation.update-dataflow
+```
+
+### `/documentation.update-triggers`
+
+**Trigger**: When database triggers are added, modified, or removed
+
+**Actions**:
+1. Scan `supabase/migrations/` for trigger-related migrations
+2. Update `docs/dataflow/triggers/` documentation
+3. Update related data flow documentation
+4. Document trigger side effects
+
+**Files to Update**:
+- `docs/dataflow/triggers/{trigger-name}.md` - Trigger documentation
+- `docs/dataflow/flows/{related-flow}.md` - Related flow documentation
+
+**Example Usage**:
+```
+/documentation.update-triggers
+```
+
+## Data Flow Documentation Standards
+
+### Data Flow Documentation Template
+
+```markdown
+---
+title: "Feature Name Data Flow"
+last_updated: "2025-01-27"
+version: "1.0"
+status: "active"
+related_files:
+  - "src/app/api/feature.py"
+  - "src/features/feature_service.py"
+  - "supabase/migrations/XXX_trigger.sql"
+---
+
+# Feature Name Data Flow
+
+## Overview
+
+Brief description of the data flow
+
+## Entry Point
+
+Where data enters the system (API endpoint, CLI command, job)
+
+## Data Flow Diagram
+
+Mermaid sequence diagram showing the flow
+
+## Step-by-Step Flow
+
+1. Entry Point
+2. Validation
+3. Processing
+4. Database Operations
+5. Triggers
+6. Side Effects
+
+## Database Operations
+
+What tables are affected
+
+## Triggers
+
+What triggers fire and their effects
+
+## Error Handling
+
+How errors are handled at each step
+```
+
+### Trigger Documentation Template
+
+```markdown
+---
+title: "Trigger Name"
+last_updated: "2025-01-27"
+version: "1.0"
+status: "active"
+related_files:
+  - "supabase/migrations/XXX_trigger.sql"
+---
+
+# Trigger Name
+
+## Overview
+
+What the trigger does
+
+## Trigger Details
+
+- Trigger Name
+- Table
+- Event (INSERT/UPDATE/DELETE)
+- Function
+- Action
+
+## Data Flow
+
+How the trigger affects data flow
+
+## Side Effects
+
+What other data is updated
+```
+
+## When to Update Data Flow Documentation
+
+### After Adding New API Endpoints
+
+1. Document the entry point
+2. Trace the data flow through services
+3. Document database operations
+4. Document any triggers that fire
+5. Run `/documentation.update-dataflow`
+
+### After Adding Database Triggers
+
+1. Document the trigger in `docs/dataflow/triggers/`
+2. Update related flow documentation
+3. Document side effects
+4. Run `/documentation.update-triggers`
+
+### After Service Changes
+
+1. Check if data flow is affected
+2. Update flow documentation
+3. Update trigger documentation if side effects change
+4. Run `/documentation.update-dataflow`
+
+## Data Flow Maintenance Checklist
+
+- [ ] Entry point documented
+- [ ] All processing steps documented
+- [ ] Database operations documented
+- [ ] Triggers documented
+- [ ] Side effects documented
+- [ ] Error handling documented
+- [ ] Diagrams are current
+- [ ] Related documentation cross-referenced
+
+### `/documentation.generate-frontend-api`
+
+**Command File**: `.cursor/commands/documentation.generate-frontend-api.md`
+
+**Trigger**: When frontend API documentation is needed (manually triggered or when API routes change)
+
+**Actions**:
+1. Scan `src/app/api/` for all API endpoints
+2. Filter out deprecated routes (routes with `deprecated=True` parameter)
+3. If specific route provided: Generate documentation for that route only
+4. If no route provided: Generate documentation for all non-deprecated routes
+5. Generate TypeScript/Next.js friendly documentation
+6. Include request payload structure, response format, error states, usage examples
+7. Exclude "Related endpoints" section
+8. Save to `docs/frontend/api/{route-name}.md`
+
+**Configuration**:
+- **Framework**: Next.js with TypeScript
+- **Base URL**: `https://cody-99083--sdg-api-sdg-api-app.modal.run` (from environment or config)
+- **Documentation Location**: `docs/frontend/api/`
+- **Exclude Deprecated**: Automatically skip routes marked with `deprecated=True`
+
+**Files to Create/Update**:
+- `docs/frontend/api/{route-name}.md` - Frontend-specific API documentation
+
+**Documentation Format**:
+- TypeScript type definitions
+- Request/Response examples
+- Error handling examples
+- Usage examples for Next.js
+- Authentication requirements
+- Query parameters and path parameters
+
+**Example Usage**:
+```
+/documentation.generate-frontend-api
+/documentation.generate-frontend-api suppliers/chat
+/documentation.generate-frontend-api /suppliers/{supplier_id}/assessments/maturity
+```
+
+**Important**: This hook does NOT modify any code files - it only generates documentation.
+
+## Frontend API Documentation Standards
+
+### Frontend API Documentation Template
+
+```markdown
+---
+title: "{Endpoint Name} - Frontend API Documentation"
+last_updated: "2025-01-27"
+version: "1.0"
+status: "active"
+endpoint: "{HTTP_METHOD} {endpoint_path}"
+base_url: "https://cody-99083--sdg-api-sdg-api-app.modal.run"
+related_files:
+  - "src/app/api/{route_file}.py"
+---
+
+# {Endpoint Name} - Frontend API Documentation
+
+**Endpoint**: `{HTTP_METHOD} {endpoint_path}`
+
+**Base URL**: `{base_url}`
+
+**Summary**: {Brief description from route summary}
+
+## Overview
+
+{Detailed description from route description}
+
+## Authentication
+
+{Authentication requirements - JWT token, etc.}
+
+## TypeScript Types
+
+### Request Types
+
+```typescript
+interface {RequestType} {
+  // Request body structure
+}
+```
+
+### Response Types
+
+```typescript
+interface {ResponseType} {
+  // Response structure
+}
+```
+
+### Path Parameters
+
+```typescript
+interface {PathParams} {
+  // Path parameters
+}
+```
+
+### Query Parameters
+
+```typescript
+interface {QueryParams} {
+  // Query parameters
+}
+```
+
+## Request Example
+
+```typescript
+// Next.js example
+const response = await fetch(
+  `${API_BASE_URL}{endpoint_path}`,
+  {
+    method: '{HTTP_METHOD}',
+    headers: {
+      'Authorization': `Bearer ${jwtToken}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      // Request body
+    }),
+  }
+);
+
+const data = await response.json();
+```
+
+## Response Example
+
+```json
+{
+  // Response structure
+}
+```
+
+## Error Handling
+
+### Error Response Types
+
+```typescript
+interface ErrorResponse {
+  detail: string;
+  // Error structure
+}
+```
+
+### Error Status Codes
+
+- `400`: Bad Request - {description}
+- `401`: Unauthorized - {description}
+- `403`: Forbidden - {description}
+- `404`: Not Found - {description}
+- `500`: Internal Server Error - {description}
+
+### Error Handling Example
+
+```typescript
+try {
+  const response = await fetch(...);
+  if (!response.ok) {
+    const error = await response.json();
+    // Handle error
+  }
+  const data = await response.json();
+} catch (error) {
+  // Handle network error
+}
+```
+
+## Usage Examples
+
+### Basic Usage
+
+```typescript
+// Example usage
+```
+
+### With Error Handling
+
+```typescript
+// Example with error handling
+```
+
+## Notes
+
+- {Additional notes}
+- {Important considerations}
+```
+
+## When to Generate Frontend API Documentation
+
+### After Adding New API Endpoints
+
+1. Run `/documentation.generate-frontend-api` to generate docs for new endpoints
+2. Review generated documentation
+3. Add any frontend-specific notes or examples
+
+### After Modifying API Endpoints
+
+1. Run `/documentation.generate-frontend-api {route_path}` to update specific route
+2. Review changes in generated documentation
+3. Update examples if needed
+
+### Regular Maintenance
+
+1. Run `/documentation.generate-frontend-api` (no route) to regenerate all docs
+2. Review for consistency
+3. Update base URL if changed
+## Database Functions Documentation Standards
+
+### Database Function Documentation Template
+
+```markdown
+---
+title: "{Function Name}"
+last_updated: "2025-01-27"
+version: "1.0"
+status: "active"
+related_files:
+  - "supabase/migrations/XXX_function.sql"
+---
+
+# {Function Name}
+
+## Overview
+
+Brief description of what the function does and its purpose
+
+## Function Signature
+
+```sql
+CREATE OR REPLACE FUNCTION {function_name}({parameters})
+RETURNS {return_type} AS $$
+{function_body}
+$$ LANGUAGE {language};
+```
+
+## Parameters
+
+| Parameter | Type | Description | Required |
+|-----------|------|-------------|----------|
+| {param_name} | {param_type} | {param_description} | {yes/no} |
+
+## Return Type
+
+{Description of return type and structure}
+
+## Behavior
+
+Detailed description of function behavior, including:
+- What the function does
+- How it processes data
+- Any special logic or conditions
+- Performance considerations
+
+## Usage Examples
+
+### Basic Usage
+
+```sql
+SELECT {function_name}({example_parameters});
+```
+
+### Example Result
+
+```json
+{
+  "example": "result"
+}
+```
+
+## Related Database Objects
+
+- **Tables Used**: {list of tables accessed}
+- **Triggers**: {any triggers that use this function}
+- **Other Functions**: {functions that call or are called by this function}
+
+## Migration History
+
+- **Added**: Migration {XXX} - {date}
+- **Modified**: {if applicable}
+
+## Notes
+
+- {Additional notes}
+- {Important considerations}
+- {Performance warnings}
+```
+
+### When to Document Database Functions
+
+1. **After Creating New Functions**: When a migration adds a new `CREATE OR REPLACE FUNCTION`
+2. **After Modifying Functions**: When a migration modifies an existing function
+3. **After Function Usage Changes**: When how a function is used changes significantly
+
+### Database Functions Documentation Checklist
+
+- [ ] Function signature documented
+- [ ] Parameters documented with types and descriptions
+- [ ] Return type and structure documented
+- [ ] Behavior and logic explained
+- [ ] Usage examples provided
+- [ ] Related database objects identified
+- [ ] Migration history tracked
+- [ ] Performance considerations noted (if applicable)
+- [ ] Function added to index/README
+

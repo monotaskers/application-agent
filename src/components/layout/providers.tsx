@@ -1,32 +1,44 @@
-'use client';
-import { ClerkProvider } from '@clerk/nextjs';
-import { dark } from '@clerk/themes';
-import { useTheme } from 'next-themes';
-import React from 'react';
-import { ActiveThemeProvider } from '../active-theme';
+"use client";
+import React, { type ReactElement } from "react";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ActiveThemeProvider } from "../active-theme";
 
+/**
+ * QueryClient instance for TanStack Query
+ * Configured with default options for optimal performance
+ */
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false,
+      retry: 3,
+    },
+  },
+});
+
+/**
+ * Providers component
+ * Wraps the app with necessary context providers
+ * Removed ClerkProvider - now using Supabase Auth
+ *
+ * @param props - Component props
+ * @param props.activeThemeValue - Initial theme value
+ * @param props.children - Child components
+ * @returns React element containing providers
+ */
 export default function Providers({
   activeThemeValue,
-  children
+  children,
 }: {
   activeThemeValue: string;
   children: React.ReactNode;
-}) {
-  // we need the resolvedTheme value to set the baseTheme for clerk based on the dark or light theme
-  const { resolvedTheme } = useTheme();
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ClerkProvider type mismatch with exactOptionalPropertyTypes
-  const clerkProps: any = resolvedTheme === 'dark'
-    ? { appearance: { baseTheme: dark } }
-    : {};
-
+}): ReactElement {
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <ActiveThemeProvider initialTheme={activeThemeValue}>
-        <ClerkProvider {...clerkProps}>
-          {children}
-        </ClerkProvider>
+        {children}
       </ActiveThemeProvider>
-    </>
+    </QueryClientProvider>
   );
 }

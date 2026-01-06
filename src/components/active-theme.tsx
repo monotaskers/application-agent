@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   ReactNode,
@@ -6,16 +6,16 @@ import {
   createContext,
   useContext,
   useEffect,
-  useState
-} from 'react';
+  useState,
+} from "react";
 
-const COOKIE_NAME = 'active_theme';
-const DEFAULT_THEME = 'default';
+const COOKIE_NAME = "active_theme";
+const DEFAULT_THEME = "purple";
 
 function setThemeCookie(theme: string): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
-  document.cookie = `${COOKIE_NAME}=${theme}; path=/; max-age=31536000; SameSite=Lax; ${window.location.protocol === 'https:' ? 'Secure;' : ''}`;
+  document.cookie = `${COOKIE_NAME}=${theme}; path=/; max-age=31536000; SameSite=Lax; ${window.location.protocol === "https:" ? "Secure;" : ""}`;
 }
 
 type ThemeContextType = {
@@ -27,7 +27,7 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export function ActiveThemeProvider({
   children,
-  initialTheme
+  initialTheme,
 }: {
   children: ReactNode;
   initialTheme?: string;
@@ -40,13 +40,13 @@ export function ActiveThemeProvider({
     setThemeCookie(activeTheme);
 
     Array.from(document.body.classList)
-      .filter((className) => className.startsWith('theme-'))
+      .filter((className) => className.startsWith("theme-"))
       .forEach((className) => {
         document.body.classList.remove(className);
       });
     document.body.classList.add(`theme-${activeTheme}`);
-    if (activeTheme.endsWith('-scaled')) {
-      document.body.classList.add('theme-scaled');
+    if (activeTheme.endsWith("-scaled")) {
+      document.body.classList.add("theme-scaled");
     }
   }, [activeTheme]);
 
@@ -61,7 +61,7 @@ export function useThemeConfig(): ThemeContextType {
   const context = useContext(ThemeContext);
   if (context === undefined) {
     throw new Error(
-      'useThemeConfig must be used within an ActiveThemeProvider'
+      "useThemeConfig must be used within an ActiveThemeProvider"
     );
   }
   return context;

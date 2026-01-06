@@ -1,7 +1,0 @@
-{
-  "enabledMcpjsonServers": [
-    "copilotkit",
-    "shadcn"
-  ],
-  "enableAllProjectMcpServers": true
-}

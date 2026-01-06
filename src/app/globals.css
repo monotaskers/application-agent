@@ -1,27 +1,40 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
-@import 'tw-animate-css';
+@import "tw-animate-css";
+
+@import "./theme.css";
 
 @custom-variant dark (&:is(.dark *));
 
-@import './theme.css';
-
 :root {
   --radius: 0.625rem;
+
+  /* Brand Colors - OKLCH format for perceptual uniformity */
+  --color-brand-primary: oklch(0.55 0.23 280); /* IRIS #4B4DED */
+  --color-brand-secondary: oklch(
+    0.88 0.06 185
+  ); /* ROBIN'S EGG #ABE6E0 (swapped from accent) */
+  --color-brand-accent: oklch(
+    0.65 0.15 29.23
+  ); /* ORANGE #FF7300 (swapped from secondary) */
+
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  /* Primary: IRIS (L: 0.55) - Medium dark, use white foreground for WCAG AA (diff: 0.435) */
+  --primary: var(--color-brand-primary);
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
+  /* Secondary: ROBIN'S EGG (L: 0.88) - Very light, use dark foreground for WCAG AA (diff: 0.735) */
+  --secondary: var(--color-brand-secondary);
+  --secondary-foreground: oklch(0.145 0 0);
   --muted: oklch(0.97 0 0);
   --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  /* Accent: ORANGE (L: 0.65) - Medium light, use dark foreground for WCAG AA (diff: 0.505) */
+  --accent: var(--color-brand-accent);
+  --accent-foreground: oklch(0.145 0 0);
   --destructive: oklch(0.577 0.245 27.325);
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
@@ -39,9 +52,41 @@
   --sidebar-accent-foreground: oklch(0.205 0 0);
   --sidebar-border: oklch(0.922 0 0);
   --sidebar-ring: oklch(0.708 0 0);
+  /* Logo icon color - primary on light theme */
+  --logo-icon-color: var(--primary);
+
+  /* Primary Color Scale (IRIS) - OKLCH format */
+  --color-primary-50: oklch(
+    0.95 0.1 280
+  ); /* Lightest - for light backgrounds */
+  --color-primary-100: oklch(0.9 0.15 280);
+  --color-primary-200: oklch(0.85 0.18 280);
+  --color-primary-300: oklch(0.75 0.2 280);
+  --color-primary-400: oklch(0.65 0.22 280);
+  --color-primary-500: oklch(0.55 0.23 280); /* Base - IRIS #4B4DED */
+  --color-primary-600: oklch(0.45 0.23 280);
+  --color-primary-700: oklch(0.35 0.23 280);
+  --color-primary-800: oklch(0.25 0.23 280);
+  --color-primary-900: oklch(
+    0.15 0.23 280
+  ); /* Darkest - for dark backgrounds */
+
+  /* Scoring Colors - from brand.md */
+  --color-scoring-high: #23c28a; /* MINT - High scores (0.70 - 1.0) */
+  --color-scoring-medium: #f58942; /* SUN - Medium scores (0.31 - 0.69) */
+  --color-scoring-low: #e85d4f; /* CORAL - Low scores (0.0 - 0.30) */
 }
 
 .dark {
+  /* Brand colors remain consistent in dark mode, but can be adjusted if needed */
+  --color-brand-primary: oklch(0.55 0.23 280); /* IRIS #4B4DED */
+  --color-brand-secondary: oklch(
+    0.88 0.06 185
+  ); /* ROBIN'S EGG #ABE6E0 (swapped from accent) */
+  --color-brand-accent: oklch(
+    0.65 0.15 29.23
+  ); /* ORANGE #FF7300 (swapped from secondary) */
+
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -73,6 +118,25 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.439 0 0);
+  /* Logo icon color - primary on dark theme */
+  --logo-icon-color: var(--primary);
+
+  /* Primary Color Scale (IRIS) - same in dark mode */
+  --color-primary-50: oklch(0.95 0.1 280);
+  --color-primary-100: oklch(0.9 0.15 280);
+  --color-primary-200: oklch(0.85 0.18 280);
+  --color-primary-300: oklch(0.75 0.2 280);
+  --color-primary-400: oklch(0.65 0.22 280);
+  --color-primary-500: oklch(0.55 0.23 280);
+  --color-primary-600: oklch(0.45 0.23 280);
+  --color-primary-700: oklch(0.35 0.23 280);
+  --color-primary-800: oklch(0.25 0.23 280);
+  --color-primary-900: oklch(0.15 0.23 280);
+
+  /* Scoring Colors - from brand.md (same in dark mode) */
+  --color-scoring-high: #23c28a; /* MINT - High scores (0.70 - 1.0) */
+  --color-scoring-medium: #f58942; /* SUN - Medium scores (0.31 - 0.69) */
+  --color-scoring-low: #e85d4f; /* CORAL - Low scores (0.0 - 0.30) */
 }
 
 @theme inline {
@@ -111,6 +175,9 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --color-scoring-high: var(--color-scoring-high);
+  --color-scoring-medium: var(--color-scoring-medium);
+  --color-scoring-low: var(--color-scoring-low);
 }
 
 @layer base {

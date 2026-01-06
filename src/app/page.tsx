@@ -1,12 +1,21 @@
-import { auth } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
 
+/**
+ * Root page component
+ * Redirects authenticated users to admin, unauthenticated users to sign-in
+ *
+ * @returns Never (always redirects)
+ */
 export default async function Page(): Promise<never> {
-  const { userId } = await auth();
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  if (!userId) {
-    return redirect('/auth/sign-in');
-  } else {
-    redirect('/dashboard/overview');
+  if (!user) {
+    return redirect("/auth/sign-in");
   }
+
+  redirect("/admin/overview");
 }

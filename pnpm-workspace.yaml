@@ -1,9 +1,9 @@
 onlyBuiltDependencies:
-  - '@clerk/shared'
-  - '@scarf/scarf'
-  - '@sentry/cli'
-  - '@tailwindcss/oxide'
+  - "@scarf/scarf"
+  - "@sentry/cli"
+  - esbuild
   - msw
   - protobufjs
   - sharp
+  - supabase
   - unrs-resolver
