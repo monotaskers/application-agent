@@ -109,7 +109,7 @@ export function CompanyDetailClient({
           <AlertDialogHeader>
             <AlertDialogTitle>Delete Company</AlertDialogTitle>
             <AlertDialogDescription>
-              Are you sure you want to delete "{company.name}"? This action
+              Are you sure you want to delete &quot;{company.name}&quot;? This action
               cannot be undone. All users associated with this company will have
               their company_id set to null.
             </AlertDialogDescription>

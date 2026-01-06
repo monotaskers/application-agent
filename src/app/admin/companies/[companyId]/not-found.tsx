@@ -19,7 +19,7 @@ export default function CompanyNotFound(): ReactElement {
     <div className="flex h-full flex-col items-center justify-center">
       <h1 className="mb-4 text-4xl font-bold">Company Not Found</h1>
       <p className="mb-8 text-muted-foreground">
-        The company you're looking for doesn't exist or has been deleted.
+        The company you&apos;re looking for doesn&apos;t exist or has been deleted.
       </p>
       <Link href="/admin/companies">
         <Button>Back to Companies</Button>
