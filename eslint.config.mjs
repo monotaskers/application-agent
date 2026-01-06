@@ -26,6 +26,18 @@ const eslintConfig = [
           varsIgnorePattern: "^_",
         },
       ],
+      // Enforce proper escaping of entities in JSX text content
+      "react/no-unescaped-entities": [
+        "error",
+        {
+          forbid: [
+            { char: '"', alternatives: ["&quot;", "&ldquo;", "&#34;", "&rdquo;"] },
+            { char: "'", alternatives: ["&apos;", "&lsquo;", "&#39;", "&rsquo;"] },
+            { char: ">", alternatives: ["&gt;"] },
+            { char: "}", alternatives: ["&#125;"] },
+          ],
+        },
+      ],
     },
   },
   {

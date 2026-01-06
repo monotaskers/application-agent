@@ -970,12 +970,66 @@ const eslintConfig = [
           namedComponents: "arrow-function",
         },
       ],
+      // Enforce proper escaping of entities in JSX text content
+      "react/no-unescaped-entities": [
+        "error",
+        {
+          forbid: [
+            { char: '"', alternatives: ["&quot;", "&ldquo;", "&#34;", "&rdquo;"] },
+            { char: "'", alternatives: ["&apos;", "&lsquo;", "&#39;", "&rsquo;"] },
+            { char: ">", alternatives: ["&gt;"] },
+            { char: "}", alternatives: ["&#125;"] },
+          ],
+        },
+      ],
     },
   },
 ];
 
 export default eslintConfig;
 ```
+
+### JSX Text Content Escaping (MANDATORY)
+
+**CRITICAL**: All special characters in JSX text content MUST be properly escaped to prevent build failures.
+
+#### Required Escaping Rules
+
+- **Apostrophes (`'`)**: MUST use `&apos;`, `&lsquo;`, `&#39;`, or `&rsquo;`
+- **Quotes (`"`)**: MUST use `&quot;`, `&ldquo;`, `&#34;`, or `&rdquo;`
+- **Greater than (`>`)**: MUST use `&gt;`
+- **Closing braces (`}`)**: MUST use `&#125;`
+
+#### Examples
+
+```typescript
+// ❌ FORBIDDEN: Unescaped entities
+<p>The company you're looking for doesn't exist.</p>
+<p>Are you sure you want to delete "{company.name}"?</p>
+
+// ✅ CORRECT: Properly escaped entities
+<p>The company you&apos;re looking for doesn&apos;t exist.</p>
+<p>Are you sure you want to delete &quot;{company.name}&quot;?</p>
+```
+
+#### Common Patterns
+
+```typescript
+// Contractions
+"you're" → "you&apos;re"
+"doesn't" → "doesn&apos;t"
+"can't" → "can&apos;t"
+"it's" → "it&apos;s"
+
+// Quoted text
+"Delete "{name}"" → "Delete &quot;{name}&quot;"
+"User "{username}"" → "User &quot;{username}&quot;"
+
+// Possessives
+"User's profile" → "User&apos;s profile"
+```
+
+**Why This Matters**: Unescaped entities cause Vercel build failures and break production deployments. The ESLint rule `react/no-unescaped-entities` is enforced as an error and will fail builds.
 
 ## 📋 Development Commands
 
@@ -1132,6 +1186,7 @@ Use `/design.workflow` to execute the complete design workflow:
 - [ ] Tests written and passing with 80%+ coverage (`pnpm run test:coverage`)
 - [ ] ESLint passes with ZERO warnings (`pnpm run lint`)
 - [ ] Prettier formatting applied (`pnpm run format`)
+- [ ] All JSX text content properly escaped (apostrophes, quotes, etc.)
 - [ ] All components have complete JSDoc documentation
 - [ ] Zod schemas validate ALL external data
 - [ ] ALL states handled (loading, error, empty, success)
@@ -1152,6 +1207,7 @@ Use `/design.workflow` to execute the complete design workflow:
 - **NEVER use `JSX.Element`** - use `ReactElement` instead
 - **NEVER store sensitive data** in localStorage or client state
 - **NEVER use dangerouslySetInnerHTML** without sanitization
+- **NEVER use unescaped entities in JSX text** - Always escape apostrophes (`&apos;`), quotes (`&quot;`), etc.
 - **NEVER exceed file/component size limits**
 - **NEVER prop drill** beyond 2 levels - use context or state management
 - **NEVER commit** without passing all quality checks
