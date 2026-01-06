@@ -208,9 +208,7 @@ export function UserDetailClient({
           )}
         </div>
       </div>
-      {canEdit && (
-        <UserForm userId={fullUser.id} initialData={initialData} />
-      )}
+      {canEdit && <UserForm userId={fullUser.id} initialData={initialData} />}
       {fullUser && isFullUser(fullUser) && (
         <DeleteUserDialog
           user={fullUser}

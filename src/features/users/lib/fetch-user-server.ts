@@ -61,7 +61,11 @@ export async function fetchUserServer(
   }
 
   // If viewing own profile or admin view, return full user data
-  if (!options?.limitedView || !options?.viewerUserId || options.viewerUserId === validatedId) {
+  if (
+    !options?.limitedView ||
+    !options?.viewerUserId ||
+    options.viewerUserId === validatedId
+  ) {
     return user;
   }
 

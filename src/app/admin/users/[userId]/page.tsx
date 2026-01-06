@@ -47,10 +47,7 @@ export default async function UserDetailPage({
   ]);
 
   // Determine if user has admin view permission
-  const hasAdminView = await hasPermission(
-    currentUser,
-    PERMISSIONS.users.view
-  );
+  const hasAdminView = await hasPermission(currentUser, PERMISSIONS.users.view);
 
   // Fetch user data with appropriate view mode
   const userData = await fetchUserServer(userId, {
